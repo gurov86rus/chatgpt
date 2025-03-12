@@ -165,22 +165,32 @@ def generate_expiration_report():
     doc = SimpleDocTemplate(filename, pagesize=A4)
     styles = getSampleStyleSheet()
     
-    # Create a custom style for the title
-    title_style = ParagraphStyle(
-        'Title',
+    # Create custom styles with proper encoding support for Cyrillic
+    cyrillic_normal = ParagraphStyle(
+        'CyrillicNormal',
+        parent=styles['Normal'],
+        fontName='Helvetica',
+        encoding='utf-8'
+    )
+    
+    cyrillic_title = ParagraphStyle(
+        'CyrillicTitle',
         parent=styles['Heading1'],
+        fontName='Helvetica-Bold',
         alignment=1,  # Center alignment
-        spaceAfter=12
+        spaceAfter=12,
+        encoding='utf-8'
     )
     
     # Add title and date
     elements = []
-    elements.append(Paragraph(f"Отчет об истечении сроков документов", title_style))
-    elements.append(Paragraph(f"Дата создания: {today.strftime('%d.%m.%Y')}", styles['Normal']))
+    elements.append(Paragraph(f"Отчет об истечении сроков документов", cyrillic_title))
+    elements.append(Paragraph(f"Дата создания: {today.strftime('%d.%m.%Y')}", cyrillic_normal))
     elements.append(Spacer(1, 12))
     
-    # Create data for the table
-    data = [["Транспортное средство", "ОСАГО", "Техосмотр", "СКЗИ", "ТО"]]
+    # Create data for the table - use unicode explicitly
+    headers = ["Транспортное средство", "ОСАГО", "Техосмотр", "СКЗИ", "ТО"]
+    data = [headers]
     
     for vehicle in vehicles:
         # Calculate days until expiration for each document
@@ -212,6 +222,21 @@ def generate_expiration_report():
         
         data.append(row)
     
+    # Register appropriate fonts with Cyrillic support
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    
+    # Try to use DejaVu Sans as it has excellent Cyrillic support
+    try:
+        pdfmetrics.registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
+        pdfmetrics.registerFont(TTFont('DejaVuSans-Bold', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'))
+        cyrillic_font = 'DejaVuSans'
+        cyrillic_font_bold = 'DejaVuSans-Bold'
+    except:
+        # Fallback to Helvetica (may not display Cyrillic properly)
+        cyrillic_font = 'Helvetica'
+        cyrillic_font_bold = 'Helvetica-Bold'
+    
     # Create the table
     table = Table(data, colWidths=[120, 80, 80, 80, 80])
     
@@ -220,13 +245,14 @@ def generate_expiration_report():
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 0), (-1, 0), cyrillic_font_bold),
         ('FONTSIZE', (0, 0), (-1, 0), 12),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 1), (-1, -1), cyrillic_font),
     ])
     
     # Add conditional formatting for expiring documents

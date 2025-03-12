@@ -677,7 +677,7 @@ async def process_repair_cost(message: types.Message, state: FSMContext):
         )
 
 # Edit vehicle handlers
-@dp.callback_query(lambda c: c.data.startswith("edit_") and not c.data.startswith("edit_field_") and not c.data.startswith("edit_repair_") and not c.data.startswith("edit_maintenance_"))
+@dp.callback_query(lambda c: c.data.startswith("edit_") and not c.data.startswith("edit_field_") and not c.data.startswith("edit_repair_") and not c.data.startswith("edit_maintenance_") and not c.data.startswith("edit_fuel_"))
 @admin_required
 async def edit_vehicle_start(callback: types.CallbackQuery, state: FSMContext):
     """Start vehicle editing process"""
