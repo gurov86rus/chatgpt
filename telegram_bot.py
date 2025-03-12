@@ -1835,45 +1835,55 @@ async def edit_repair_start(callback: types.CallbackQuery, state: FSMContext):
 @admin_required
 async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext):
     """Handler for confirming repair record deletion"""
-    repair_id = int(callback.data.split("_")[2])
-    
-    # Очищаем старое состояние перед началом нового действия
-    await state.clear()
-    
-    # Get repair record
-    conn = sqlite3.connect('vehicles.db')
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, date, mileage, description, vehicle_id FROM repairs WHERE id = ?", (repair_id,))
-    record = cursor.fetchone()
-    conn.close()
-    
-    if not record:
-        await callback.answer("⚠️ Запись не найдена")
-        return
-    
-    # Save repair_id and vehicle_id to state с четкими названиями
-    await state.update_data(
-        repair_delete_id=repair_id,
-        repair_vehicle_id=record['vehicle_id'],
-        repair_date=record['date'],
-        repair_mileage=record['mileage']
-    )
-    
-    # Create confirmation keyboard
-    keyboard = [
-        [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"confirm_delete_repair_{repair_id}")],
-        [InlineKeyboardButton(text="❌ Отмена", callback_data=f"repair_{repair_id}")]
-    ]
-    
-    await callback.message.edit_text(
-        f"⚠️ **Подтверждение удаления**\n\n"
-        f"Вы действительно хотите удалить запись о ремонте от {record['date']} (пробег: {record['mileage']} км)?\n\n"
-        f"Это действие нельзя отменить.",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
-        parse_mode="Markdown"
-    )
-    await callback.answer()
+    try:
+        parts = callback.data.split("_")
+        if len(parts) < 3:
+            await callback.answer("⚠️ Неверный формат данных")
+            return
+            
+        repair_id = int(parts[2])
+        logging.info(f"Запрос на удаление записи ремонта с ID={repair_id}")
+        
+        # Очищаем старое состояние перед началом нового действия
+        await state.clear()
+        
+        # Get repair record
+        conn = sqlite3.connect('vehicles.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, date, mileage, description, vehicle_id FROM repairs WHERE id = ?", (repair_id,))
+        record = cursor.fetchone()
+        conn.close()
+        
+        if not record:
+            await callback.answer("⚠️ Запись не найдена")
+            return
+        
+        # Save repair_id and vehicle_id to state с четкими названиями
+        await state.update_data(
+            repair_delete_id=repair_id,
+            repair_vehicle_id=record['vehicle_id'],
+            repair_date=record['date'],
+            repair_mileage=record['mileage']
+        )
+        
+        # Create confirmation keyboard
+        keyboard = [
+            [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"confirm_delete_repair_{repair_id}")],
+            [InlineKeyboardButton(text="❌ Отмена", callback_data=f"repair_{repair_id}")]
+        ]
+        
+        await callback.message.edit_text(
+            f"⚠️ **Подтверждение удаления**\n\n"
+            f"Вы действительно хотите удалить запись о ремонте от {record['date']} (пробег: {record['mileage']} км)?\n\n"
+            f"Это действие нельзя отменить.",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
+            parse_mode="Markdown"
+        )
+        await callback.answer()
+    except Exception as e:
+        logging.error(f"Ошибка при подготовке удаления записи ремонта: {e}")
+        await callback.answer("⚠️ Произошла ошибка при подготовке удаления", show_alert=True)
 
 @dp.callback_query(lambda c: c.data.startswith("confirm_delete_repair_"))
 @admin_required
@@ -1881,7 +1891,12 @@ async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext
     """Handler for executing repair record deletion"""
     try:
         # Получаем ID записи ремонта из callback data
-        repair_id = int(callback.data.split("_")[3])
+        parts = callback.data.split("_")
+        if len(parts) < 4:
+            await callback.answer("⚠️ Неверный формат данных", show_alert=True)
+            return
+            
+        repair_id = int(parts[3])
         logging.info(f"Выполнение удаления записи ремонта с ID={repair_id}")
         
         # Получаем ID транспортного средства
