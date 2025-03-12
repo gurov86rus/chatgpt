@@ -28,12 +28,14 @@ def is_admin(user_id):
 # Decorator for admin-only functions
 def admin_required(func):
     """Decorator to restrict function to admins only"""
+    import inspect
+    
+    # Получаем информацию о параметрах оригинальной функции
+    sig = inspect.signature(func)
+    param_names = list(sig.parameters.keys())
+    
     async def wrapper(event, *args, **kwargs):
-        # Убрать все специальные аргументы aiogram, которые могут вызывать ошибки
-        for arg in ['dispatcher', 'bots', 'bot', 'router']:
-            if arg in kwargs:
-                kwargs.pop(arg)
-            
+        # Проверка прав администратора
         user_id = event.from_user.id
         if not is_admin(user_id):
             if isinstance(event, types.CallbackQuery):
@@ -42,7 +44,17 @@ def admin_required(func):
             elif isinstance(event, types.Message):
                 await event.answer("⚠️ У вас нет прав администратора для выполнения этой операции")
                 return
-        return await func(event, *args, **kwargs)
+        
+        # Оставляем только те аргументы, которые функция может принять
+        # Первый параметр всегда event, его оставляем
+        filtered_kwargs = {}
+        for key, value in kwargs.items():
+            if key in param_names:
+                filtered_kwargs[key] = value
+        
+        # Вызываем функцию только с теми аргументами, которые она принимает
+        return await func(event, *args, **filtered_kwargs)
+    
     return wrapper
 
 # Initialize bot and dispatcher
