@@ -144,6 +144,10 @@ class FuelInfoState(StatesGroup):
     fuel_type = State()
     fuel_tank_capacity = State()
     avg_fuel_consumption = State()
+    
+class AdminManageState(StatesGroup):
+    user_id = State()
+    action = State() # "add" или "remove"
 
 # Helper functions
 def get_vehicle_buttons():
@@ -397,6 +401,7 @@ async def help_command(message: types.Message):
         help_text += (
             "/backup - Создать резервную копию базы данных\n"
             "/users - Просмотр списка пользователей\n"
+            "/admin - Управление статусом администратора\n"
         )
     
     # Общая справка
@@ -433,14 +438,179 @@ async def show_my_id(message: types.Message):
     # Регистрируем пользователя при запросе ID
     register_user(user_id, message.from_user.username or "", user_name)
     
+    # Проверяем статус администратора и выводим информацию
+    admin_status = is_admin(user_id)
+    help_text = ""
+    if not admin_status and user_id in ADMIN_IDS:
+        # Если пользователь в списке ADMIN_IDS, но не отмечен в БД как админ, исправляем
+        set_admin_status(user_id, True)
+        admin_status = True
+        help_text = "✅ Ваш статус администратора восстановлен в базе данных!"
+    
     await message.answer(
         f"👤 **Информация о пользователе**\n\n"
         f"🆔 Ваш Telegram ID: `{user_id}`\n"
         f"👤 Имя: {user_name}\n"
-        f"🔑 Статус: {'Администратор' if is_admin(user_id) else 'Обычный пользователь'}\n\n"
-        f"ℹ️ Чтобы стать администратором, добавьте ваш ID в список ADMIN_IDS в файле telegram_bot.py",
+        f"🔑 Статус: {'Администратор' if admin_status else 'Обычный пользователь'}\n\n"
+        f"{help_text}\n"
+        f"ℹ️ Используйте команду /admin для управления статусами администраторов",
         parse_mode="Markdown"
     )
+
+@dp.message(Command("admin"))
+@admin_required
+async def admin_command(message: types.Message, state: FSMContext):
+    """Handler for admin command to manage admin status"""
+    # Создаем клавиатуру с кнопками действий
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="👑 Добавить администратора", callback_data="admin_add")],
+        [InlineKeyboardButton(text="🔄 Удалить администратора", callback_data="admin_remove")],
+        [InlineKeyboardButton(text="❌ Отмена", callback_data="admin_cancel")]
+    ])
+    
+    await message.answer(
+        "👑 **Управление администраторами**\n\n"
+        "Выберите действие:",
+        reply_markup=keyboard,
+        parse_mode="Markdown"
+    )
+
+@dp.callback_query(lambda c: c.data == "admin_add")
+@admin_required
+async def admin_add(callback: types.CallbackQuery, state: FSMContext):
+    """Start process of adding an admin"""
+    await state.update_data(action="add")
+    await callback.message.edit_text(
+        "👑 **Добавление администратора**\n\n"
+        "Введите Telegram ID пользователя, которого нужно сделать администратором:\n"
+        "_(Пользователь должен быть зарегистрирован в системе)_",
+        parse_mode="Markdown"
+    )
+    await state.set_state(AdminManageState.user_id)
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data == "admin_remove")
+@admin_required
+async def admin_remove(callback: types.CallbackQuery, state: FSMContext):
+    """Start process of removing an admin"""
+    await state.update_data(action="remove")
+    await callback.message.edit_text(
+        "🔄 **Удаление администратора**\n\n"
+        "Введите Telegram ID пользователя, которого нужно лишить прав администратора:",
+        parse_mode="Markdown"
+    )
+    await state.set_state(AdminManageState.user_id)
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data == "admin_cancel")
+@admin_required
+async def admin_cancel(callback: types.CallbackQuery):
+    """Cancel admin management process"""
+    await callback.message.edit_text(
+        "❌ Управление администраторами отменено.",
+        parse_mode="Markdown"
+    )
+    await callback.answer()
+
+@dp.message(AdminManageState.user_id)
+@admin_required
+async def process_admin_user_id(message: types.Message, state: FSMContext):
+    """Process user ID input for admin management"""
+    try:
+        user_id = int(message.text)
+        data = await state.get_data()
+        action = data.get("action")
+        
+        # Проверяем, существует ли пользователь
+        conn = sqlite3.connect('vehicles.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, full_name, is_admin FROM users WHERE id = ?", (user_id,))
+        user = cursor.fetchone()
+        conn.close()
+        
+        if not user:
+            await message.answer(
+                "⚠️ Ошибка: Пользователь с указанным ID не найден в системе.\n\n"
+                "Пользователь должен быть зарегистрирован. Попросите его использовать бота и выполнить команду /start или /myid."
+            )
+            await state.clear()
+            return
+        
+        # Извлекаем данные о пользователе
+        user_name = user[1]
+        is_admin = bool(user[2])
+        
+        # Проверяем, что действие имеет смысл
+        if action == "add" and is_admin:
+            await message.answer(
+                f"ℹ️ Пользователь {user_name} (ID: {user_id}) уже является администратором."
+            )
+            await state.clear()
+            return
+        
+        if action == "remove" and not is_admin:
+            await message.answer(
+                f"ℹ️ Пользователь {user_name} (ID: {user_id}) не является администратором."
+            )
+            await state.clear()
+            return
+        
+        # Запрашиваем подтверждение
+        await state.update_data(target_user_id=user_id, target_user_name=user_name)
+        
+        confirm_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="✅ Подтвердить", callback_data=f"confirm_{action}")],
+            [InlineKeyboardButton(text="❌ Отмена", callback_data="admin_cancel")]
+        ])
+        
+        action_text = "добавить как администратора" if action == "add" else "удалить из администраторов"
+        
+        await message.answer(
+            f"⚠️ **Подтвердите действие**\n\n"
+            f"Вы собираетесь {action_text} пользователя:\n"
+            f"👤 Имя: {user_name}\n"
+            f"🆔 ID: {user_id}\n\n"
+            f"Подтвердите или отмените действие:",
+            reply_markup=confirm_keyboard,
+            parse_mode="Markdown"
+        )
+        
+        await state.set_state(AdminManageState.action)
+        
+    except ValueError:
+        await message.answer(
+            "⚠️ Ошибка: ID пользователя должен быть числом.\n\n"
+            "Попробуйте снова:"
+        )
+
+@dp.callback_query(lambda c: c.data.startswith("confirm_"))
+@admin_required
+async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext):
+    """Confirm admin status change"""
+    action = callback.data.split("_")[1]
+    data = await state.get_data()
+    
+    user_id = data.get("target_user_id")
+    user_name = data.get("target_user_name")
+    
+    # Изменяем статус администратора
+    new_status = (action == "add")
+    result = set_admin_status(user_id, new_status)
+    
+    if result:
+        action_text = "добавлен в" if new_status else "удален из"
+        await callback.message.edit_text(
+            f"✅ Пользователь {user_name} (ID: {user_id}) успешно {action_text} списка администраторов.",
+            parse_mode="Markdown"
+        )
+    else:
+        await callback.message.edit_text(
+            f"⚠️ Произошла ошибка при изменении статуса администратора для пользователя {user_name}.",
+            parse_mode="Markdown"
+        )
+    
+    await state.clear()
+    await callback.answer()
 
 @dp.message(Command("users"))
 @admin_required
