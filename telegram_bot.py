@@ -2,6 +2,7 @@ import logging
 import sqlite3
 import asyncio
 import os
+import datetime
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -10,6 +11,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from config import TOKEN
 from db_init import init_database
+from utils import days_until, format_days_remaining, get_to_interval_based_on_mileage, edit_fuel_info
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -89,6 +91,12 @@ class MaintenanceEditState(StatesGroup):
     
 class MaintenanceDeleteState(StatesGroup):
     maintenance_id = State()
+    
+class FuelInfoState(StatesGroup):
+    vehicle_id = State()
+    fuel_type = State()
+    fuel_tank_capacity = State()
+    avg_fuel_consumption = State()
 
 # Helper functions
 def get_vehicle_buttons():
@@ -149,6 +157,15 @@ def get_vehicle_card(vehicle_id, user_id=None):
     """, (vehicle_id,))
     repairs = cursor.fetchall()
     
+    # Get last maintenance record for interval calculation
+    cursor.execute("""
+        SELECT mileage FROM maintenance 
+        WHERE vehicle_id = ? 
+        ORDER BY date DESC, mileage DESC LIMIT 1
+    """, (vehicle_id,))
+    last_to_record = cursor.fetchone()
+    last_to_mileage = last_to_record['mileage'] if last_to_record else None
+    
     # Generate vehicle card with enhanced information
     card = (
         f"🚛 **{vehicle['model']} ({vehicle['reg_number']})**\n\n"
@@ -159,32 +176,44 @@ def get_vehicle_card(vehicle_id, user_id=None):
         f"🔢 **Пробег:** `{vehicle['mileage'] or 0} км`\n"
         f"🛠 **Тахограф:** {'✅ Требуется' if vehicle['tachograph_required'] else '❌ Не требуется'}\n\n"
         
-        f"📝 **Документы и даты:**\n"
-        f"📅 **ОСАГО до:** `{vehicle['osago_valid'] or '-'}`\n"
-        f"🔧 **Техосмотр до:** `{vehicle['tech_inspection_valid'] or '-'}`\n"
+        f"📝 **Документы и сроки:**\n"
     )
+    
+    # Add document expiration with days remaining
+    osago_days = days_until(vehicle['osago_valid'])
+    tech_days = days_until(vehicle['tech_inspection_valid'])
+    
+    card += f"📅 **ОСАГО до:** `{vehicle['osago_valid'] or '-'}` {format_days_remaining(osago_days)}\n"
+    card += f"🔧 **Техосмотр до:** `{vehicle['tech_inspection_valid'] or '-'}` {format_days_remaining(tech_days)}\n"
     
     # Add SKZI information if tachograph is required
     if vehicle['tachograph_required']:
+        skzi_days = days_until(vehicle['skzi_valid_date'])
         card += (
             f"🔐 **СКЗИ установлен:** `{vehicle['skzi_install_date'] or '-'}`\n"
-            f"🔐 **СКЗИ действует до:** `{vehicle['skzi_valid_date'] or '-'}`\n"
+            f"🔐 **СКЗИ действует до:** `{vehicle['skzi_valid_date'] or '-'}` {format_days_remaining(skzi_days)}\n"
         )
     
-    # Add maintenance and fuel information if available
-    if vehicle['next_to'] or vehicle['last_to_date'] or vehicle['next_to_date']:
+    # Add maintenance information with TO interval calculation
+    if last_to_mileage:
+        # Calculate next TO based on 10,000 km interval
+        remaining_km, next_to_mileage = get_to_interval_based_on_mileage(last_to_mileage, vehicle['mileage'])
+        
         card += f"\n🔧 **Обслуживание:**\n"
+        
         if vehicle['last_to_date']:
-            card += f"📆 **Последнее ТО:** `{vehicle['last_to_date']}`\n"
-        if vehicle['next_to_date']:
-            card += f"📆 **Следующее ТО:** `{vehicle['next_to_date']}`\n"
-        if vehicle['next_to']:
-            remaining = vehicle['next_to'] - vehicle['mileage']
-            card += f"🔄 **Осталось до ТО:** `{remaining} км`\n"
-            if remaining <= 0:
-                card += "⚠️ **ВНИМАНИЕ! ТО просрочено!**\n"
-            elif remaining <= 1000:
-                card += "⚠️ **Приближается плановое ТО!**\n"
+            card += f"📆 **Последнее ТО:** `{vehicle['last_to_date']}` при пробеге `{last_to_mileage} км`\n"
+        
+        # Display next TO based on mileage
+        card += f"🔄 **Следующее ТО при:** `{next_to_mileage} км`\n"
+        card += f"🔄 **Осталось до ТО:** `{remaining_km} км`\n"
+        
+        if remaining_km <= 0:
+            card += "⚠️ **ВНИМАНИЕ! Необходимо пройти ТО!**\n"
+        elif remaining_km <= 500:
+            card += "⚠️ **ВНИМАНИЕ! ТО требуется в ближайшее время!**\n"
+        elif remaining_km <= 1000:
+            card += "⚠️ **Приближается плановое ТО!**\n"
     
     # Add fuel information if available
     if vehicle['fuel_type'] or vehicle['fuel_tank_capacity'] or vehicle['avg_fuel_consumption']:
@@ -234,9 +263,11 @@ def get_vehicle_card(vehicle_id, user_id=None):
             [InlineKeyboardButton(text="🔄 Обновить пробег", callback_data=f"update_mileage_{vehicle_id}")],
             [InlineKeyboardButton(text="➕ Добавить ТО", callback_data=f"add_to_{vehicle_id}")],
             [InlineKeyboardButton(text="🛠 Добавить ремонт", callback_data=f"add_repair_{vehicle_id}")],
+            [InlineKeyboardButton(text="⛽ Информация о топливе", callback_data=f"edit_fuel_{vehicle_id}")],
             [InlineKeyboardButton(text="✏️ Редактировать ТС", callback_data=f"edit_{vehicle_id}")],
             [InlineKeyboardButton(text="📋 Управление ТО", callback_data=f"manage_to_{vehicle_id}")],
             [InlineKeyboardButton(text="🔧 Управление ремонтами", callback_data=f"manage_repairs_{vehicle_id}")],
+            [InlineKeyboardButton(text="📊 Сгенерировать отчет", callback_data="generate_report")],
             [InlineKeyboardButton(text="⬅ Назад к списку", callback_data="back")]
         ]
     
