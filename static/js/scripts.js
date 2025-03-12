@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('Using base URL:', baseUrl);
     
+    // Store vehicles list globally to use it later
+    let vehiclesList = [];
+    
     // Load vehicles list first with proper error handling
     fetch(`${baseUrl}/api/vehicles`)
         .then(response => {
@@ -16,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(vehicles => {
             console.log('Vehicles loaded:', vehicles);
+            vehiclesList = vehicles; // Store vehicles globally
+            
             if (vehicles && vehicles.length > 0) {
                 // Select the first vehicle by default
                 loadVehicleData(vehicles[0].id);
@@ -23,6 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Create vehicle selector if there are multiple vehicles
                 if (vehicles.length > 1) {
                     createVehicleSelector(vehicles);
+                }
+                
+                // Add event listener for "Show All Vehicles" button
+                const showAllBtn = document.getElementById('showAllVehiclesBtn');
+                if (showAllBtn) {
+                    showAllBtn.addEventListener('click', function() {
+                        displayVehiclesList(vehicles);
+                    });
                 }
             } else {
                 // No vehicles found
@@ -77,6 +90,163 @@ function loadVehicleData(vehicleId) {
     const baseUrl = location.hostname.includes('replit') ? 
                   location.origin : // If on replit, use the current origin
                   ''; // Otherwise use relative path (for local development)
+    
+    // Reset the main content to show vehicle details instead of list view
+    const mainContent = document.querySelector('.container.mt-4');
+    
+    // Restore the original HTML structure for vehicle details
+    mainContent.innerHTML = `
+        <!-- Vehicle Info Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" id="vehicle-title">Загрузка данных...</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Основная информация</h6>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>VIN:</strong> <span id="vin">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Категория:</strong> <span id="category">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Квалификация:</strong> <span id="qualification">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Пробег:</strong> <span id="mileage">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Тахограф:</strong> <span id="tachograph">Загрузка...</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Даты и документы</h6>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>ОСАГО до:</strong> <span id="osago">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Техосмотр до:</strong> <span id="techInspection">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>СКЗИ до:</strong> <span id="skzi">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Последнее ТО:</strong> <span id="lastTo">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Следующее ТО:</strong> <span id="nextTo">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Осталось до ТО:</strong> <span id="remainingKm">Загрузка...</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <h6 class="mb-3">Информация о топливе</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>Тип топлива:</strong> <span id="fuelType">Загрузка...</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>Объем бака:</strong> <span id="tankCapacity">Загрузка...</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>Средний расход:</strong> <span id="avgConsumption">Загрузка...</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>Примечания:</strong> <span id="notes">Загрузка...</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Maintenance History Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">История технического обслуживания</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Пробег</th>
+                            <th>Выполненные работы</th>
+                        </tr>
+                    </thead>
+                    <tbody id="toHistoryTable">
+                        <tr>
+                            <td colspan="3" class="text-center">Загрузка данных...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Repairs Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">История ремонтов</h5>
+            </div>
+            <div class="card-body">
+                <div id="no-repairs" class="alert alert-info d-none">Нет записей о ремонтах</div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Пробег</th>
+                            <th>Описание работ</th>
+                            <th>Стоимость</th>
+                        </tr>
+                    </thead>
+                    <tbody id="repairsTable">
+                        <tr>
+                            <td colspan="4" class="text-center">Загрузка данных...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Vehicle List Button -->
+        <div class="text-center mb-5" id="vehicleListButtonContainer">
+            <button class="btn btn-primary" id="showAllVehiclesBtn">
+                <i class="bi bi-list"></i> Показать список всех машин
+            </button>
+        </div>
+    `;
+    
+    // Re-add event listener for the "Show All Vehicles" button
+    const showAllBtn = document.getElementById('showAllVehiclesBtn');
+    if (showAllBtn) {
+        showAllBtn.addEventListener('click', function() {
+            // Get the global vehicles list by making a new request
+            fetch(`${baseUrl}/api/vehicles`)
+                .then(response => response.json())
+                .then(vehicles => {
+                    displayVehiclesList(vehicles);
+                })
+                .catch(error => {
+                    console.error('Error loading vehicles list:', error);
+                });
+        });
+    }
     
     // Load vehicle info
     fetch(`${baseUrl}/api/vehicle/${vehicleId}`)
@@ -160,12 +330,17 @@ function displayVehicleInfo(vehicle) {
     }
     document.getElementById('remainingKm').textContent = remainingText;
     
+    // Alerts container
+    const alertsContainer = document.createElement('div');
+    alertsContainer.className = 'alerts-container mt-3';
+    document.querySelector('.card-body').appendChild(alertsContainer);
+    
     // Maintenance alert
     if (vehicle.remaining_km !== null && vehicle.remaining_km < 1000) {
         const alertDiv = document.createElement('div');
-        alertDiv.className = 'alert alert-warning mt-3';
+        alertDiv.className = 'alert alert-warning';
         alertDiv.innerHTML = `⚠️ <strong>Внимание!</strong> До следующего ТО осталось менее 1000 км.`;
-        document.querySelector('.card-body').appendChild(alertDiv);
+        alertsContainer.appendChild(alertDiv);
     }
     
     // OSAGO alert
@@ -176,14 +351,33 @@ function displayVehicleInfo(vehicle) {
         
         if (differenceInDays <= 30 && differenceInDays > 0) {
             const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-warning mt-3';
+            alertDiv.className = 'alert alert-warning';
             alertDiv.innerHTML = `⚠️ <strong>Внимание!</strong> Срок действия ОСАГО истекает через ${differenceInDays} дней.`;
-            document.querySelector('.card-body').appendChild(alertDiv);
+            alertsContainer.appendChild(alertDiv);
         } else if (differenceInDays <= 0) {
             const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-danger mt-3';
+            alertDiv.className = 'alert alert-danger';
             alertDiv.innerHTML = `⚠️ <strong>ВНИМАНИЕ!</strong> Срок действия ОСАГО истек!`;
-            document.querySelector('.card-body').appendChild(alertDiv);
+            alertsContainer.appendChild(alertDiv);
+        }
+    }
+    
+    // Tech inspection alert
+    if (vehicle.tech_inspection_valid) {
+        const today = new Date();
+        const techDate = parseDate(vehicle.tech_inspection_valid);
+        const differenceInDays = Math.ceil((techDate - today) / (1000 * 60 * 60 * 24));
+        
+        if (differenceInDays <= 30 && differenceInDays > 0) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-warning';
+            alertDiv.innerHTML = `⚠️ <strong>Внимание!</strong> Срок действия техосмотра истекает через ${differenceInDays} дней.`;
+            alertsContainer.appendChild(alertDiv);
+        } else if (differenceInDays <= 0) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger';
+            alertDiv.innerHTML = `⚠️ <strong>ВНИМАНИЕ!</strong> Срок действия техосмотра истек!`;
+            alertsContainer.appendChild(alertDiv);
         }
     }
 }
@@ -277,4 +471,115 @@ function displayErrorMessage() {
             <p>Не удалось загрузить информацию об автомобилях. Пожалуйста, попробуйте позже или обратитесь к администратору.</p>
         </div>
     `;
+}
+
+function displayVehiclesList(vehicles) {
+    // Get the main content container
+    const container = document.querySelector('.container.mt-4');
+    
+    // Clear current content
+    container.innerHTML = '';
+    
+    // Create a card for the vehicle list
+    const card = document.createElement('div');
+    card.className = 'card mb-4';
+    
+    // Create card header
+    const cardHeader = document.createElement('div');
+    cardHeader.className = 'card-header bg-primary text-white';
+    cardHeader.innerHTML = '<h5 class="mb-0">Список всех автомобилей</h5>';
+    card.appendChild(cardHeader);
+    
+    // Create card body
+    const cardBody = document.createElement('div');
+    cardBody.className = 'card-body';
+    
+    // Create table
+    const table = document.createElement('table');
+    table.className = 'table table-striped table-hover';
+    
+    // Create table header
+    const tableHeader = document.createElement('thead');
+    tableHeader.innerHTML = `
+        <tr>
+            <th>Модель</th>
+            <th>Гос. номер</th>
+            <th>Категория</th>
+            <th>Пробег</th>
+            <th>Срок ОСАГО</th>
+            <th>Действия</th>
+        </tr>
+    `;
+    table.appendChild(tableHeader);
+    
+    // Create table body and add vehicle rows
+    const tableBody = document.createElement('tbody');
+    
+    vehicles.forEach(vehicle => {
+        const row = document.createElement('tr');
+        
+        // Calculate days until OSAGO expiration
+        let osagoStatus = '';
+        if (vehicle.osago_valid) {
+            const today = new Date();
+            const osagoDate = parseDate(vehicle.osago_valid);
+            const differenceInDays = Math.ceil((osagoDate - today) / (1000 * 60 * 60 * 24));
+            
+            if (differenceInDays <= 0) {
+                osagoStatus = `<span class="badge bg-danger">Просрочено</span>`;
+            } else if (differenceInDays <= 30) {
+                osagoStatus = `<span class="badge bg-warning text-dark">Осталось ${differenceInDays} дней</span>`;
+            } else {
+                osagoStatus = `<span class="badge bg-success">Действует</span>`;
+            }
+        } else {
+            osagoStatus = '<span class="badge bg-secondary">Нет данных</span>';
+        }
+        
+        row.innerHTML = `
+            <td>${vehicle.model}</td>
+            <td>${vehicle.reg_number}</td>
+            <td>${vehicle.category || 'Не указана'}</td>
+            <td>${vehicle.mileage} км</td>
+            <td>${vehicle.osago_valid || 'Не указано'} ${osagoStatus}</td>
+            <td>
+                <button class="btn btn-sm btn-primary view-vehicle" data-id="${vehicle.id}">
+                    <i class="bi bi-eye"></i> Просмотр
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+    
+    table.appendChild(tableBody);
+    cardBody.appendChild(table);
+    card.appendChild(cardBody);
+    
+    // Add a button to go back
+    const backButton = document.createElement('div');
+    backButton.className = 'text-center mb-4';
+    backButton.innerHTML = `
+        <button class="btn btn-secondary" id="backToVehicleBtn">
+            <i class="bi bi-arrow-left"></i> Вернуться к детальной информации
+        </button>
+    `;
+    
+    // Add elements to container
+    container.appendChild(card);
+    container.appendChild(backButton);
+    
+    // Add event listeners for buttons
+    document.querySelectorAll('.view-vehicle').forEach(button => {
+        button.addEventListener('click', function() {
+            const vehicleId = this.getAttribute('data-id');
+            loadVehicleData(vehicleId);
+        });
+    });
+    
+    document.getElementById('backToVehicleBtn').addEventListener('click', function() {
+        // Load the first vehicle
+        if (vehicles.length > 0) {
+            loadVehicleData(vehicles[0].id);
+        }
+    });
 }
