@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система учета обслуживания автомобиля</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <span class="h5">🚛</span> Автомобильное ТО
+            </a>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 id="vehicle-title">Автомобиль</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>📜 VIN:</span> <strong id="vin"></strong>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>📏 Пробег:</span> <strong id="mileage"></strong>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>🔧 Последнее ТО:</span> <strong id="lastTo"></strong>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>🔜 Следующее ТО:</span> <strong id="nextTo"></strong>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>📅 ОСАГО действительно до:</span> <strong id="osago"></strong>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>🛠 Тахограф:</span> <strong id="tachograph"></strong>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>⚙️ До следующего ТО:</span> <strong id="remainingKm"></strong>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <p>Доступ к боту для отслеживания обслуживания: <a href="https://t.me/check_vin_avtobot" target="_blank">@check_vin_avtobot</a></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h4>📜 История ТО</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Пробег</th>
+                                    <th>Выполненные работы</th>
+                                </tr>
+                            </thead>
+                            <tbody id="toHistoryTable">
+                                <!-- История ТО будет добавлена сюда через JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h4>🛠 Внеплановые ремонты</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Пробег</th>
+                                    <th>Описание ремонта</th>
+                                    <th>Стоимость</th>
+                                </tr>
+                            </thead>
+                            <tbody id="repairsTable">
+                                <!-- История ремонтов будет добавлена сюда через JavaScript -->
+                            </tbody>
+                        </table>
+                        <div id="no-repairs" class="alert alert-secondary text-center d-none">
+                            🔹 Нет внеплановых ремонтов.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-3 mt-4">
+        <div class="container text-center">
+            <p class="mb-0">© 2025 Система учета ТО автомобиля</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/scripts.js"></script>
+</body>
+</html>

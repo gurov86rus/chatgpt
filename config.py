@@ -1,7 +1,12 @@
 import os
+from dotenv import load_dotenv
 
-# Bot token from BotFather
-TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "YOUR_BOT_TOKEN")
+# Load environment variables from .env file
+load_dotenv()
 
-# Logging level
-LOG_LEVEL = "INFO"
+# Bot token from environment variable
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+
+# Check if token is available
+if not TOKEN:
+    raise ValueError("No TELEGRAM_BOT_TOKEN found in environment variables. Please set it in .env file.")

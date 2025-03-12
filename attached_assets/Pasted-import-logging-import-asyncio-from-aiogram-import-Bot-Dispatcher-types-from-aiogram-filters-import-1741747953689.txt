@@ -1,0 +1,169 @@
+import logging
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
+from config import TOKEN  # Импортируем токен из config.py
+
+# Логирование
+logging.basicConfig(level=logging.INFO)
+
+# Создаём бота и диспетчер
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
+
+# Данные автомобиля
+vehicle_data = {
+    "model": "КамАЗ-43118-15",
+    "number": "Х445ОЕ96",
+    "vin": "X7926047C0008204",
+    "mileage": 125000,
+    "next_to": 130000,
+    "last_to": "10.02.2025",
+    "next_to_date": "10.06.2025",
+    "osago_valid": "23.02.2026",
+    "tachograph_required": True,
+    "to_history": [
+        {"date": "10.02.2025", "mileage": 120000, "works": "Замена масла, фильтров"},
+        {"date": "10.10.2024", "mileage": 110000, "works": "Проверка ходовой"},
+    ],
+    "repairs": []
+}
+
+# Функция формирования карточки авто
+def get_vehicle_card():
+    remaining_km = max(0, vehicle_data["next_to"] - vehicle_data["mileage"])
+    tachograph_status = "✔ **Требуется**" if vehicle_data["tachograph_required"] else "❌ **Не требуется**"
+
+    card = (
+        f"🚛 **{vehicle_data['model']} ({vehicle_data['number']})**\n"
+        f"📜 **VIN:** `{vehicle_data['vin']}`\n"
+        f"📏 **Пробег:** `{vehicle_data['mileage']} км`\n"
+        f"🔧 **Последнее ТО:** `{vehicle_data['last_to']}` (`{vehicle_data['next_to'] - 10000} км`)\n"
+        f"🔜 **Следующее ТО:** `{vehicle_data['next_to_date']}` (**через {remaining_km} км**)\n"
+        f"📅 **ОСАГО действительно до:** `{vehicle_data['osago_valid']}`\n"
+        f"🛠 **Тахограф:** {tachograph_status}\n"
+        f"\n📜 **История ТО:**\n"
+    )
+
+    for record in vehicle_data["to_history"]:
+        card += f"📅 `{record['date']}` – `{record['mileage']} км` – {record['works']}\n"
+
+    card += "\n🛠 **Внеплановые ремонты:**\n"
+    if vehicle_data["repairs"]:
+        for repair in vehicle_data["repairs"]:
+            card += f"🔧 `{repair['date']}` – `{repair['mileage']} км` – {repair['repair']} – 💰 `{repair['cost']} руб.`\n"
+    else:
+        card += "🔹 Нет внеплановых ремонтов.\n"
+
+    return card
+
+# Главное меню с inline-кнопками
+def get_main_keyboard():
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🔄 Обновить пробег", callback_data="update_mileage")],
+        [InlineKeyboardButton(text="📜 Показать карточку", callback_data="show_card")],
+        [InlineKeyboardButton(text="➕ Добавить ТО", callback_data="add_to")],
+        [InlineKeyboardButton(text="🛠 Добавить ремонт", callback_data="add_repair")],
+    ])
+    return keyboard
+
+# Состояния для FSM
+class ToState(StatesGroup):
+    date = State()
+    mileage = State()
+    works = State()
+
+class RepairState(StatesGroup):
+    date = State()
+    mileage = State()
+    repair = State()
+    cost = State()
+
+# Обработчик команды /start
+@dp.message(Command("start"))
+async def start_command(message: types.Message):
+    await message.answer("Привет! Это бот для управления данными автомобиля.", reply_markup=get_main_keyboard())
+
+# Обработчик кнопки "Показать карточку"
+@dp.callback_query(lambda c: c.data == "show_card")
+async def show_vehicle_card(callback: types.CallbackQuery):
+    card = get_vehicle_card()
+    await callback.message.edit_text(card, reply_markup=get_main_keyboard())
+    await callback.answer()
+
+# Обработчик кнопки "Добавить ТО"
+@dp.callback_query(lambda c: c.data == "add_to")
+async def add_to_start(callback: types.CallbackQuery, state: FSMContext):
+    await callback.message.edit_text("Введите дату ТО (например, 10.06.2025):")
+    await state.set_state(ToState.date)
+    await callback.answer()
+
+@dp.message(ToState.date)
+async def process_to_date(message: types.Message, state: FSMContext):
+    await state.update_data(date=message.text)
+    await message.answer("Введите пробег на момент ТО (в км):")
+    await state.set_state(ToState.mileage)
+
+@dp.message(ToState.mileage)
+async def process_to_mileage(message: types.Message, state: FSMContext):
+    await state.update_data(mileage=int(message.text))
+    await message.answer("Опишите работы, выполненные на ТО:")
+    await state.set_state(ToState.works)
+
+@dp.message(ToState.works)
+async def process_to_works(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    vehicle_data["to_history"].append({
+        "date": data["date"],
+        "mileage": data["mileage"],
+        "works": message.text
+    })
+    await state.clear()
+    await message.answer("ТО добавлено!", reply_markup=get_main_keyboard())
+
+# Обработчик кнопки "Добавить ремонт"
+@dp.callback_query(lambda c: c.data == "add_repair")
+async def add_repair_start(callback: types.CallbackQuery, state: FSMContext):
+    await callback.message.edit_text("Введите дату ремонта (например, 10.06.2025):")
+    await state.set_state(RepairState.date)
+    await callback.answer()
+
+@dp.message(RepairState.date)
+async def process_repair_date(message: types.Message, state: FSMContext):
+    await state.update_data(date=message.text)
+    await message.answer("Введите пробег на момент ремонта (в км):")
+    await state.set_state(RepairState.mileage)
+
+@dp.message(RepairState.mileage)
+async def process_repair_mileage(message: types.Message, state: FSMContext):
+    await state.update_data(mileage=int(message.text))
+    await message.answer("Опишите ремонт:")
+    await state.set_state(RepairState.repair)
+
+@dp.message(RepairState.repair)
+async def process_repair_description(message: types.Message, state: FSMContext):
+    await state.update_data(repair=message.text)
+    await message.answer("Укажите стоимость ремонта (в рублях):")
+    await state.set_state(RepairState.cost)
+
+@dp.message(RepairState.cost)
+async def process_repair_cost(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    vehicle_data["repairs"].append({
+        "date": data["date"],
+        "mileage": data["mileage"],
+        "repair": data["repair"],
+        "cost": int(message.text)
+    })
+    await state.clear()
+    await message.answer("Ремонт добавлен!", reply_markup=get_main_keyboard())
+
+# Запуск бота
+async def main():
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())

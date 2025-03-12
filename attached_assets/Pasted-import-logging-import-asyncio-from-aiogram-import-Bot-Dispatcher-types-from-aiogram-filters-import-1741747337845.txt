@@ -1,0 +1,83 @@
+import logging
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
+# 🔹 Вставь сюда свой токен
+TOKEN = "1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8"
+
+# Логирование
+logging.basicConfig(level=logging.INFO)
+
+# Создаём бота и диспетчер
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
+
+# 📌 Данные автомобиля (пример для КамАЗа)
+vehicle_data = {
+    "model": "КамАЗ-43118-15",
+    "number": "Х445ОЕ96",
+    "vin": "X7926047C0008204",
+    "mileage": 125000,  # Текущий пробег
+    "next_to": 130000,  # Следующее ТО
+    "last_to": "10.02.2025",  # Дата последнего ТО
+    "next_to_date": "10.06.2025",  # Дата следующего ТО
+    "osago_valid": "23.02.2026",  # Дата окончания ОСАГО
+    "tachograph_required": True,  # Требуется тахограф или нет
+    "to_history": [
+        {"date": "10.02.2025", "mileage": 120000, "works": "Замена масла, фильтров"},
+        {"date": "10.10.2024", "mileage": 110000, "works": "Проверка ходовой"},
+    ],
+    "repairs": []
+}
+
+# 📌 Функция формирования карточки авто
+def get_vehicle_card():
+    remaining_km = max(0, vehicle_data["next_to"] - vehicle_data["mileage"])
+    tachograph_status = "✔ **Требуется**" if vehicle_data["tachograph_required"] else "❌ **Не требуется**"
+
+    card = (
+        f"🚛 **{vehicle_data['model']} ({vehicle_data['number']})**\n"
+        f"📜 **VIN:** `{vehicle_data['vin']}`\n"
+        f"📏 **Пробег:** `{vehicle_data['mileage']} км`\n"
+        f"🔧 **Последнее ТО:** `{vehicle_data['last_to']}` (`{vehicle_data['next_to'] - 10000} км`)\n"
+        f"🔜 **Следующее ТО:** `{vehicle_data['next_to_date']}` (**через {remaining_km} км**)\n"
+        f"📅 **ОСАГО действительно до:** `{vehicle_data['osago_valid']}`\n"
+        f"🛠 **Тахограф:** {tachograph_status}\n"
+        f"\n📜 **История ТО:**\n"
+    )
+
+    for record in vehicle_data["to_history"]:
+        card += f"📅 `{record['date']}` – `{record['mileage']} км` – {record['works']}\n"
+
+    card += "\n🛠 **Внеплановые ремонты:**\n"
+    if vehicle_data["repairs"]:
+        for repair in vehicle_data["repairs"]:
+            card += f"🔧 `{repair['date']}` – `{repair['mileage']} км` – {repair['repair']} – 💰 `{repair['cost']} руб.`\n"
+    else:
+        card += "🔹 Нет внеплановых ремонтов.\n"
+
+    return card
+
+# 📌 Главное меню с inline-кнопками
+def get_main_keyboard():
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🔄 Обновить пробег", callback_data="update_mileage")],
+        [InlineKeyboardButton(text="📜 История ТО", callback_data="show_history")],
+        [InlineKeyboardButton(text="🛠 Внеплановый ремонт", callback_data="add_repair")],
+    ])
+    return keyboard
+
+# 📌 Команда /start
+@dp.message(Command("start"))
+async def send_welcome(message: types.Message):
+    await message.answer(get_vehicle_card(), parse_mode="Markdown", reply_markup=get_main_keyboard())
+
+# 📌 Запуск бота
+async def main():
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())

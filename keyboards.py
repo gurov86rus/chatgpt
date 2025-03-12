@@ -1,6 +1,5 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-# Main menu keyboard
 def get_main_keyboard():
     """
     Create main menu keyboard with inline buttons
@@ -12,11 +11,11 @@ def get_main_keyboard():
         [InlineKeyboardButton(text="🔄 Обновить пробег", callback_data="update_mileage")],
         [InlineKeyboardButton(text="📜 История ТО", callback_data="show_history")],
         [InlineKeyboardButton(text="🛠 Внеплановый ремонт", callback_data="add_repair")],
-        [InlineKeyboardButton(text="ℹ️ Информация", callback_data="info")],
+        [InlineKeyboardButton(text="⛽ Заправка топлива", callback_data="add_refueling")],
+        [InlineKeyboardButton(text="📊 Статистика топлива", callback_data="show_fuel_stats")],
     ])
     return keyboard
 
-# Cancel keyboard for FSM flows
 def get_cancel_keyboard():
     """
     Create keyboard with cancel button
@@ -25,11 +24,10 @@ def get_cancel_keyboard():
         InlineKeyboardMarkup: Cancel keyboard
     """
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="❌ Отменить", callback_data="cancel_operation")],
+        [InlineKeyboardButton(text="❌ Отмена", callback_data="cancel")],
     ])
     return keyboard
 
-# Back to main menu keyboard
 def get_back_keyboard():
     """
     Create keyboard with back to main menu button
@@ -38,11 +36,10 @@ def get_back_keyboard():
         InlineKeyboardMarkup: Back keyboard
     """
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="◀️ Назад", callback_data="back_to_main")],
+        [InlineKeyboardButton(text="◀️ Назад в главное меню", callback_data="back_to_main")],
     ])
     return keyboard
 
-# Confirm keyboard for mileage update
 def get_confirm_mileage_keyboard(mileage):
     """
     Create confirmation keyboard for mileage update
@@ -54,7 +51,7 @@ def get_confirm_mileage_keyboard(mileage):
         InlineKeyboardMarkup: Confirmation keyboard
     """
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=f"✅ Подтвердить пробег {mileage} км", callback_data=f"confirm_mileage_{mileage}")],
-        [InlineKeyboardButton(text="❌ Отменить", callback_data="cancel_operation")],
+        [InlineKeyboardButton(text=f"✅ Подтвердить: {mileage} км", callback_data=f"confirm_mileage_{mileage}")],
+        [InlineKeyboardButton(text="❌ Отмена", callback_data="cancel")],
     ])
     return keyboard
