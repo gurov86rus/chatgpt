@@ -1,0 +1,23 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Копируем зависимости
+COPY pyproject.toml .
+COPY requirements.txt .
+
+# Устанавливаем зависимости
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем файлы проекта
+COPY *.py .
+COPY .env .
+COPY vehicles.db .
+COPY backups/ ./backups/
+
+# Настройка для работы бота
+ENV PYTHONUNBUFFERED=1
+ENV LOG_LEVEL=INFO
+
+# Команда для запуска бота
+CMD ["python", "run_bot.py"]
