@@ -72,12 +72,27 @@ try:
     # Импортируем DefaultBotProperties для новой версии aiogram 3.7.0+
     from aiogram.client.default import DefaultBotProperties
     
+    # Проверка токена перед инициализацией
+    if not TOKEN:
+        raise ValueError("TELEGRAM_BOT_TOKEN не найден или пустой. Проверьте настройки окружения.")
+    
+    # Вывод информации о токене для диагностики (без самого токена)
+    token_parts = TOKEN.split(':')
+    if len(token_parts) >= 2:
+        bot_id = token_parts[0]
+        token_length = len(TOKEN)
+        logging.info(f"Используется токен бота с ID: {bot_id}, длина токена: {token_length} символов")
+    else:
+        logging.warning("Формат токена выглядит некорректным, должен быть вида '123456789:ABC...XYZ'")
+    
     # Create Bot instance with updated initialization for aiogram 3.7.0+
     bot = Bot(
         token=TOKEN, 
         default=DefaultBotProperties(parse_mode="Markdown")
     )
-    logging.info(f"Bot initialized with ID: {TOKEN.split(':')[0]}")
+    
+    # Проверка соединения с API Telegram
+    logging.info("Проверка соединения с API Telegram...")
     
     # Initialize storage and dispatcher
     storage = MemoryStorage()
