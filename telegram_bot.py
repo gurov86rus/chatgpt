@@ -586,26 +586,46 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
     action = callback.data.split("_")[1]
     data = await state.get_data()
     
-    user_id = data.get("target_user_id")
-    user_name = data.get("target_user_name")
+    # Проверяем наличие необходимых данных
+    if "target_user_id" not in data or "target_user_name" not in data:
+        await callback.message.edit_text(
+            "⚠️ Ошибка: Данные пользователя не найдены. Пожалуйста, попробуйте снова.",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="⬅️ Вернуться", callback_data="admin")]
+            ])
+        )
+        await callback.answer()
+        await state.clear()
+        return
+    
+    user_id = data["target_user_id"]
+    user_name = data["target_user_name"]
     
     # Изменяем статус администратора
     new_status = (action == "add")
     result = set_admin_status(user_id, new_status)
     
+    # Очищаем состояние до вывода сообщения
+    await state.clear()
+    
     if result:
         action_text = "добавлен в" if new_status else "удален из"
         await callback.message.edit_text(
             f"✅ Пользователь {user_name} (ID: {user_id}) успешно {action_text} списка администраторов.",
-            parse_mode="Markdown"
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="⬅️ Вернуться к управлению", callback_data="admin")]
+            ])
         )
     else:
         await callback.message.edit_text(
             f"⚠️ Произошла ошибка при изменении статуса администратора для пользователя {user_name}.",
-            parse_mode="Markdown"
+            parse_mode="Markdown",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="⬅️ Вернуться к управлению", callback_data="admin")]
+            ])
         )
     
-    await state.clear()
     await callback.answer()
 
 @dp.message(Command("users"))
