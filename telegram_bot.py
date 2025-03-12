@@ -384,8 +384,8 @@ async def start_command(message: types.Message):
 @dp.message(Command("help"))
 async def help_command(message: types.Message):
     """Handler for /help command"""
-    # Создаем ссылку на веб-интерфейс
-    web_url = f"https://workspace.gurov86rus.repl.co"
+    # Получаем правильную ссылку на веб-интерфейс
+    web_url = "https://d933dc0e-c8d9-4501-bbd7-4bdac973738c-00-33heojbox43gm.picard.replit.dev"
     
     # Базовая справка
     help_text = (
@@ -422,12 +422,8 @@ async def help_command(message: types.Message):
         "Для расширенного просмотра и анализа данных используйте веб-интерфейс системы"
     )
     
-    # Создаем кнопку для перехода на веб-интерфейс
-    web_button = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🌐 Открыть веб-интерфейс", url=web_url)]
-    ])
-    
-    await message.answer(help_text, reply_markup=web_button)
+    # Отправляем справку без кнопки веб-интерфейса
+    await message.answer(help_text, parse_mode="Markdown")
 
 @dp.message(Command("myid"))
 async def show_my_id(message: types.Message):
