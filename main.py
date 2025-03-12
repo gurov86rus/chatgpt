@@ -21,10 +21,28 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def stop_existing_bots():
-    """Останавливает все запущенные экземпляры ботов"""
+    """Останавливает все запущенные экземпляры ботов, кроме текущего"""
     logger.info("Останавливаем все запущенные боты...")
     try:
-        subprocess.run(["pkill", "-f", "python.*bot"], check=False)
+        # Не убиваем текущий процесс
+        current_pid = os.getpid()
+        logger.info(f"Текущий PID: {current_pid}")
+        # Получаем список всех процессов python с 'bot' в команде, кроме текущего
+        ps_cmd = f"ps aux | grep 'python.*bot' | grep -v {current_pid} | grep -v grep | awk '{{print $2}}'"
+        output = subprocess.check_output(ps_cmd, shell=True).decode().strip()
+        
+        if output:
+            pids = output.split('\n')
+            for pid in pids:
+                if pid.isdigit():
+                    try:
+                        subprocess.run(["kill", pid], check=False)
+                        logger.info(f"Остановлен процесс с PID {pid}")
+                    except Exception as e:
+                        logger.error(f"Ошибка при остановке процесса {pid}: {e}")
+        else:
+            logger.info("Других экземпляров бота не найдено")
+            
         logger.info("Боты остановлены")
         return True
     except Exception as e:

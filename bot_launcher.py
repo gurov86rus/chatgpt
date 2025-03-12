@@ -22,7 +22,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def kill_existing_bots():
-    """Останавливает все существующие процессы бота"""
+    """Останавливает все существующие процессы бота, кроме тех, что запущены через workflow"""
     logger.info("Поиск и остановка существующих процессов бота...")
     current_pid = os.getpid()
     killed = False
@@ -33,12 +33,16 @@ def kill_existing_bots():
                 cmdline = ' '.join(proc.info['cmdline'] or [])
                 # Ищем процессы Python с ключевыми словами, связанными с ботом
                 if 'python' in cmdline and any(x in cmdline for x in ['telegram_bot', 'bot.py', 'minimal_test_bot']):
-                    logger.info(f"Останавливаем процесс бота: PID {proc.info['pid']}, команда: {cmdline}")
-                    try:
-                        os.kill(proc.info['pid'], signal.SIGTERM)
-                        killed = True
-                    except Exception as e:
-                        logger.error(f"Не удалось остановить процесс {proc.info['pid']}: {e}")
+                    # Проверяем, не является ли это процессом workflow
+                    if 'workflow' not in cmdline and 'replit' not in cmdline:
+                        logger.info(f"Останавливаем процесс бота: PID {proc.info['pid']}, команда: {cmdline}")
+                        try:
+                            os.kill(proc.info['pid'], signal.SIGTERM)
+                            killed = True
+                        except Exception as e:
+                            logger.error(f"Не удалось остановить процесс {proc.info['pid']}: {e}")
+                    else:
+                        logger.info(f"Пропускаем процесс workflow: PID {proc.info['pid']}")
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             pass
     
