@@ -626,19 +626,68 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
     data = await state.get_data()
     logging.info(f"Текущее состояние: {data}")
     
-    # Проверяем наличие необходимых данных
+    # Извлекаем имя и ID пользователя из callback, если они отсутствуют в состоянии
     if "target_user_id" not in data or "target_user_name" not in data or "action" not in data:
-        logging.error(f"Ошибка: отсутствуют необходимые данные в состоянии. Имеющиеся ключи: {list(data.keys())}")
+        logging.info(f"Данных в состоянии нет, пытаемся извлечь из callback: {callback.data}")
         
-        await callback.message.edit_text(
-            "⚠️ Ошибка: Данные пользователя не найдены. Пожалуйста, попробуйте снова.",
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="⬅️ Вернуться", callback_data="admin")]
-            ])
-        )
-        await callback.answer()
-        await state.clear()
-        return
+        try:
+            # Восстанавливаем данные из callback, если возможно
+            if len(callback_parts) > 3 and callback_parts[0] == "confirm":
+                user_id_str = callback_parts[3]
+                user_id = int(user_id_str)
+                
+                # Получаем имя пользователя из базы данных
+                conn = sqlite3.connect('vehicles.db')
+                conn.row_factory = sqlite3.Row
+                cursor = conn.cursor()
+                # Исправлено: column user_id -> id в таблице users
+                cursor.execute("SELECT username, full_name FROM users WHERE id = ?", (user_id,))
+                user_data = cursor.fetchone()
+                conn.close()
+                
+                if user_data:
+                    # Восстанавливаем данные в состоянии
+                    action = "add" if "add" in callback.data else "remove"
+                    await state.update_data(
+                        target_user_id=user_id,
+                        target_user_name=user_data['full_name'] or user_data['username'],
+                        action=action
+                    )
+                    data = await state.get_data()
+                    logging.info(f"Восстановили данные в состоянии: {data}")
+                else:
+                    logging.error(f"Пользователь {user_id} не найден в базе данных")
+                    await callback.message.edit_text(
+                        "⚠️ Ошибка: Данные пользователя не найдены в базе. Пожалуйста, попробуйте снова.",
+                        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                            [InlineKeyboardButton(text="⬅️ Вернуться", callback_data="admin")]
+                        ])
+                    )
+                    await callback.answer()
+                    await state.clear()
+                    return
+            else:
+                logging.error(f"Невозможно восстановить данные пользователя из callback: {callback.data}")
+                await callback.message.edit_text(
+                    "⚠️ Ошибка: Данные пользователя не найдены. Пожалуйста, попробуйте снова.",
+                    reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                        [InlineKeyboardButton(text="⬅️ Вернуться", callback_data="admin")]
+                    ])
+                )
+                await callback.answer()
+                await state.clear()
+                return
+        except (ValueError, IndexError, TypeError) as e:
+            logging.error(f"Ошибка при извлечении данных из callback: {e}")
+            await callback.message.edit_text(
+                "⚠️ Ошибка: Некорректный формат данных. Пожалуйста, попробуйте снова.",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="⬅️ Вернуться", callback_data="admin")]
+                ])
+            )
+            await callback.answer()
+            await state.clear()
+            return
     
     user_id = data["target_user_id"]
     user_name = data["target_user_name"]
