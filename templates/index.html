@@ -3,118 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Система учета обслуживания автомобиля</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/styles.css">
+    <title>Система учета обслуживания автомобилей</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <span class="h5">🚛</span> Автомобильное ТО
+                <i class="bi bi-truck me-2"></i>Система учета автопарка
             </a>
         </div>
     </nav>
-    
+
+    <!-- Main Content -->
     <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h4 id="vehicle-title">Автомобиль</h4>
+        <!-- Vehicle Info Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" id="vehicle-title">Загрузка данных...</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Основная информация</h6>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>VIN:</strong> <span id="vin">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Категория:</strong> <span id="category">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Квалификация:</strong> <span id="qualification">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Пробег:</strong> <span id="mileage">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Тахограф:</strong> <span id="tachograph">Загрузка...</span>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>📜 VIN:</span> <strong id="vin"></strong>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>📏 Пробег:</span> <strong id="mileage"></strong>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>🔧 Последнее ТО:</span> <strong id="lastTo"></strong>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>🔜 Следующее ТО:</span> <strong id="nextTo"></strong>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>📅 ОСАГО действительно до:</span> <strong id="osago"></strong>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>🛠 Тахограф:</span> <strong id="tachograph"></strong>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>⚙️ До следующего ТО:</span> <strong id="remainingKm"></strong>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="text-center mt-3">
-                            <p>Доступ к боту для отслеживания обслуживания: <a href="https://t.me/check_vin_avtobot" target="_blank">@check_vin_avtobot</a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mb-4">
-                    <div class="card-header bg-info text-white">
-                        <h4>📜 История ТО</h4>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Дата</th>
-                                    <th>Пробег</th>
-                                    <th>Выполненные работы</th>
-                                </tr>
-                            </thead>
-                            <tbody id="toHistoryTable">
-                                <!-- История ТО будет добавлена сюда через JavaScript -->
-                            </tbody>
-                        </table>
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Даты и документы</h6>
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>ОСАГО до:</strong> <span id="osago">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Техосмотр до:</strong> <span id="techInspection">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>СКЗИ до:</strong> <span id="skzi">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Последнее ТО:</strong> <span id="lastTo">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Следующее ТО:</strong> <span id="nextTo">Загрузка...</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                                <strong>Осталось до ТО:</strong> <span id="remainingKm">Загрузка...</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-
-                <div class="card mb-4">
-                    <div class="card-header bg-warning text-dark">
-                        <h4>🛠 Внеплановые ремонты</h4>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Дата</th>
-                                    <th>Пробег</th>
-                                    <th>Описание ремонта</th>
-                                    <th>Стоимость</th>
-                                </tr>
-                            </thead>
-                            <tbody id="repairsTable">
-                                <!-- История ремонтов будет добавлена сюда через JavaScript -->
-                            </tbody>
-                        </table>
-                        <div id="no-repairs" class="alert alert-secondary text-center d-none">
-                            🔹 Нет внеплановых ремонтов.
+                
+                <div class="mt-3">
+                    <h6 class="mb-3">Информация о топливе</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>Тип топлива:</strong> <span id="fuelType">Загрузка...</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>Объем бака:</strong> <span id="tankCapacity">Загрузка...</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>Средний расход:</strong> <span id="avgConsumption">Загрузка...</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <strong>Примечания:</strong> <span id="notes">Загрузка...</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Maintenance History Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">История технического обслуживания</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Пробег</th>
+                            <th>Выполненные работы</th>
+                        </tr>
+                    </thead>
+                    <tbody id="toHistoryTable">
+                        <tr>
+                            <td colspan="3" class="text-center">Загрузка данных...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Repairs Card -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">История ремонтов</h5>
+            </div>
+            <div class="card-body">
+                <div id="no-repairs" class="alert alert-info d-none">Нет записей о ремонтах</div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Пробег</th>
+                            <th>Описание работ</th>
+                            <th>Стоимость</th>
+                        </tr>
+                    </thead>
+                    <tbody id="repairsTable">
+                        <tr>
+                            <td colspan="4" class="text-center">Загрузка данных...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <footer class="bg-dark text-white py-3 mt-4">
+    <!-- Footer -->
+    <footer class="bg-light py-3 mt-5">
         <div class="container text-center">
-            <p class="mb-0">© 2025 Система учета ТО автомобиля</p>
+            <p class="mb-0">© 2025 Система учета автопарка и обслуживания</p>
+            <p class="text-muted small mb-0">Для добавления или обновления данных используйте <a href="https://t.me/check_vin_avtobot" target="_blank">Telegram бота</a></p>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/static/js/scripts.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

@@ -93,6 +93,8 @@ function displayVehicleInfo(vehicle) {
     // Update vehicle info in the UI
     document.getElementById('vehicle-title').textContent = `${vehicle.model} (${vehicle.reg_number})`;
     document.getElementById('vin').textContent = vehicle.vin || 'Не указан';
+    document.getElementById('category').textContent = vehicle.category || 'Не указано';
+    document.getElementById('qualification').textContent = vehicle.qualification || 'Не указано';
     document.getElementById('mileage').textContent = `${vehicle.mileage} км`;
     document.getElementById('lastTo').textContent = vehicle.last_to_date || 'Не указано';
     
@@ -103,9 +105,17 @@ function displayVehicleInfo(vehicle) {
     }
     document.getElementById('nextTo').textContent = nextToText;
     
-    // Other vehicle info
+    // Vehicle documents info
     document.getElementById('osago').textContent = vehicle.osago_valid || 'Не указано';
+    document.getElementById('techInspection').textContent = vehicle.tech_inspection_valid || 'Не указано';
+    document.getElementById('skzi').textContent = vehicle.skzi_valid_date || 'Не указано';
     document.getElementById('tachograph').textContent = vehicle.tachograph_required ? '✅ Требуется' : '❌ Не требуется';
+    
+    // Fuel info
+    document.getElementById('fuelType').textContent = vehicle.fuel_type || 'Не указано';
+    document.getElementById('tankCapacity').textContent = vehicle.fuel_tank_capacity ? `${vehicle.fuel_tank_capacity} л` : 'Не указано';
+    document.getElementById('avgConsumption').textContent = vehicle.avg_fuel_consumption ? `${vehicle.avg_fuel_consumption} л/100 км` : 'Не указано';
+    document.getElementById('notes').textContent = vehicle.notes || 'Нет';
     
     // Remaining km to next maintenance
     let remainingText = 'Не указано';
@@ -121,6 +131,45 @@ function displayVehicleInfo(vehicle) {
         alertDiv.innerHTML = `⚠️ <strong>Внимание!</strong> До следующего ТО осталось менее 1000 км.`;
         document.querySelector('.card-body').appendChild(alertDiv);
     }
+    
+    // OSAGO alert
+    if (vehicle.osago_valid) {
+        const today = new Date();
+        const osagoDate = parseDate(vehicle.osago_valid);
+        const differenceInDays = Math.ceil((osagoDate - today) / (1000 * 60 * 60 * 24));
+        
+        if (differenceInDays <= 30 && differenceInDays > 0) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-warning mt-3';
+            alertDiv.innerHTML = `⚠️ <strong>Внимание!</strong> Срок действия ОСАГО истекает через ${differenceInDays} дней.`;
+            document.querySelector('.card-body').appendChild(alertDiv);
+        } else if (differenceInDays <= 0) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger mt-3';
+            alertDiv.innerHTML = `⚠️ <strong>ВНИМАНИЕ!</strong> Срок действия ОСАГО истек!`;
+            document.querySelector('.card-body').appendChild(alertDiv);
+        }
+    }
+}
+
+// Helper function to parse date in format DD.MM.YYYY
+function parseDate(dateStr) {
+    if (!dateStr) return null;
+    
+    // Check if format is DD.MM.YYYY
+    if (dateStr.indexOf('.') !== -1) {
+        const parts = dateStr.split('.');
+        if (parts.length === 3) {
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+        }
+    }
+    
+    // Check if format is YYYY-MM-DD
+    if (dateStr.indexOf('-') !== -1) {
+        return new Date(dateStr);
+    }
+    
+    return new Date(dateStr);
 }
 
 function displayMaintenanceHistory(data) {

@@ -89,23 +89,29 @@ def add_vehicle(
     model: str, 
     reg_number: str, 
     vin: str = None,
+    category: str = None,
+    qualification: str = None,
     year: int = None,
     mileage: int = 0,
     tachograph_required: bool = False,
     osago_valid: str = None,
-    next_to: int = None,
+    tech_inspection_date: str = None,
     tech_inspection_valid: str = None,
+    skzi_install_date: str = None,
+    skzi_valid_date: str = None,
+    next_to: int = None,
     last_to_date: str = None,
     next_to_date: str = None,
     fuel_type: str = None,
     fuel_tank_capacity: float = None,
-    avg_fuel_consumption: float = None
+    avg_fuel_consumption: float = None,
+    notes: str = None
 ) -> int:
     """
     Add a new vehicle to the database
     
     Args:
-        Multiple vehicle properties
+        Multiple vehicle properties with enhanced fields
         
     Returns:
         int: The ID of the new vehicle, or -1 if an error occurred
@@ -116,14 +122,16 @@ def add_vehicle(
         
         cursor.execute('''
         INSERT INTO vehicles (
-            model, reg_number, vin, year, mileage, tachograph_required,
-            osago_valid, next_to, tech_inspection_valid, last_to_date,
-            next_to_date, fuel_type, fuel_tank_capacity, avg_fuel_consumption
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            model, reg_number, vin, category, qualification, year, mileage, 
+            tachograph_required, osago_valid, tech_inspection_date, tech_inspection_valid,
+            skzi_install_date, skzi_valid_date, next_to, last_to_date,
+            next_to_date, fuel_type, fuel_tank_capacity, avg_fuel_consumption, notes
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            model, reg_number, vin, year, mileage, tachograph_required,
-            osago_valid, next_to, tech_inspection_valid, last_to_date,
-            next_to_date, fuel_type, fuel_tank_capacity, avg_fuel_consumption
+            model, reg_number, vin, category, qualification, year, mileage,
+            tachograph_required, osago_valid, tech_inspection_date, tech_inspection_valid,
+            skzi_install_date, skzi_valid_date, next_to, last_to_date,
+            next_to_date, fuel_type, fuel_tank_capacity, avg_fuel_consumption, notes
         ))
         
         vehicle_id = cursor.lastrowid
