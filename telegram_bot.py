@@ -158,6 +158,15 @@ def get_vehicle_buttons():
             )
         ])
     
+    # Добавляем кнопку для перехода на веб-интерфейс
+    web_url = "https://d933dc0e-c8d9-4501-bbd7-4bdac973738c-00-33heojbox43gm.picard.replit.dev"
+    keyboard.append([
+        InlineKeyboardButton(
+            text="🌐 Открыть веб-интерфейс", 
+            url=web_url
+        )
+    ])
+    
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 def get_vehicle_card(vehicle_id, user_id=None):
