@@ -202,7 +202,8 @@ async def help_command(message: types.Message):
         "📊 **Доступные функции:**\n"
         "- Обновление текущего пробега\n"
         "- Внесение данных о плановом ТО\n"
-        "- Запись о внеплановом ремонте\n\n"
+        "- Запись о внеплановом ремонте\n"
+        "- Редактирование данных ТС\n\n"
         "🔔 **Уведомления:**\n"
         "Система автоматически предупредит об истечении сроков документов и необходимости ТО"
     )
@@ -448,6 +449,129 @@ async def process_repair_cost(message: types.Message, state: FSMContext):
     except ValueError:
         await message.answer(
             "⚠️ Ошибка: Введите число без дополнительных символов.\n\n"
+            "Попробуйте снова:"
+        )
+
+# Edit vehicle handlers
+@dp.callback_query(lambda c: c.data.startswith("edit_"))
+async def edit_vehicle_start(callback: types.CallbackQuery, state: FSMContext):
+    """Start vehicle editing process"""
+    vehicle_id = int(callback.data.split("_")[1])
+    await state.update_data(vehicle_id=vehicle_id)
+    
+    # List of editable fields
+    fields = [
+        "model", "vin", "category", "reg_number", "qualification", "tachograph_required",
+        "osago_valid", "tech_inspection_date", "tech_inspection_valid", "skzi_install_date",
+        "skzi_valid_date", "notes", "mileage"
+    ]
+    
+    # Create keyboard with field buttons
+    keyboard = []
+    for i, field in enumerate(fields):
+        keyboard.append([
+            InlineKeyboardButton(
+                text=field, 
+                callback_data=f"edit_field_{vehicle_id}_{i}"
+            )
+        ])
+    
+    # Add back button
+    keyboard.append([
+        InlineKeyboardButton(
+            text="⬅ Отмена", 
+            callback_data=f"vehicle_{vehicle_id}"
+        )
+    ])
+    
+    await callback.message.edit_text(
+        "✏️ **Редактирование данных ТС**\n\n"
+        "Выберите поле для редактирования:",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
+        parse_mode="Markdown"
+    )
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("edit_field_"))
+async def select_edit_field(callback: types.CallbackQuery, state: FSMContext):
+    """Handler for selecting field to edit"""
+    parts = callback.data.split("_")
+    vehicle_id = int(parts[2])
+    field_index = int(parts[3])
+    
+    # Store field index in state
+    await state.update_data(field_index=field_index)
+    
+    # List of editable fields
+    fields = [
+        "model", "vin", "category", "reg_number", "qualification", "tachograph_required",
+        "osago_valid", "tech_inspection_date", "tech_inspection_valid", "skzi_install_date",
+        "skzi_valid_date", "notes", "mileage"
+    ]
+    
+    selected_field = fields[field_index]
+    field_format = ""
+    
+    # Add format hints for specific fields
+    if selected_field == "tachograph_required":
+        field_format = " (введите 0 или 1)"
+    elif "_date" in selected_field or "_valid" in selected_field:
+        field_format = " (формат: ДД.ММ.ГГГГ)"
+    elif selected_field == "mileage":
+        field_format = " (введите число)"
+    
+    await callback.message.edit_text(
+        f"✏️ **Редактирование поля '{selected_field}'**\n\n"
+        f"Введите новое значение{field_format}:",
+        parse_mode="Markdown"
+    )
+    
+    await state.set_state(EditState.value)
+    await callback.answer()
+
+@dp.message(EditState.value)
+async def process_edit_value(message: types.Message, state: FSMContext):
+    """Process edit value input"""
+    try:
+        data = await state.get_data()
+        vehicle_id = data["vehicle_id"]
+        field_index = data["field_index"]
+        value = message.text
+        
+        # List of editable fields
+        fields = [
+            "model", "vin", "category", "reg_number", "qualification", "tachograph_required",
+            "osago_valid", "tech_inspection_date", "tech_inspection_valid", "skzi_install_date",
+            "skzi_valid_date", "notes", "mileage"
+        ]
+        
+        selected_field = fields[field_index]
+        
+        # Convert specific fields to proper types
+        if selected_field in ["tachograph_required", "mileage"]:
+            value = int(value)
+        
+        # Update database
+        conn = sqlite3.connect('vehicles.db')
+        cursor = conn.cursor()
+        cursor.execute(
+            f"UPDATE vehicles SET {selected_field} = ? WHERE id = ?", 
+            (value, vehicle_id)
+        )
+        conn.commit()
+        conn.close()
+        
+        await state.clear()
+        
+        await message.answer(
+            f"✅ Поле '{selected_field}' успешно обновлено!",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="🔙 Вернуться к карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
+            ])
+        )
+    except ValueError:
+        await message.answer(
+            "⚠️ Ошибка: Неверный формат данных. Пожалуйста, введите корректное значение.\n\n"
             "Попробуйте снова:"
         )
 
