@@ -333,14 +333,6 @@ async def start_command(message: types.Message):
     user_id = message.from_user.id
     user_name = message.from_user.full_name
     
-    # Создаем ссылку на веб-интерфейс
-    web_url = f"https://workspace.gurov86rus.repl.co"
-    
-    # Создаем кнопку для перехода на веб-интерфейс
-    web_button = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🌐 Открыть веб-интерфейс", url=web_url)]
-    ])
-    
     # Show user ID
     user_id_info = f"🆔 Ваш Telegram ID: {user_id}"
     if is_admin(user_id):
@@ -348,7 +340,7 @@ async def start_command(message: types.Message):
     else:
         user_id_info += " (Обычный пользователь)"
     
-    # Отправляем информацию с кнопкой веб-интерфейса
+    # Отправляем информацию без кнопки веб-интерфейса
     await message.answer(
         f"👋 *Добро пожаловать в Систему Управления Автопарком!*\n\n"
         f"🚚 *АвтоБот - Ваш интеллектуальный помощник в управлении транспортными средствами*\n\n"
@@ -365,15 +357,15 @@ async def start_command(message: types.Message):
         f"🔍 *Команды бота:*\n"
         f"/start - Запуск бота и список автомобилей\n"
         f"/help - Подробная справка по использованию\n"
-        f"/myid - Просмотр вашего Telegram ID\n\n"
-        f"👇 *Используйте кнопку ниже для доступа к веб-интерфейсу:*",
-        reply_markup=web_button
+        f"/myid - Просмотр вашего Telegram ID",
+        parse_mode="Markdown"
     )
     
     # Отправляем список автомобилей
     await message.answer(
         f"🚗 *Выберите автомобиль из списка для начала работы:*",
-        reply_markup=get_vehicle_buttons()
+        reply_markup=get_vehicle_buttons(),
+        parse_mode="Markdown"
     )
 
 @dp.message(Command("help"))

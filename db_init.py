@@ -74,6 +74,19 @@ def init_database():
         )
         ''')
         
+        # Create users table for tracking bot users
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            username TEXT,
+            full_name TEXT,
+            is_admin BOOLEAN DEFAULT 0,
+            first_seen TEXT NOT NULL,
+            last_activity TEXT NOT NULL,
+            interaction_count INTEGER DEFAULT 1
+        )
+        ''')
+        
         # Add test vehicles if no vehicles exist
         cursor.execute("SELECT COUNT(*) FROM vehicles")
         count = cursor.fetchone()[0]

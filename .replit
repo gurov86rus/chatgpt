@@ -9,7 +9,6 @@ run = ["sh", "-c", "gunicorn 'app:app' --bind='0.0.0.0:5000'"]
 ignorePorts = true
 
 [workflows]
-runButton = "Start application"
 
 [[workflows.workflow]]
 name = "Run"
