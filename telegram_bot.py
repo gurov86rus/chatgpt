@@ -20,6 +20,21 @@ init_database()
 # Admin list - add your Telegram ID here
 ADMIN_IDS = [123456789]  # Замените на ваш Telegram ID
 
+# Add additional command to help with admin setup
+@dp.message(Command("myid"))
+async def show_my_id(message: types.Message):
+    """Handler to show user's Telegram ID"""
+    user_id = message.from_user.id
+    user_name = message.from_user.full_name
+    await message.answer(
+        f"👤 **Информация о пользователе**\n\n"
+        f"🆔 Ваш Telegram ID: `{user_id}`\n"
+        f"👤 Имя: {user_name}\n"
+        f"🔑 Статус: {'Администратор' if is_admin(user_id) else 'Обычный пользователь'}\n\n"
+        f"ℹ️ Чтобы стать администратором, добавьте ваш ID в список ADMIN_IDS в файле telegram_bot.py",
+        parse_mode="Markdown"
+    )
+
 # Function to check if user is admin
 def is_admin(user_id):
     """Check if user is admin"""
@@ -232,14 +247,25 @@ def get_vehicle_card(vehicle_id, user_id=None):
 @dp.message(Command("start"))
 async def start_command(message: types.Message):
     """Handler for /start command"""
+    user_id = message.from_user.id
+    user_name = message.from_user.full_name
+    
+    # Show user ID
+    user_id_info = f"🆔 Ваш Telegram ID: {user_id}"
+    if is_admin(user_id):
+        user_id_info += " (Вы администратор)"
+    else:
+        user_id_info += " (Обычный пользователь)"
+    
     await message.answer(
-        "👋 Добро пожаловать в систему учета автопарка!\n\n"
-        "🚗 Здесь вы можете:\n"
-        "- Просматривать информацию об автомобилях\n"
-        "- Отслеживать историю обслуживания\n"
-        "- Добавлять записи о ТО и ремонтах\n"
-        "- Обновлять текущий пробег\n\n"
-        "Выберите автомобиль из списка:",
+        f"👋 Добро пожаловать, {user_name}, в систему учета автопарка!\n\n"
+        f"{user_id_info}\n\n"
+        f"🚗 Здесь вы можете:\n"
+        f"- Просматривать информацию об автомобилях\n"
+        f"- Отслеживать историю обслуживания\n"
+        f"- Добавлять записи о ТО и ремонтах (только админ)\n"
+        f"- Обновлять текущий пробег (только админ)\n\n"
+        f"Выберите автомобиль из списка:",
         reply_markup=get_vehicle_buttons()
     )
 
