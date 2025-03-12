@@ -583,11 +583,14 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
 @admin_required
 async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext):
     """Confirm admin status change"""
-    action = callback.data.split("_")[1]
+    # Получаем действие из callback data
+    callback_action = callback.data.split("_")[1]  # add или remove
+    
+    # Получаем данные состояния
     data = await state.get_data()
     
     # Проверяем наличие необходимых данных
-    if "target_user_id" not in data or "target_user_name" not in data:
+    if "target_user_id" not in data or "target_user_name" not in data or "action" not in data:
         await callback.message.edit_text(
             "⚠️ Ошибка: Данные пользователя не найдены. Пожалуйста, попробуйте снова.",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -600,6 +603,11 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
     
     user_id = data["target_user_id"]
     user_name = data["target_user_name"]
+    action = data["action"]  # Используем сохраненное действие вместо извлеченного из callback
+    
+    # Проверяем соответствие действий
+    if action != callback_action:
+        logging.warning(f"Несоответствие действий: state={action}, callback={callback_action}")
     
     # Изменяем статус администратора
     new_status = (action == "add")
