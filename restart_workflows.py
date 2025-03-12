@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Скрипт для перезапуска workflows Telegram бота и веб-приложения.
+Используется для быстрого перезапуска сервисов через командную строку.
+"""
 import os
 import sys
 import logging
+import subprocess
 import time
 import requests
-import json
 
 # Настройка логирования
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
@@ -16,56 +21,71 @@ logging.basicConfig(
     ]
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("RestartWorkflows")
+
+def restart_web_workflow():
+    """Перезапускает workflow веб-интерфейса"""
+    logger.info("Перезапуск workflow 'Start application'...")
+    try:
+        subprocess.run(["replit", "run", "-w", "Start application"], check=False)
+        logger.info("✅ Команда перезапуска веб-интерфейса выполнена")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Ошибка перезапуска веб-интерфейса: {e}")
+        return False
+
+def restart_bot_workflow():
+    """Перезапускает workflow Telegram бота"""
+    logger.info("Перезапуск workflow 'telegram_bot'...")
+    try:
+        # Сбрасываем вебхук перед перезапуском
+        token = os.getenv("TELEGRAM_BOT_TOKEN")
+        if token:
+            try:
+                requests.get(
+                    f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true", 
+                    timeout=5
+                )
+                logger.info("✅ Вебхук Telegram бота сброшен")
+            except Exception as e:
+                logger.warning(f"⚠️ Ошибка сброса вебхука: {e}")
+        
+        # Перезапускаем бота
+        subprocess.run(["replit", "run", "-w", "telegram_bot"], check=False)
+        logger.info("✅ Команда перезапуска Telegram бота выполнена")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Ошибка перезапуска Telegram бота: {e}")
+        return False
 
 def main():
     """
     Перезапускает workflow для бота Telegram и веб-приложения
     """
-    logger.info("=== Перезапуск Workflow ===")
+    print("=" * 50)
+    print("ПЕРЕЗАПУСК WORKFLOW СИСТЕМЫ")
+    print("=" * 50)
     
-    # Получаем переменные окружения
-    TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+    # Перезапускаем веб-интерфейс
+    print("\nПерезапуск веб-интерфейса...")
+    if restart_web_workflow():
+        print("✅ Веб-интерфейс перезапущен")
+    else:
+        print("❌ Ошибка перезапуска веб-интерфейса")
     
-    # Проверяем наличие токена
-    if not TOKEN:
-        logger.error("TELEGRAM_BOT_TOKEN не найден в переменных окружения")
-        sys.exit(1)
+    # Небольшая пауза между перезапусками
+    time.sleep(3)
     
-    # Сброс вебхука для бота
-    try:
-        logger.info("Сброс вебхука бота...")
-        response = requests.get(f"https://api.telegram.org/bot{TOKEN}/deleteWebhook?drop_pending_updates=true", timeout=10)
-        result = response.json()
-        
-        if result.get('ok'):
-            logger.info("✅ Вебхук успешно сброшен")
-        else:
-            logger.error(f"Ошибка при сбросе вебхука: {result}")
-    except Exception as e:
-        logger.error(f"Не удалось сбросить вебхук: {e}")
+    # Перезапускаем Telegram бот
+    print("\nПерезапуск Telegram бота...")
+    if restart_bot_workflow():
+        print("✅ Telegram бот перезапущен")
+    else:
+        print("❌ Ошибка перезапуска Telegram бота")
     
-    # Расчищаем процессы с помощью bash kill
-    try:
-        logger.info("Остановка всех процессов бота...")
-        os.system("pkill -f 'python.*bot'")
-        logger.info("Процессы остановлены")
-    except Exception as e:
-        logger.error(f"Ошибка при остановке процессов: {e}")
-    
-    # Небольшая пауза чтобы система успела обработать остановку
-    time.sleep(2)
-    
-    logger.info("🔄 Перезапуск воркфлоу завершен.")
-    logger.info("👉 Для запуска телеграм-бота используйте: python bot_launcher.py")
-    logger.info("👉 Веб-интерфейс должен автоматически перезапуститься")
-    
-    print("=" * 60)
-    print("🔄 Перезапуск воркфлоу завершен.")
-    print("=" * 60)
-    print("👉 Для запуска телеграм-бота используйте: python bot_launcher.py")
-    print("👉 Веб-интерфейс должен автоматически перезапуститься")
-    print("=" * 60)
+    print("\n" + "=" * 50)
+    print("Перезапуск workflow завершен")
+    print("=" * 50)
 
 if __name__ == "__main__":
     main()

@@ -7,9 +7,10 @@
 """
 import os
 import sys
-import time
 import logging
 import subprocess
+import time
+import requests
 
 # Настройка логирования
 logging.basicConfig(
@@ -25,90 +26,123 @@ logger = logging.getLogger("Startup")
 
 def check_token():
     """Проверяет наличие токена Telegram бота"""
-    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
     if not token:
-        logger.error("TELEGRAM_BOT_TOKEN не найден в переменных окружения")
+        logger.error("❌ Ошибка: токен Telegram бота не установлен")
+        print("❌ Ошибка: токен Telegram бота не установлен")
+        print("Пожалуйста, добавьте переменную окружения TELEGRAM_BOT_TOKEN")
         return False
     
-    logger.info(f"Токен Telegram найден (ID: {token.split(':')[0]}, длина: {len(token)} символов)")
-    return True
+    try:
+        response = requests.get(f"https://api.telegram.org/bot{token}/getMe", timeout=5)
+        if response.status_code == 200 and response.json().get("ok"):
+            bot_name = response.json().get("result", {}).get("username")
+            logger.info(f"✅ Токен Telegram бота валиден (бот: @{bot_name})")
+            print(f"✅ Токен Telegram бота валиден (бот: @{bot_name})")
+            return True
+        else:
+            error = response.json().get("description", "Неизвестная ошибка")
+            logger.error(f"❌ Ошибка проверки токена Telegram: {error}")
+            print(f"❌ Ошибка проверки токена Telegram: {error}")
+            return False
+    except Exception as e:
+        logger.error(f"❌ Ошибка соединения с API Telegram: {e}")
+        print(f"❌ Ошибка соединения с API Telegram: {e}")
+        return False
 
 def start_web_interface():
     """Запускает веб-интерфейс"""
     logger.info("Запуск веб-интерфейса...")
+    print("Запуск веб-интерфейса...")
+    
     try:
-        # Запуск через workflow
-        subprocess.Popen(["replit", "run", "-w", "Start application"],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-        logger.info("Веб-интерфейс запущен через workflow")
-        return True
-    except Exception as e:
-        logger.error(f"Ошибка при запуске веб-интерфейса через workflow: {e}")
+        subprocess.run(["replit", "run", "-w", "Start application"], check=False)
+        logger.info("✅ Команда запуска веб-интерфейса выполнена")
+        print("✅ Веб-интерфейс запущен")
+        
+        # Даём время на запуск
+        time.sleep(5)
+        
+        # Проверяем, запустился ли веб-интерфейс
         try:
-            # Альтернативный способ запуска
-            subprocess.Popen([sys.executable, "deployment_start.py"],
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE)
-            logger.info("Веб-интерфейс запущен напрямую")
-            return True
-        except Exception as e2:
-            logger.error(f"Ошибка при прямом запуске веб-интерфейса: {e2}")
+            response = requests.get("http://localhost:5000", timeout=5)
+            if response.status_code == 200:
+                logger.info("✅ Веб-интерфейс доступен по адресу http://localhost:5000")
+                print("✅ Веб-интерфейс доступен по адресу http://localhost:5000")
+                return True
+            else:
+                logger.warning(f"⚠️ Веб-интерфейс вернул код {response.status_code}")
+                print(f"⚠️ Веб-интерфейс вернул код {response.status_code}")
+                return False
+        except Exception as e:
+            logger.warning(f"⚠️ Веб-интерфейс не отвечает: {e}")
+            print(f"⚠️ Веб-интерфейс не отвечает. Попробуйте перезапустить службу вручную")
             return False
+    except Exception as e:
+        logger.error(f"❌ Ошибка запуска веб-интерфейса: {e}")
+        print(f"❌ Ошибка запуска веб-интерфейса: {e}")
+        return False
 
 def start_telegram_bot():
     """Запускает Telegram бота"""
     logger.info("Запуск Telegram бота...")
+    print("Запуск Telegram бота...")
+    
     try:
-        # Запуск через workflow
-        subprocess.Popen(["replit", "run", "-w", "telegram_bot"],
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
-        logger.info("Telegram бот запущен через workflow")
+        # Сбрасываем вебхук
+        token = os.getenv("TELEGRAM_BOT_TOKEN")
+        if token:
+            try:
+                requests.get(
+                    f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true", 
+                    timeout=5
+                )
+                logger.info("✅ Вебхук сброшен")
+            except Exception as e:
+                logger.warning(f"⚠️ Ошибка сброса вебхука: {e}")
+        
+        # Запускаем бота
+        subprocess.run(["replit", "run", "-w", "telegram_bot"], check=False)
+        logger.info("✅ Команда запуска Telegram бота выполнена")
+        print("✅ Telegram бот запущен")
         return True
     except Exception as e:
-        logger.error(f"Ошибка при запуске Telegram бота через workflow: {e}")
-        try:
-            # Альтернативный способ запуска
-            subprocess.Popen([sys.executable, "main.py"],
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE)
-            logger.info("Telegram бот запущен напрямую")
-            return True
-        except Exception as e2:
-            logger.error(f"Ошибка при прямом запуске Telegram бота: {e2}")
-            return False
+        logger.error(f"❌ Ошибка запуска Telegram бота: {e}")
+        print(f"❌ Ошибка запуска Telegram бота: {e}")
+        return False
 
 def main():
     """Основная функция"""
-    logger.info("=" * 60)
-    logger.info("Запуск системы управления автопарком")
-    logger.info("=" * 60)
+    print("=" * 50)
+    print("ЗАПУСК СИСТЕМЫ УПРАВЛЕНИЯ АВТОПАРКОМ")
+    print("=" * 50)
+    print()
     
-    # Проверяем наличие токена
+    # Проверяем токен
     if not check_token():
-        logger.error("Токен Telegram бота не найден. Веб-интерфейс будет запущен, но бот не будет работать.")
-    
-    # Запускаем веб-интерфейс
-    web_started = start_web_interface()
-    
-    # Даем время на инициализацию веб-интерфейса
-    time.sleep(3)
-    
-    # Запускаем Telegram бота
-    bot_started = start_telegram_bot()
-    
-    # Проверяем результаты запуска
-    if web_started and bot_started:
-        logger.info("✅ Все компоненты системы успешно запущены")
-    elif web_started:
-        logger.warning("⚠️ Веб-интерфейс запущен, но возникли проблемы с запуском Telegram бота")
-    elif bot_started:
-        logger.warning("⚠️ Telegram бот запущен, но возникли проблемы с запуском веб-интерфейса")
+        print("\n⚠️ Продолжение с ограниченной функциональностью (без Telegram бота)")
     else:
-        logger.error("❌ Не удалось запустить ни один компонент системы")
+        print()
     
-    logger.info("Запуск компонентов системы завершен")
+    # Запускаем компоненты
+    web_started = start_web_interface()
+    bot_started = start_telegram_bot() if check_token() else False
+    
+    # Выводим сводку и инструкции
+    print("\n" + "=" * 50)
+    print("СТАТУС ЗАПУСКА СИСТЕМЫ")
+    print("=" * 50)
+    print(f"Веб-интерфейс: {'✅ Запущен' if web_started else '❌ Не запущен'}")
+    print(f"Telegram бот: {'✅ Запущен' if bot_started else '❌ Не запущен'}")
+    print()
+    print("Инструкции по управлению системой:")
+    print("1. Для мониторинга и автоматического перезапуска сервисов:")
+    print("   python scheduled_restart.py")
+    print("2. Для ручного управления сервисами:")
+    print("   python service_manager.py")
+    print("3. Для одновременного запуска и мониторинга сервисов:")
+    print("   python start_services.py")
+    print("=" * 50)
 
 if __name__ == "__main__":
     main()
