@@ -68,12 +68,12 @@ def main():
     # Сбрасываем вебхук
     reset_webhook()
     
-    # Запускаем улучшенный бот
-    logger.info("Запускаем улучшенный бот...")
+    # Запускаем стабильную версию бота
+    logger.info("Запускаем стабильную версию бота...")
     try:
         # Запускаем бота напрямую, без subprocess
-        import enhanced_bot
-        enhanced_bot.main()
+        import stable_bot
+        stable_bot.main()
     except KeyboardInterrupt:
         logger.info("Бот остановлен пользователем")
     except Exception as e:

@@ -1,1 +1,1 @@
-python telegram_only.py
+python run_stable_bot.py
