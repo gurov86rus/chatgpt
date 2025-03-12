@@ -1585,6 +1585,9 @@ async def main():
     except Exception as e:
         logging.error(f"Ошибка при запуске планировщика резервного копирования: {e}")
     
+    # Reset webhook before starting polling to avoid conflicts
+    await bot.delete_webhook(drop_pending_updates=True)
+    
     # Start polling
     logging.info("Starting vehicle maintenance bot...")
     await dp.start_polling(bot)
