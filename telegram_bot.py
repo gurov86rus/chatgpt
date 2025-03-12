@@ -1461,6 +1461,19 @@ async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMCo
 async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMContext):
     """Handler for executing maintenance record deletion"""
     data = await state.get_data()
+    
+    # Проверяем, есть ли данные о транспортном средстве и ТО
+    if 'vehicle_id' not in data or 'maintenance_id' not in data:
+        await callback.message.edit_text(
+            "⚠️ Ошибка: Данные о ТО не найдены. Пожалуйста, попробуйте снова.",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+            ])
+        )
+        await callback.answer()
+        await state.clear()
+        return
+    
     vehicle_id = data['vehicle_id']
     maintenance_id = data['maintenance_id']
     
@@ -1505,6 +1518,7 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
     conn.commit()
     conn.close()
     
+    # Очищаем состояние до вывода сообщения
     await state.clear()
     
     await callback.message.edit_text(
@@ -1712,6 +1726,19 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
 async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext):
     """Handler for executing repair record deletion"""
     data = await state.get_data()
+    
+    # Проверяем, есть ли данные о транспортном средстве и ремонте
+    if 'vehicle_id' not in data or 'repair_id' not in data:
+        await callback.message.edit_text(
+            "⚠️ Ошибка: Данные о ремонте не найдены. Пожалуйста, попробуйте снова.",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+            ])
+        )
+        await callback.answer()
+        await state.clear()
+        return
+    
     vehicle_id = data['vehicle_id']
     repair_id = data['repair_id']
     
@@ -1722,6 +1749,7 @@ async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext
     conn.commit()
     conn.close()
     
+    # Очищаем состояние до вывода сообщения
     await state.clear()
     
     await callback.message.edit_text(
