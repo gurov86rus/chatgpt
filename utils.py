@@ -161,34 +161,80 @@ def generate_expiration_report():
     """)
     vehicles = cursor.fetchall()
     
+    # Register appropriate fonts with Cyrillic support
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    
+    # Try to load a better Cyrillic font or fallback to FreeSans
+    try:
+        # First try DejaVu Sans (best Cyrillic support)
+        pdfmetrics.registerFont(TTFont('CustomFont', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
+        pdfmetrics.registerFont(TTFont('CustomFontBold', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'))
+    except:
+        try:
+            # Then try FreeSans (also good Cyrillic support)
+            pdfmetrics.registerFont(TTFont('CustomFont', '/usr/share/fonts/truetype/freefont/FreeSans.ttf'))
+            pdfmetrics.registerFont(TTFont('CustomFontBold', '/usr/share/fonts/truetype/freefont/FreeSansBold.ttf'))
+        except:
+            # Use any alternative font with good Cyrillic support
+            try:
+                pdfmetrics.registerFont(TTFont('CustomFont', '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf'))
+                pdfmetrics.registerFont(TTFont('CustomFontBold', '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf'))
+            except:
+                # Last resort, create empty fonts to avoid errors, but Cyrillic might not display correctly
+                from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+                try:
+                    pdfmetrics.registerFont(UnicodeCIDFont('HeiseiMin-W3'))
+                    cyrillic_font = 'HeiseiMin-W3'
+                    cyrillic_font_bold = 'HeiseiMin-W3'
+                except:
+                    # Final fallback to default fonts (Cyrillic will likely be incorrect)
+                    cyrillic_font = 'Helvetica'
+                    cyrillic_font_bold = 'Helvetica-Bold'
+    
+    # Use registered font if available, otherwise fallback to default
+    try:
+        cyrillic_font = 'CustomFont'
+        cyrillic_font_bold = 'CustomFontBold'
+    except:
+        pass
+    
     # Create the PDF document
     doc = SimpleDocTemplate(filename, pagesize=A4)
     styles = getSampleStyleSheet()
     
-    # Create custom styles with proper encoding support for Cyrillic
+    # Create custom styles for Cyrillic text
     cyrillic_normal = ParagraphStyle(
         'CyrillicNormal',
         parent=styles['Normal'],
-        fontName='Helvetica',
-        encoding='utf-8'
+        fontName=cyrillic_font,
+        fontSize=10,
+        leading=14,  # Line spacing
+        encoding='utf-8',
+        alignment=1  # Center alignment for normal text
     )
     
     cyrillic_title = ParagraphStyle(
         'CyrillicTitle',
         parent=styles['Heading1'],
-        fontName='Helvetica-Bold',
+        fontName=cyrillic_font_bold,
+        fontSize=16,
+        leading=20,  # Line spacing
         alignment=1,  # Center alignment
-        spaceAfter=12,
+        spaceAfter=20,
         encoding='utf-8'
     )
     
-    # Add title and date
+    # Add title and date with proper encoding
     elements = []
-    elements.append(Paragraph(f"Отчет об истечении сроков документов", cyrillic_title))
-    elements.append(Paragraph(f"Дата создания: {today.strftime('%d.%m.%Y')}", cyrillic_normal))
-    elements.append(Spacer(1, 12))
+    title_text = "Отчет об истечении сроков документов"
+    date_text = f"Дата создания: {today.strftime('%d.%m.%Y')}"
     
-    # Create data for the table - use unicode explicitly
+    elements.append(Paragraph(title_text, cyrillic_title))
+    elements.append(Paragraph(date_text, cyrillic_normal))
+    elements.append(Spacer(1, 20))  # More space between title and table
+    
+    # Create data for the table with properly encoded headers
     headers = ["Транспортное средство", "ОСАГО", "Техосмотр", "СКЗИ", "ТО"]
     data = [headers]
     
@@ -201,72 +247,89 @@ def generate_expiration_report():
         # Calculate remaining kms until next TO
         if vehicle['next_to']:
             remaining_to = vehicle['next_to'] - vehicle['mileage']
-            to_status = f"{remaining_to} км"
             if remaining_to <= 0:
-                to_status = f"⚠️ Просрочено ({-remaining_to} км)"
+                to_status = f"Просрочено ({-remaining_to} км)"
             elif remaining_to <= 500:
-                to_status = f"⚠️ Критически ({remaining_to} км)"
+                to_status = f"Критически ({remaining_to} км)"
             elif remaining_to <= 1000:
-                to_status = f"⚠️ Скоро ({remaining_to} км)"
+                to_status = f"Скоро ({remaining_to} км)"
+            else:
+                to_status = f"{remaining_to} км"
         else:
             to_status = "Не задано"
         
-        # Format the data row
+        # Format the data row (model name should be properly encoded)
+        vehicle_text = f"{vehicle['model']} ({vehicle['reg_number']})"
+        osago_text = format_days_remaining(osago_days).replace("⚠️", "!").replace("✅", "+").replace("🚫", "X").replace("❓", "?")
+        tech_text = format_days_remaining(tech_days).replace("⚠️", "!").replace("✅", "+").replace("🚫", "X").replace("❓", "?")
+        
+        if vehicle['tachograph_required']:
+            skzi_text = format_days_remaining(skzi_days).replace("⚠️", "!").replace("✅", "+").replace("🚫", "X").replace("❓", "?")
+        else:
+            skzi_text = "Не требуется"
+        
+        # Format the data row and replace emoji with text equivalents for better PDF compatibility
         row = [
-            f"{vehicle['model']} ({vehicle['reg_number']})",
-            format_days_remaining(osago_days),
-            format_days_remaining(tech_days),
-            format_days_remaining(skzi_days) if vehicle['tachograph_required'] else "Не требуется",
+            vehicle_text,
+            osago_text,
+            tech_text,
+            skzi_text,
             to_status
         ]
         
         data.append(row)
     
-    # Register appropriate fonts with Cyrillic support
-    from reportlab.pdfbase import pdfmetrics
-    from reportlab.pdfbase.ttfonts import TTFont
+    # Create a wider table with better column widths
+    table = Table(data, colWidths=[170, 90, 90, 90, 90])  # Wider first column for vehicle names
     
-    # Try to use DejaVu Sans as it has excellent Cyrillic support
-    try:
-        pdfmetrics.registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
-        pdfmetrics.registerFont(TTFont('DejaVuSans-Bold', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'))
-        cyrillic_font = 'DejaVuSans'
-        cyrillic_font_bold = 'DejaVuSans-Bold'
-    except:
-        # Fallback to Helvetica (may not display Cyrillic properly)
-        cyrillic_font = 'Helvetica'
-        cyrillic_font_bold = 'Helvetica-Bold'
-    
-    # Create the table
-    table = Table(data, colWidths=[120, 80, 80, 80, 80])
-    
-    # Add style to the table
+    # Enhanced table styling for better readability
     table_style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        # Header styles
+        ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),  # Darker blue for header
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), cyrillic_font_bold),
         ('FONTSIZE', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 0), (-1, 0), 8),
+        
+        # Data rows styling
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('ALIGN', (1, 1), (-1, -1), 'CENTER'),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
         ('FONTNAME', (0, 1), (-1, -1), cyrillic_font),
+        ('FONTSIZE', (0, 1), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+        ('TOPPADDING', (0, 1), (-1, -1), 6),
+        
+        # Grid styling
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),  # Thinner grid lines
+        ('BOX', (0, 0), (-1, -1), 1, colors.black),     # Thicker outer border
+        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black), # Thicker line below header
+        
+        # Alignment
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('ALIGN', (1, 1), (-1, -1), 'CENTER'),  # Center all columns except first
+        ('ALIGN', (0, 1), (0, -1), 'LEFT'),     # Left align first column (vehicle names)
+        
+        # Zebra striping for better readability
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.white]),
     ])
     
-    # Add conditional formatting for expiring documents
+    # Add conditional formatting for expiring documents with improved colors
     for i in range(1, len(data)):
         for j in range(1, 5):
-            if "Критически" in str(data[i][j]) or "Просрочено" in str(data[i][j]):
-                table_style.add('BACKGROUND', (j, i), (j, i), colors.lightcoral)
-            elif "Скоро" in str(data[i][j]):
-                table_style.add('BACKGROUND', (j, i), (j, i), colors.lightyellow)
+            cell_data = str(data[i][j]).lower()
+            if "критически" in cell_data or "просрочено" in cell_data:
+                table_style.add('BACKGROUND', (j, i), (j, i), colors.mistyrose)  # Lighter red
+                table_style.add('TEXTCOLOR', (j, i), (j, i), colors.darkred)    # Darker red text
+            elif "скоро" in cell_data:
+                table_style.add('BACKGROUND', (j, i), (j, i), colors.lemonchiffon)  # Light yellow
+                table_style.add('TEXTCOLOR', (j, i), (j, i), colors.saddlebrown)   # Brown text for contrast
     
     table.setStyle(table_style)
     elements.append(table)
     
-    # Build the PDF
+    # Build the PDF with proper encoding
     doc.build(elements)
     conn.close()
     
