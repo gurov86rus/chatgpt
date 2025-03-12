@@ -40,6 +40,15 @@ class EditState(StatesGroup):
     field = State()
     value = State()
 
+class MaintenanceEditState(StatesGroup):
+    maintenance_id = State()
+    date = State()
+    mileage = State()
+    works = State()
+    
+class MaintenanceDeleteState(StatesGroup):
+    maintenance_id = State()
+
 # Helper functions
 def get_vehicle_buttons():
     """Create keyboard with vehicle selection buttons"""
@@ -453,7 +462,7 @@ async def process_repair_cost(message: types.Message, state: FSMContext):
         )
 
 # Edit vehicle handlers
-@dp.callback_query(lambda c: c.data.startswith("edit_"))
+@dp.callback_query(lambda c: c.data.startswith("edit_") and not c.data.startswith("edit_field_"))
 async def edit_vehicle_start(callback: types.CallbackQuery, state: FSMContext):
     """Start vehicle editing process"""
     vehicle_id = int(callback.data.split("_")[1])
@@ -528,16 +537,35 @@ async def select_edit_field(callback: types.CallbackQuery, state: FSMContext):
     selected_field = fields[field_index]
     field_format = ""
     
+    # User-friendly field names
+    field_names = {
+        "model": "Модель ТС",
+        "vin": "VIN номер",
+        "category": "Категория",
+        "reg_number": "Государственный номер",
+        "qualification": "Квалификация",
+        "tachograph_required": "Наличие тахографа",
+        "osago_valid": "Срок действия ОСАГО",
+        "tech_inspection_date": "Дата технического осмотра",
+        "tech_inspection_valid": "Срок действия техосмотра",
+        "skzi_install_date": "Дата установки СКЗИ",
+        "skzi_valid_date": "Срок действия СКЗИ",
+        "notes": "Примечания",
+        "mileage": "Пробег"
+    }
+    
     # Add format hints for specific fields
     if selected_field == "tachograph_required":
         field_format = " (введите 0 или 1)"
     elif "_date" in selected_field or "_valid" in selected_field:
         field_format = " (формат: ДД.ММ.ГГГГ)"
     elif selected_field == "mileage":
-        field_format = " (введите число)"
+        field_format = " (введите число в километрах)"
+    
+    field_display_name = field_names.get(selected_field, selected_field)
     
     await callback.message.edit_text(
-        f"✏️ **Редактирование поля '{selected_field}'**\n\n"
+        f"✏️ **Редактирование поля '{field_display_name}'**\n\n"
         f"Введите новое значение{field_format}:",
         parse_mode="Markdown"
     )
@@ -563,6 +591,25 @@ async def process_edit_value(message: types.Message, state: FSMContext):
         
         selected_field = fields[field_index]
         
+        # User-friendly field names
+        field_names = {
+            "model": "Модель ТС",
+            "vin": "VIN номер",
+            "category": "Категория",
+            "reg_number": "Государственный номер",
+            "qualification": "Квалификация",
+            "tachograph_required": "Наличие тахографа",
+            "osago_valid": "Срок действия ОСАГО",
+            "tech_inspection_date": "Дата технического осмотра",
+            "tech_inspection_valid": "Срок действия техосмотра",
+            "skzi_install_date": "Дата установки СКЗИ",
+            "skzi_valid_date": "Срок действия СКЗИ",
+            "notes": "Примечания",
+            "mileage": "Пробег"
+        }
+        
+        field_display_name = field_names.get(selected_field, selected_field)
+        
         # Convert specific fields to proper types
         if selected_field in ["tachograph_required", "mileage"]:
             value = int(value)
@@ -580,7 +627,7 @@ async def process_edit_value(message: types.Message, state: FSMContext):
         await state.clear()
         
         await message.answer(
-            f"✅ Поле '{selected_field}' успешно обновлено!",
+            f"✅ Поле '{field_display_name}' успешно обновлено!",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text="🔙 Вернуться к карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
             ])
