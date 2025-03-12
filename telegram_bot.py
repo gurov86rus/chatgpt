@@ -29,6 +29,10 @@ def is_admin(user_id):
 def admin_required(func):
     """Decorator to restrict function to admins only"""
     async def wrapper(event, *args, **kwargs):
+        # Убрать ненужные аргументы, которые могут вызывать ошибки
+        if 'dispatcher' in kwargs:
+            kwargs.pop('dispatcher')
+            
         user_id = event.from_user.id
         if not is_admin(user_id):
             if isinstance(event, types.CallbackQuery):
