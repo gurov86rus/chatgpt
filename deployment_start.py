@@ -114,6 +114,11 @@ def ensure_port_available(port):
 
 def reset_telegram_webhook():
     """Сбрасывает вебхук для избежания конфликтов"""
+    # Принудительно устанавливаем новый токен бота
+    NEW_TOKEN = "1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8"
+    os.environ["TELEGRAM_BOT_TOKEN"] = NEW_TOKEN
+    logger.info(f"Принудительно установлен новый токен бота (ID: {NEW_TOKEN.split(':')[0]})")
+    
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     if not token:
         logger.warning("TELEGRAM_BOT_TOKEN не найден. Веб-интерфейс будет запущен без бота.")
