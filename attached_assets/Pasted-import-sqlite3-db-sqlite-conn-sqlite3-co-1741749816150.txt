@@ -1,0 +1,74 @@
+import sqlite3
+
+# Подключение к базе данных (создаст файл db.sqlite, если его нет)
+conn = sqlite3.connect('vehicles.db')
+cursor = conn.cursor()
+
+# Создание таблицы для автомобилей
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS vehicles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        model TEXT NOT NULL,
+        vin TEXT UNIQUE NOT NULL,
+        category TEXT,
+        reg_number TEXT UNIQUE NOT NULL,
+        qualification TEXT,
+        tachograph_required BOOLEAN,
+        osago_valid DATE,
+        tech_inspection_date DATE,
+        tech_inspection_valid DATE,
+        skzi_install_date DATE,
+        skzi_valid_date DATE,
+        notes TEXT
+    )
+''')
+
+# Таблица для планового ТО
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS maintenance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        vehicle_id INTEGER,
+        date DATE NOT NULL,
+        mileage INTEGER,
+        works TEXT,
+        FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)
+    )
+''')
+
+# Таблица для внепланового ТО/ремонтов
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS repairs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        vehicle_id INTEGER,
+        date DATE NOT NULL,
+        mileage INTEGER,
+        description TEXT,
+        cost INTEGER,
+        FOREIGN KEY (vehicle_id) REFERENCES vehicles(id)
+    )
+''')
+
+# Вставка данных из вашего документа
+vehicles_data = [
+    ("УАЗ-220695", "XTT220695M1206564", "M2", "О607АС196", "Автобусы (9-15 чел.)", 1, "2026-01-22", None, "2024-12-31", None, "2024-12-31", "Требуется установка тахографа"),
+    ("ГАЗ-3295А1", "XUL3295A1G0000091", "M2", "А442ЕМ186", "Автобусы (9-15 чел.)", 1, "2025-10-24", None, "2024-12-31", None, "2026-04-25", "-"),
+    ("ГАЗ-3295А1", "XUL3295A1L0000557", "M2", "О874ЕУ196", "Автобусы (9-15 чел.)", 1, "2026-02-23", "2025-10-18", "2025-10-18", None, "2027-03-19", "-"),
+    ("ГАЗ-3295", "X89329527COВR9016", "M2", "Т780ТК96", "Автобусы (9-15 чел.)", 1, "2026-03-23", "2025-06-16", "2025-06-16", None, "2026-01-12", "-"),
+    ("КамАЗ-43118-15", "X7926047C0008204", "M3", "Х445ОЕ96", "Автобусы (16-30 чел.)", 1, "2026-02-23", "2025-05-15", "2025-05-15", "2026-04-17", "2026-04-17", "-"),
+    ("НЕФАЗ-4208-48", "X1F4208ROL2001001", "M3", "О535ЕО196", "Автобусы на базе грузовых авто", 1, "2026-03-22", "2025-10-25", "2025-10-25", "2028-02-19", "2028-02-19", "-"),
+    ("УАЗ-390945", "XTT390945F1219059", "N1", "М823ВМ186", "Грузопассажирские авто (до 3,5 т)", 0, "2025-11-09", "2026-10-08", "2026-10-08", None, None, "Тахограф не требуется"),
+    ("УАЗ-390945", "XTT390945M1206572", "N1", "О610АС196", "Грузопассажирские авто (до 3,5 т)", 0, "2026-01-22", "2027-02-19", "2027-02-19", None, None, "Тахограф не требуется"),
+    ("УАЗ-390945", "XTT390995M1208719", "N1", "Н728МЕ196", "Грузопассажирские авто (до 3,5 т)", 0, "2026-01-22", "2027-02-19", "2027-02-19", None, None, "Тахограф не требуется"),
+    ("УАЗ-Патриот 3163", "XTT316300C0006693", "M1", "Т796УА96", "Легковые авто (100-150 л.с.)", 0, "2025-05-22", "2026-02-19", "2026-02-19", None, None, "Тахограф не требуется"),
+    ("МАЗ-5337 (КС-35715)", "XVN357150V0000491", "N3", "Х117СК96", "Автокран", 0, "2026-03-27", "2021-08-05", "2021-08-05", None, None, "Тахограф не требуется"),
+    ("УМД-67-07-02", None, None, "5772ЕВ66", "Трактор", 0, "2025-12-08", "2025-08-31", "2025-08-31", None, None, "Тахограф не требуется"),
+    ("Торнадо М-200", None, None, "ЕА013166", "Прицепы со спец. оборудованием", 0, None, None, None, None, None, "Тахограф не требуется")
+]
+
+cursor.executemany('''
+    INSERT OR IGNORE INTO vehicles (model, vin, category, reg_number, qualification, tachograph_required, osago_valid, tech_inspection_date, tech_inspection_valid, skzi_install_date, skzi_valid_date, notes)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+''', vehicles_data)
+
+conn.commit()
+conn.close()

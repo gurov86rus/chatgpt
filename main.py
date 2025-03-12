@@ -8,7 +8,7 @@ if __name__ == "__main__":
     # When run directly, start the Telegram bot
     import logging
     import asyncio
-    from main_db import main as run_telegram_bot
+    from telegram_bot import main as run_telegram_bot
     
     # Configure logging
     logging.basicConfig(level=logging.INFO)
