@@ -5,7 +5,7 @@ channel = "stable-24_05"
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["sh", "-c", "python bot_start.py"]
+run = ["sh", "-c", "python deployment_start.py"]
 
 [workflows]
 runButton = "Run"
