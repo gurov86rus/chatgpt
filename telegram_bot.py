@@ -811,6 +811,7 @@ async def process_edit_value(message: types.Message, state: FSMContext):
 
 # Maintenance Management Handlers
 @dp.callback_query(lambda c: c.data.startswith("manage_to_"))
+@admin_required
 async def manage_maintenance(callback: types.CallbackQuery):
     """Handler for managing maintenance records"""
     vehicle_id = int(callback.data.split("_")[2])
@@ -1141,6 +1142,7 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
 
 # Repair Management Handlers
 @dp.callback_query(lambda c: c.data.startswith("manage_repairs_"))
+@admin_required
 async def manage_repairs(callback: types.CallbackQuery):
     """Handler for managing repair records"""
     vehicle_id = int(callback.data.split("_")[2])
