@@ -1,0 +1,10 @@
+run = "python deployment_start.py"
+startCommand = "python deployment_start.py"
+entrypoint = "deployment_start.py"
+
+[consoles]
+  autostart = true
+
+[[ports]]
+  localPort = 5000
+  externalPort = 80

@@ -4,9 +4,8 @@ modules = ["python-3.11"]
 channel = "stable-24_05"
 
 [deployment]
-deploymentTarget = "gce"
+deploymentTarget = "cloudrun"
 run = ["sh", "-c", "gunicorn 'app:app' --bind='0.0.0.0:5000'"]
-ignorePorts = true
 
 [workflows]
 
