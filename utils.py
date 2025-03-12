@@ -260,15 +260,45 @@ def generate_expiration_report():
         
         # Format the data row (model name should be properly encoded)
         vehicle_text = f"{vehicle['model']} ({vehicle['reg_number']})"
-        osago_text = format_days_remaining(osago_days).replace("⚠️", "!").replace("✅", "+").replace("🚫", "X").replace("❓", "?")
-        tech_text = format_days_remaining(tech_days).replace("⚠️", "!").replace("✅", "+").replace("🚫", "X").replace("❓", "?")
+        
+        # Format days with more compact representation
+        # For negative days (expired), use "-X" format
+        if osago_days is not None and osago_days < 0:
+            osago_text = f"-{-osago_days} дн."
+        else:
+            osago_text = format_days_remaining(osago_days).replace("⚠️", "!").replace("✅", "+").replace("🚫", "X").replace("❓", "?")
+            osago_text = osago_text.replace("Просрочено", "-").replace("Критически", "!")
+        
+        if tech_days is not None and tech_days < 0:
+            tech_text = f"-{-tech_days} дн."
+        else:
+            tech_text = format_days_remaining(tech_days).replace("⚠️", "!").replace("✅", "+").replace("🚫", "X").replace("❓", "?")
+            tech_text = tech_text.replace("Просрочено", "-").replace("Критически", "!")
         
         if vehicle['tachograph_required']:
-            skzi_text = format_days_remaining(skzi_days).replace("⚠️", "!").replace("✅", "+").replace("🚫", "X").replace("❓", "?")
+            if skzi_days is not None and skzi_days < 0:
+                skzi_text = f"-{-skzi_days} дн."
+            else:
+                skzi_text = format_days_remaining(skzi_days).replace("⚠️", "!").replace("✅", "+").replace("🚫", "X").replace("❓", "?")
+                skzi_text = skzi_text.replace("Просрочено", "-").replace("Критически", "!")
         else:
             skzi_text = "Не требуется"
         
-        # Format the data row and replace emoji with text equivalents for better PDF compatibility
+        # Compact format for TO status
+        if vehicle['next_to']:
+            remaining_to = vehicle['next_to'] - vehicle['mileage']
+            if remaining_to <= 0:
+                to_status = f"-{-remaining_to} км"
+            elif remaining_to <= 500:
+                to_status = f"!{remaining_to} км"
+            elif remaining_to <= 1000:
+                to_status = f"!{remaining_to} км"
+            else:
+                to_status = f"{remaining_to} км"
+        else:
+            to_status = "Не задано"
+        
+        # Format the data row with text equivalents for better PDF compatibility
         row = [
             vehicle_text,
             osago_text,
@@ -319,7 +349,8 @@ def generate_expiration_report():
     for i in range(1, len(data)):
         for j in range(1, 5):
             cell_data = str(data[i][j]).lower()
-            if "критически" in cell_data or "просрочено" in cell_data:
+            # Use a simple check for negative values (starts with "-")
+            if cell_data.startswith("-") or "критически" in cell_data or "просрочено" in cell_data or "!" in cell_data:
                 table_style.add('BACKGROUND', (j, i), (j, i), colors.mistyrose)  # Lighter red
                 table_style.add('TEXTCOLOR', (j, i), (j, i), colors.darkred)    # Darker red text
             elif "скоро" in cell_data:
