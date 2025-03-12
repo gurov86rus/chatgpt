@@ -17,10 +17,11 @@ from utils import days_until, format_days_remaining, get_to_interval_based_on_mi
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,  # Изменено с INFO на DEBUG для большей детализации
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),  # Вывод в консоль
+        logging.FileHandler("bot_debug.log")  # Дополнительный вывод в файл
     ]
 )
 
