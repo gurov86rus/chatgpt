@@ -475,7 +475,12 @@ async def admin_command(message: types.Message, state: FSMContext):
 @admin_required
 async def admin_add(callback: types.CallbackQuery, state: FSMContext):
     """Start process of adding an admin"""
+    # Сначала очищаем состояние, чтобы избежать конфликтов
+    await state.clear()
+    # Затем устанавливаем новое значение
     await state.update_data(action="add")
+    logging.info(f"Начало процесса добавления администратора. Состояние: {await state.get_data()}")
+    
     await callback.message.edit_text(
         "👑 **Добавление администратора**\n\n"
         "Введите Telegram ID пользователя, которого нужно сделать администратором:\n"
@@ -489,7 +494,12 @@ async def admin_add(callback: types.CallbackQuery, state: FSMContext):
 @admin_required
 async def admin_remove(callback: types.CallbackQuery, state: FSMContext):
     """Start process of removing an admin"""
+    # Сначала очищаем состояние, чтобы избежать конфликтов
+    await state.clear()
+    # Затем устанавливаем новое значение
     await state.update_data(action="remove")
+    logging.info(f"Начало процесса удаления администратора. Состояние: {await state.get_data()}")
+    
     await callback.message.edit_text(
         "🔄 **Удаление администратора**\n\n"
         "Введите Telegram ID пользователя, которого нужно лишить прав администратора:",
@@ -515,7 +525,16 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
     try:
         user_id = int(message.text)
         data = await state.get_data()
+        logging.info(f"Обработка ID пользователя: {user_id}, текущее состояние: {data}")
+        
         action = data.get("action")
+        if not action:
+            logging.error(f"Ошибка: отсутствует действие в состоянии. Текущие данные: {data}")
+            await message.answer(
+                "⚠️ Ошибка: Не указано действие. Пожалуйста, начните процесс заново."
+            )
+            await state.clear()
+            return
         
         # Проверяем, существует ли пользователь
         conn = sqlite3.connect('vehicles.db')
@@ -525,6 +544,7 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
         conn.close()
         
         if not user:
+            logging.warning(f"Пользователь с ID {user_id} не найден в базе данных")
             await message.answer(
                 "⚠️ Ошибка: Пользователь с указанным ID не найден в системе.\n\n"
                 "Пользователь должен быть зарегистрирован. Попросите его использовать бота и выполнить команду /start или /myid."
@@ -535,9 +555,11 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
         # Извлекаем данные о пользователе
         user_name = user[1]
         is_admin = bool(user[2])
+        logging.info(f"Найден пользователь: {user_name}, админ: {is_admin}")
         
         # Проверяем, что действие имеет смысл
         if action == "add" and is_admin:
+            logging.info(f"Попытка добавить существующего администратора {user_name} (ID: {user_id})")
             await message.answer(
                 f"ℹ️ Пользователь {user_name} (ID: {user_id}) уже является администратором."
             )
@@ -545,6 +567,7 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
             return
         
         if action == "remove" and not is_admin:
+            logging.info(f"Попытка удалить пользователя {user_name} (ID: {user_id}), который не является администратором")
             await message.answer(
                 f"ℹ️ Пользователь {user_name} (ID: {user_id}) не является администратором."
             )
@@ -553,6 +576,8 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
         
         # Запрашиваем подтверждение
         await state.update_data(target_user_id=user_id, target_user_name=user_name)
+        updated_data = await state.get_data()
+        logging.info(f"Обновленное состояние перед подтверждением: {updated_data}")
         
         confirm_keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="✅ Подтвердить", callback_data=f"confirm_{action}")],
@@ -571,7 +596,9 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
             parse_mode="Markdown"
         )
         
+        # Устанавливаем новое состояние и проверяем его
         await state.set_state(AdminManageState.action)
+        logging.info(f"Установлено состояние AdminManageState.action")
         
     except ValueError:
         await message.answer(
@@ -583,14 +610,26 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
 @admin_required
 async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext):
     """Confirm admin status change"""
-    # Получаем действие из callback data
-    callback_action = callback.data.split("_")[1]  # add или remove
+    # Добавляем подробное логирование
+    logging.info(f"Получен callback: {callback.data}")
     
-    # Получаем данные состояния
+    # Получаем действие из callback data
+    callback_parts = callback.data.split("_")
+    if len(callback_parts) > 1:
+        callback_action = callback_parts[1]  # add или remove
+        logging.info(f"Извлечено действие из callback: {callback_action}")
+    else:
+        logging.error(f"Неверный формат callback data: {callback.data}")
+        callback_action = "unknown"
+    
+    # Выводим текущее состояние для диагностики
     data = await state.get_data()
+    logging.info(f"Текущее состояние: {data}")
     
     # Проверяем наличие необходимых данных
     if "target_user_id" not in data or "target_user_name" not in data or "action" not in data:
+        logging.error(f"Ошибка: отсутствуют необходимые данные в состоянии. Имеющиеся ключи: {list(data.keys())}")
+        
         await callback.message.edit_text(
             "⚠️ Ошибка: Данные пользователя не найдены. Пожалуйста, попробуйте снова.",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -605,13 +644,17 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
     user_name = data["target_user_name"]
     action = data["action"]  # Используем сохраненное действие вместо извлеченного из callback
     
+    logging.info(f"Обрабатываем изменение статуса администратора для пользователя {user_name} (ID: {user_id}), действие: {action}")
+    
     # Проверяем соответствие действий
-    if action != callback_action:
+    if action != callback_action and callback_action != "unknown":
         logging.warning(f"Несоответствие действий: state={action}, callback={callback_action}")
     
     # Изменяем статус администратора
     new_status = (action == "add")
+    logging.info(f"Устанавливаем статус администратора: {new_status}")
     result = set_admin_status(user_id, new_status)
+    logging.info(f"Результат установки статуса: {result}")
     
     # Очищаем состояние до вывода сообщения
     await state.clear()
