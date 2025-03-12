@@ -35,6 +35,10 @@ class RepairState(StatesGroup):
 
 class MileageUpdateState(StatesGroup):
     mileage = State()
+    
+class EditState(StatesGroup):
+    field = State()
+    value = State()
 
 # Helper functions
 def get_vehicle_buttons():
@@ -162,6 +166,7 @@ def get_vehicle_card(vehicle_id):
         [InlineKeyboardButton(text="🔄 Обновить пробег", callback_data=f"update_mileage_{vehicle_id}")],
         [InlineKeyboardButton(text="➕ Добавить ТО", callback_data=f"add_to_{vehicle_id}")],
         [InlineKeyboardButton(text="🛠 Добавить ремонт", callback_data=f"add_repair_{vehicle_id}")],
+        [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f"edit_{vehicle_id}")],
         [InlineKeyboardButton(text="⬅ Назад к списку", callback_data="back")]
     ])
     
