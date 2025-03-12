@@ -1627,9 +1627,14 @@ async def main():
     # Reset webhook before starting polling to avoid conflicts
     await bot.delete_webhook(drop_pending_updates=True)
     
-    # Start polling
+    # Start polling with aggressive settings to prevent conflicts
     logging.info("Starting vehicle maintenance bot...")
-    await dp.start_polling(bot)
+    await dp.start_polling(
+        bot,
+        allowed_updates=dp.resolve_used_update_types(),
+        drop_pending_updates=True,
+        polling_timeout=30
+    )
 
 if __name__ == "__main__":
     asyncio.run(main())
