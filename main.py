@@ -90,7 +90,6 @@ def main():
     
     # Запускаем полнофункциональный бот
     try:
-        import asyncio
         # Пробуем загрузить основной модуль бота
         try:
             import telegram_bot
