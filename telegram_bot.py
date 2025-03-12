@@ -835,7 +835,6 @@ async def manage_maintenance(callback: types.CallbackQuery):
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("maintenance_"))
-@admin_required
 async def show_maintenance_record(callback: types.CallbackQuery):
     """Handler for showing maintenance record details"""
     maintenance_id = int(callback.data.split("_")[1])
@@ -857,12 +856,21 @@ async def show_maintenance_record(callback: types.CallbackQuery):
         await callback.answer("⚠️ Запись не найдена")
         return
     
-    # Create keyboard with actions
-    keyboard = [
-        [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f"edit_maintenance_{maintenance_id}")],
-        [InlineKeyboardButton(text="🗑 Удалить", callback_data=f"delete_maintenance_{maintenance_id}")],
-        [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_to_{record['vehicle_id']}")]
-    ]
+    # Check if user is admin
+    user_id = callback.from_user.id
+    admin = is_admin(user_id)
+    
+    # Create keyboard with actions based on user role
+    if admin:
+        keyboard = [
+            [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f"edit_maintenance_{maintenance_id}")],
+            [InlineKeyboardButton(text="🗑 Удалить", callback_data=f"delete_maintenance_{maintenance_id}")],
+            [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_to_{record['vehicle_id']}")]
+        ]
+    else:
+        keyboard = [
+            [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_to_{record['vehicle_id']}")]
+        ]
     
     await callback.message.edit_text(
         f"📋 **Запись о ТО #{maintenance_id}**\n\n"
@@ -1187,12 +1195,21 @@ async def show_repair_record(callback: types.CallbackQuery):
     # Format cost display
     cost_display = f"{record['cost']} ₽" if record['cost'] else "Не указана"
     
-    # Create keyboard with actions
-    keyboard = [
-        [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f"edit_repair_{repair_id}")],
-        [InlineKeyboardButton(text="🗑 Удалить", callback_data=f"delete_repair_{repair_id}")],
-        [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_repairs_{record['vehicle_id']}")]
-    ]
+    # Check if user is admin
+    user_id = callback.from_user.id
+    admin = is_admin(user_id)
+    
+    # Create keyboard with actions based on user role
+    if admin:
+        keyboard = [
+            [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f"edit_repair_{repair_id}")],
+            [InlineKeyboardButton(text="🗑 Удалить", callback_data=f"delete_repair_{repair_id}")],
+            [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_repairs_{record['vehicle_id']}")]
+        ]
+    else:
+        keyboard = [
+            [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_repairs_{record['vehicle_id']}")]
+        ]
     
     await callback.message.edit_text(
         f"🛠 **Запись о ремонте #{repair_id}**\n\n"
