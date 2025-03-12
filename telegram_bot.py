@@ -1805,29 +1805,103 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
 @admin_required
 async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext):
     """Handler for executing repair record deletion"""
+    # Добавляем подробное логирование
+    logging.info(f"Получен callback: {callback.data}")
+    callback_parts = callback.data.split("_")
+    if len(callback_parts) > 3:
+        callback_action = callback_parts[1]  # delete
+        repair_id_from_callback = int(callback_parts[3])
+        logging.info(f"Извлечено действие: {callback_action}, ID ремонта: {repair_id_from_callback}")
+    else:
+        logging.error(f"Неверный формат callback data: {callback.data}")
+    
+    # Выводим текущее состояние для диагностики
     data = await state.get_data()
+    logging.info(f"Текущее состояние: {data}")
     
-    # Проверяем, есть ли данные о транспортном средстве и ремонте с новыми ключами
-    if 'repair_delete_id' not in data or 'repair_vehicle_id' not in data:
-        await callback.message.edit_text(
-            "⚠️ Ошибка: Данные о ремонте не найдены. Пожалуйста, попробуйте снова.",
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
-            ])
-        )
-        await callback.answer()
-        await state.clear()
-        return
+    # Переименовываем ключи, чтобы они соответствовали ключам в функции удаления ТО
+    # target_id - общий ключ для ID записи (ремонт или ТО)
+    # target_vehicle_id - общий ключ для ID транспортного средства
+    # target_action - общий ключ для действия (delete_repair, delete_maintenance)
+    if 'repair_delete_id' in data and 'repair_vehicle_id' in data:
+        # Переносим данные из старых ключей в новые
+        target_id = data['repair_delete_id']
+        target_vehicle_id = data['repair_vehicle_id']
+        target_action = "delete_repair"
+    elif 'target_id' in data and 'target_vehicle_id' in data and data.get('target_action') == "delete_repair":
+        # Используем уже существующие новые ключи
+        target_id = data['target_id']
+        target_vehicle_id = data['target_vehicle_id']
+        target_action = data['target_action']
+    else:
+        # Пытаемся использовать ID из callback данных, если доступны
+        if len(callback_parts) > 3:
+            try:
+                repair_id = int(callback_parts[3])
+                # Получаем vehicle_id из базы данных
+                conn = sqlite3.connect('vehicles.db')
+                cursor = conn.cursor()
+                cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
+                result = cursor.fetchone()
+                conn.close()
+                
+                if result:
+                    vehicle_id = result[0]
+                    logging.info(f"Извлечено ID ТС из базы данных: {vehicle_id} для ремонта {repair_id}")
+                    
+                    # Устанавливаем новые ключи в состоянии
+                    await state.update_data(
+                        target_id=repair_id,
+                        target_vehicle_id=vehicle_id,
+                        target_action="delete_repair"
+                    )
+                    data = await state.get_data()
+                    target_id = data['target_id']
+                    target_vehicle_id = data['target_vehicle_id']
+                    target_action = data['target_action']
+                else:
+                    logging.error(f"Запись ремонта {repair_id} не найдена в базе данных")
+                    await callback.message.edit_text(
+                        "⚠️ Ошибка: Запись о ремонте не найдена. Пожалуйста, попробуйте снова.",
+                        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                            [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+                        ])
+                    )
+                    await callback.answer()
+                    await state.clear()
+                    return
+            except (ValueError, TypeError, IndexError) as e:
+                logging.error(f"Ошибка при извлечении ID из callback: {e}")
+                await callback.message.edit_text(
+                    "⚠️ Ошибка: Неверный формат данных. Пожалуйста, попробуйте снова.",
+                    reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                        [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+                    ])
+                )
+                await callback.answer()
+                await state.clear()
+                return
+        else:
+            logging.error(f"Отсутствуют необходимые данные в состоянии и неверный формат callback")
+            await callback.message.edit_text(
+                "⚠️ Ошибка: Данные о ремонте не найдены. Пожалуйста, попробуйте снова.",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+                ])
+            )
+            await callback.answer()
+            await state.clear()
+            return
     
-    vehicle_id = data['repair_vehicle_id']
-    repair_id = data['repair_delete_id']
+    logging.info(f"Удаляем запись ремонта: ID={target_id}, Vehicle ID={target_vehicle_id}, Action={target_action}")
     
     # Delete repair record
     conn = sqlite3.connect('vehicles.db')
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
+    cursor.execute("DELETE FROM repairs WHERE id = ?", (target_id,))
     conn.commit()
     conn.close()
+    logging.info(f"Запись ремонта удалена из базы данных")
     
     # Очищаем состояние до вывода сообщения
     await state.clear()
@@ -1835,8 +1909,8 @@ async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext
     await callback.message.edit_text(
         "✅ Запись о ремонте успешно удалена!",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="🔧 К списку ремонтов", callback_data=f"manage_repairs_{vehicle_id}")],
-            [InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
+            [InlineKeyboardButton(text="🔧 К списку ремонтов", callback_data=f"manage_repairs_{target_vehicle_id}")],
+            [InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{target_vehicle_id}")]
         ])
     )
     await callback.answer()
