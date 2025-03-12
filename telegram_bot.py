@@ -1535,22 +1535,87 @@ async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMCo
 @admin_required
 async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMContext):
     """Handler for executing maintenance record deletion"""
+    # Добавляем подробное логирование
+    logging.info(f"Получен callback: {callback.data}")
+    callback_parts = callback.data.split("_")
+    if len(callback_parts) > 3:
+        callback_action = callback_parts[1]  # delete
+        logging.info(f"Извлечено действие из callback: {callback_action}")
+    
+    # Выводим текущее состояние для диагностики
     data = await state.get_data()
+    logging.info(f"Текущее состояние: {data}")
     
-    # Проверяем, есть ли данные о транспортном средстве и ТО с новыми названиями ключей
-    if 'to_delete_maintenance_id' not in data or 'to_vehicle_id' not in data:
-        await callback.message.edit_text(
-            "⚠️ Ошибка: Данные о ТО не найдены. Пожалуйста, попробуйте снова.",
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
-            ])
-        )
-        await callback.answer()
-        await state.clear()
-        return
+    # Проверяем все возможные варианты хранения ID ТО и транспортного средства
+    if 'to_delete_maintenance_id' in data and 'to_vehicle_id' in data:
+        # Используем имеющиеся ключи без изменений
+        maintenance_id = data['to_delete_maintenance_id']
+        vehicle_id = data['to_vehicle_id']
+        logging.info(f"Используем данные из стандартных ключей: ТО ID={maintenance_id}, ТС ID={vehicle_id}")
+    elif 'target_id' in data and 'target_vehicle_id' in data and data.get('target_action') == 'delete_maintenance':
+        # Извлекаем из новых унифицированных ключей
+        maintenance_id = data['target_id']
+        vehicle_id = data['target_vehicle_id']
+        logging.info(f"Используем данные из унифицированных ключей: ТО ID={maintenance_id}, ТС ID={vehicle_id}")
+    else:
+        # Пытаемся получить ID из самого callback
+        if len(callback_parts) > 3:
+            try:
+                maintenance_id = int(callback_parts[3])
+                logging.info(f"Извлекаем ID ТО из callback: {maintenance_id}")
+                
+                # Получаем vehicle_id из базы данных
+                conn = sqlite3.connect('vehicles.db')
+                conn.row_factory = sqlite3.Row
+                cursor = conn.cursor()
+                cursor.execute("SELECT vehicle_id FROM maintenance WHERE id = ?", (maintenance_id,))
+                result = cursor.fetchone()
+                conn.close()
+                
+                if result:
+                    vehicle_id = result['vehicle_id']
+                    logging.info(f"Получен ID ТС из базы данных: {vehicle_id}")
+                    
+                    # Обновляем состояние с четко названными ключами
+                    await state.update_data(
+                        to_delete_maintenance_id=maintenance_id,
+                        to_vehicle_id=vehicle_id
+                    )
+                else:
+                    logging.error(f"Запись ТО {maintenance_id} не найдена в базе данных")
+                    await callback.message.edit_text(
+                        "⚠️ Ошибка: Запись о ТО не найдена. Пожалуйста, попробуйте снова.",
+                        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                            [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+                        ])
+                    )
+                    await callback.answer()
+                    await state.clear()
+                    return
+            except (ValueError, TypeError, IndexError) as e:
+                logging.error(f"Ошибка при извлечении ID из callback: {e}")
+                await callback.message.edit_text(
+                    "⚠️ Ошибка: Неверный формат данных. Пожалуйста, попробуйте снова.",
+                    reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                        [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+                    ])
+                )
+                await callback.answer()
+                await state.clear()
+                return
+        else:
+            logging.error(f"Отсутствуют необходимые данные в состоянии и в callback")
+            await callback.message.edit_text(
+                "⚠️ Ошибка: Данные о ТО не найдены. Пожалуйста, попробуйте снова.",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+                ])
+            )
+            await callback.answer()
+            await state.clear()
+            return
     
-    vehicle_id = data['to_vehicle_id']
-    maintenance_id = data['to_delete_maintenance_id']
+    logging.info(f"Удаление записи ТО: ID={maintenance_id}, Vehicle ID={vehicle_id}")
     
     # Delete maintenance record
     conn = sqlite3.connect('vehicles.db')
@@ -1564,12 +1629,15 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
         LIMIT 1
     """, (vehicle_id,))
     latest_maintenance = cursor.fetchone()
+    logging.info(f"Последняя запись ТО: {latest_maintenance}")
     
     # Delete the record
     cursor.execute("DELETE FROM maintenance WHERE id = ?", (maintenance_id,))
+    logging.info(f"Запись ТО удалена из базы данных")
     
     # If this was the latest record, update the vehicle's last_to_date
     if latest_maintenance and latest_maintenance[0] == maintenance_id:
+        logging.info(f"Это была последняя запись ТО, обновляем last_to_date в записи ТС")
         # Get the new latest record
         cursor.execute("""
             SELECT date FROM maintenance 
@@ -1580,11 +1648,13 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
         new_latest = cursor.fetchone()
         
         if new_latest:
+            logging.info(f"Найдена новая последняя запись с датой: {new_latest[0]}")
             cursor.execute(
                 "UPDATE vehicles SET last_to_date = ? WHERE id = ?",
                 (new_latest[0], vehicle_id)
             )
         else:
+            logging.info(f"Новых записей ТО не найдено, устанавливаем last_to_date = NULL")
             cursor.execute(
                 "UPDATE vehicles SET last_to_date = NULL WHERE id = ?",
                 (vehicle_id,)
