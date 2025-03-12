@@ -18,11 +18,17 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+# Принудительно устанавливаем новый токен бота
+NEW_TOKEN = "1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8"
+logger.info(f"Принудительно устанавливаем новый токен (ID: {NEW_TOKEN.split(':')[0]})")
+os.environ["TELEGRAM_BOT_TOKEN"] = NEW_TOKEN
+
 # Получение токена из переменных окружения
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if not TOKEN:
     logger.error("TELEGRAM_BOT_TOKEN не найден в переменных окружения")
-    sys.exit(1)
+    logger.info("Используем захардкоженный токен")
+    TOKEN = NEW_TOKEN
 
 # Проверяем, работает ли бот вообще
 def test_telegram_api():
