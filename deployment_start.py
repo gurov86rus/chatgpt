@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -6,18 +5,18 @@
 Производит проверку доступности порта и инициализацию базы данных.
 """
 import os
-import logging
 import sys
+import logging
 import socket
-import requests
-import time
-import psutil
+import subprocess
 import signal
+import time
+import threading
+import psutil
+import requests
+
 from db_init import init_database
 from app import app
-
-# Порт для веб-интерфейса
-WEB_PORT = 5000
 
 # Настройка логирования
 logging.basicConfig(
@@ -25,7 +24,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler("web_application.log")
+        logging.FileHandler("deployment.log")
     ]
 )
 
@@ -34,48 +33,51 @@ logger = logging.getLogger(__name__)
 def check_port_available(port):
     """Проверяет, доступен ли указанный порт"""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    available = True
+    result = False
     try:
         sock.bind(('0.0.0.0', port))
+        result = True
     except socket.error:
-        available = False
+        logger.warning(f"Порт {port} уже занят")
     finally:
         sock.close()
-    return available
+    return result
 
 def find_process_using_port(port):
     """Находит PID процесса, использующего указанный порт"""
     try:
         for proc in psutil.process_iter(['pid', 'name', 'connections']):
             try:
-                for conn in proc.connections():
-                    if conn.laddr.port == port:
-                        return proc.pid
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
-                pass
+                for conn in proc.info['connections']:
+                    if conn.laddr.port == port and conn.status == 'LISTEN':
+                        return proc.info['pid']
+            except (psutil.NoSuchProcess, psutil.AccessDenied, KeyError):
+                continue
     except Exception as e:
-        logger.error(f"Ошибка при поиске процесса, использующего порт {port}: {e}")
+        logger.error(f"Ошибка при поиске процесса: {e}")
     return None
 
 def kill_process(pid):
     """Останавливает процесс по PID"""
+    logger.info(f"Попытка остановить процесс с PID {pid}")
     try:
-        current_pid = os.getpid()
-        if pid != current_pid:  # Не убиваем самих себя
-            logger.info(f"Останавливаем процесс с PID {pid}")
-            os.kill(pid, signal.SIGTERM)
-            time.sleep(1)  # Даем процессу время на завершение
-            
-            # Проверяем, завершился ли процесс
-            if psutil.pid_exists(pid):
-                logger.warning(f"Процесс {pid} не завершился, принудительная остановка")
-                os.kill(pid, signal.SIGKILL)
-            
-            return True
+        # Сначала пытаемся корректно завершить процесс
+        os.kill(pid, signal.SIGTERM)
+        
+        # Даем процессу время на корректное завершение
+        for _ in range(5):  # Ждем не более 5 секунд
+            if not psutil.pid_exists(pid):
+                logger.info(f"Процесс {pid} успешно остановлен")
+                return True
+            time.sleep(1)
+        
+        # Если процесс не завершился, принудительно останавливаем
+        os.kill(pid, signal.SIGKILL)
+        logger.info(f"Процесс {pid} принудительно остановлен")
+        return True
     except Exception as e:
         logger.error(f"Ошибка при остановке процесса {pid}: {e}")
-    
-    return False
+        return False
 
 def ensure_port_available(port):
     """Обеспечивает доступность порта, при необходимости останавливая процессы"""
@@ -83,84 +85,111 @@ def ensure_port_available(port):
         logger.info(f"Порт {port} доступен")
         return True
     
-    logger.warning(f"Порт {port} занят")
     pid = find_process_using_port(port)
-    
-    if pid:
-        logger.info(f"Порт {port} используется процессом с PID {pid}")
-        if kill_process(pid):
-            time.sleep(1)  # Даем время на освобождение порта
-            if check_port_available(port):
-                logger.info(f"Порт {port} успешно освобожден")
-                return True
-            else:
-                logger.error(f"Не удалось освободить порт {port}")
-                return False
-    else:
-        # Альтернативный способ, если psutil не смог найти процесс
-        try:
-            logger.info(f"Попытка освободить порт {port} через команду fuser")
-            os.system(f"fuser -k {port}/tcp 2>/dev/null || true")
-            time.sleep(2)
-            
-            if check_port_available(port):
-                logger.info(f"Порт {port} успешно освобожден через fuser")
-                return True
-        except Exception as e:
-            logger.error(f"Ошибка при использовании fuser: {e}")
-        
-        logger.error(f"Не удалось освободить порт {port}")
+    if not pid:
+        logger.warning(f"Порт {port} занят, но не удалось найти соответствующий процесс")
         return False
+    
+    return kill_process(pid)
 
 def reset_telegram_webhook():
     """Сбрасывает вебхук для избежания конфликтов"""
-    # Запускаем скрипт обновления токена, если доступен
+    logger.info("Сброс вебхука Telegram...")
     try:
-        if os.path.exists("startup_token_fix.py"):
-            logger.info("Запуск startup_token_fix.py для обновления токена...")
-            import startup_token_fix
-            startup_token_fix.main()
-            logger.info("✅ Токен обновлен с помощью startup_token_fix.py")
-        else:
-            logger.warning("Файл startup_token_fix.py не найден")
-    except Exception as e:
-        logger.warning(f"⚠️ Ошибка при запуске startup_token_fix.py: {e}")
-    
-    # Принудительно устанавливаем новый токен бота (на всякий случай)
-    NEW_TOKEN = "1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8"
-    os.environ["TELEGRAM_BOT_TOKEN"] = NEW_TOKEN
-    logger.info(f"Принудительно установлен новый токен бота (ID: {NEW_TOKEN.split(':')[0]})")
-    
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
-    if not token:
-        logger.warning("TELEGRAM_BOT_TOKEN не найден. Веб-интерфейс будет запущен без бота.")
-        return True
-    
-    try:
-        logger.info("Сброс вебхука для избежания конфликтов...")
-        response = requests.get(f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true", timeout=10)
-        webhook_result = response.json()
+        token = os.environ.get("TELEGRAM_BOT_TOKEN")
+        if not token:
+            try:
+                import config
+                token = config.TOKEN
+            except Exception:
+                logger.warning("Не удалось получить токен Telegram для сброса вебхука")
+                return False
         
-        if webhook_result.get('ok'):
-            logger.info("✅ Вебхук успешно сброшен")
+        # Формируем URL для запроса
+        url = f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true"
+        
+        # Отправляем запрос
+        response = requests.get(url)
+        
+        # Проверяем ответ
+        if response.status_code == 200 and response.json().get("ok"):
+            logger.info("Вебхук успешно сброшен")
             return True
         else:
-            logger.warning(f"Проблема при сбросе вебхука: {webhook_result}")
+            logger.warning(f"Не удалось сбросить вебхук: {response.text}")
+            return False
     except Exception as e:
-        logger.warning(f"Ошибка при попытке сбросить вебхук: {e}")
-    
-    return False
+        logger.warning(f"Ошибка при сбросе вебхука: {e}")
+        return False
 
 def init_db():
     """Инициализирует базу данных"""
+    logger.info("Инициализация базы данных...")
     try:
         init_database()
         logger.info("База данных успешно инициализирована")
         return True
     except Exception as e:
         logger.error(f"Ошибка при инициализации базы данных: {e}")
-        logger.error(f"Трассировка стека: {sys.exc_info()}")
         return False
+
+def start_token_monitor():
+    """Запускает мониторинг токена в фоновом режиме"""
+    logger.info("Запуск мониторинга токена...")
+    try:
+        if os.path.exists("token_monitor.py"):
+            import token_monitor
+            token_monitor.start_monitor_thread()
+            logger.info("✅ Запущен фоновый мониторинг токена")
+            return True
+        else:
+            logger.warning("Файл token_monitor.py не найден")
+            return False
+    except Exception as e:
+        logger.warning(f"Ошибка при запуске мониторинга токена: {e}")
+        return False
+
+def start_bot_thread():
+    """Запускает Telegram бота в отдельном потоке"""
+    logger.info("Запуск Telegram бота в отдельном потоке...")
+    
+    def run_bot():
+        try:
+            # Останавливаем существующие боты
+            if os.path.exists("stop_existing_bots.py"):
+                logger.info("Останавливаем существующие боты...")
+                import stop_existing_bots
+                stopped_count = stop_existing_bots.main()
+                logger.info(f"Остановлено {stopped_count} экземпляров ботов")
+            
+            # Запускаем бота через основной скрипт
+            logger.info("Запуск main.py для запуска бота...")
+            subprocess.run([sys.executable, "main.py"], check=False)
+        except Exception as e:
+            logger.error(f"Ошибка при запуске бота: {e}")
+    
+    # Запускаем бота в отдельном потоке
+    bot_thread = threading.Thread(target=run_bot, daemon=True)
+    bot_thread.start()
+    logger.info("Telegram бот запущен в фоновом режиме")
+    return bot_thread
+
+def get_replit_domain():
+    """Получает домен Replit для доступа к приложению извне"""
+    replit_domain = None
+    try:
+        replit_domain = os.environ.get("REPL_SLUG")
+        replit_id = os.environ.get("REPL_ID")
+        replit_owner = os.environ.get("REPL_OWNER")
+        
+        if replit_id and replit_owner:
+            replit_domain = f"{replit_id}-00-{replit_owner}"
+        
+        logger.info(f"Домен Replit: {replit_domain}")
+    except Exception as e:
+        logger.warning(f"Не удалось определить домен Replit: {e}")
+        
+    return replit_domain
 
 def main():
     """Основная функция запуска веб-интерфейса"""
@@ -168,44 +197,46 @@ def main():
     logger.info("Запуск веб-интерфейса системы управления автопарком")
     logger.info("=" * 50)
     
-    # Проверяем и освобождаем порт, если занят
-    if not ensure_port_available(WEB_PORT):
-        logger.error(f"Не удалось обеспечить доступность порта {WEB_PORT}. Веб-интерфейс не запущен.")
-        return 1
+    # Проверка и обновление токена
+    try:
+        if os.path.exists("startup_token_fix.py"):
+            import startup_token_fix
+            startup_token_fix.main()
+            logger.info("Токен успешно обновлен")
+    except Exception as e:
+        logger.warning(f"Ошибка при обновлении токена: {e}")
     
-    # Сбрасываем вебхук для избежания конфликтов
+    # Запуск мониторинга токена
+    start_token_monitor()
+    
+    # Инициализация базы данных
+    init_db()
+    
+    # Сброс вебхука Telegram
     reset_telegram_webhook()
     
-    # Запускаем мониторинг токена в фоновом режиме
-    try:
-        if os.path.exists("token_monitor.py"):
-            import token_monitor
-            token_monitor.start_monitor_thread()
-            logger.info("✅ Запущен фоновый мониторинг токена")
-        else:
-            logger.warning("⚠️ Файл token_monitor.py не найден")
-    except Exception as e:
-        logger.warning(f"⚠️ Не удалось запустить мониторинг токена: {e}")
+    # Проверка доступности порта
+    port = 5000
+    if not ensure_port_available(port):
+        logger.error(f"Не удалось освободить порт {port}")
+        sys.exit(1)
     
-    # Инициализируем базу данных
-    if not init_db():
-        logger.warning("Инициализация базы данных не удалась. Возможны проблемы с функциональностью.")
-    
-    # Получаем информацию о домене Replit
-    replit_domain = os.environ.get("REPLIT_DOMAINS", "").split(",")[0]
+    # Получение домена Replit
+    replit_domain = get_replit_domain()
     logger.info(f"Домен Replit для доступа извне: {replit_domain}")
     
-    # Запускаем Flask-приложение
-    logger.info(f"Запуск веб-сервера на порту {WEB_PORT} (режим: только веб)")
-    try:
-        logger.info(f"Веб-интерфейс будет доступен по адресу: http://{replit_domain if replit_domain else '0.0.0.0'}:{WEB_PORT}")
-        app.run(host='0.0.0.0', port=WEB_PORT, threaded=True)
-    except Exception as e:
-        logger.error(f"Ошибка при запуске веб-сервера: {e}")
-        return 1
+    # Запуск бота в отдельном потоке
+    bot_thread = None
+    if 'BOT_DISABLED' not in os.environ:
+        bot_thread = start_bot_thread()
     
-    return 0
+    # Запуск веб-сервера
+    logger.info(f"Запуск веб-сервера на порту {port} (режим: только веб)")
+    if replit_domain:
+        logger.info(f"Веб-интерфейс будет доступен по адресу: http://{replit_domain}.replit.dev:{port}")
+    
+    # Запускаем Flask-приложение
+    app.run(host='0.0.0.0', port=port)
 
-# Основная точка входа скрипта
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

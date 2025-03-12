@@ -24,6 +24,15 @@ def stop_existing_bots():
     """Останавливает все запущенные экземпляры ботов, кроме текущего"""
     logger.info("Останавливаем все запущенные боты...")
     try:
+        # Если существует новый скрипт для остановки ботов, используем его
+        if os.path.exists("stop_existing_bots.py"):
+            logger.info("Используем stop_existing_bots.py для остановки ботов")
+            import stop_existing_bots
+            stopped_count = stop_existing_bots.main()
+            logger.info(f"Остановлено {stopped_count} экземпляров ботов")
+            return True
+            
+        # Запасной вариант - стандартный метод остановки ботов
         # Не убиваем текущий процесс
         current_pid = os.getpid()
         logger.info(f"Текущий PID: {current_pid}")
@@ -36,7 +45,7 @@ def stop_existing_bots():
             for pid in pids:
                 if pid.isdigit():
                     try:
-                        subprocess.run(["kill", pid], check=False)
+                        subprocess.run(["kill", "-9", pid], check=False)
                         logger.info(f"Остановлен процесс с PID {pid}")
                     except Exception as e:
                         logger.error(f"Ошибка при остановке процесса {pid}: {e}")
@@ -89,26 +98,71 @@ def check_token():
     return True
 
 def reset_webhook():
-    """Сбрасывает вебхук бота"""
-    logger.info("Сбрасываем вебхук...")
+    """Сбрасывает вебхук бота и очищает очередь обновлений"""
+    logger.info("Сбрасываем вебхук и очищаем очередь обновлений...")
     try:
-        import requests
-        token = os.environ.get("TELEGRAM_BOT_TOKEN")
-        if not token:
-            from config import TOKEN
-            token = TOKEN
-            
-        url = f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true"
-        response = requests.get(url)
+        # Пробуем использовать более надежный метод сброса вебхука
+        result = False
         
-        if response.status_code == 200 and response.json().get("ok"):
+        # Метод 1: Через requests
+        try:
+            import requests
+            token = os.environ.get("TELEGRAM_BOT_TOKEN")
+            if not token:
+                from config import TOKEN
+                token = TOKEN
+                
+            url = f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true"
+            response = requests.get(url)
+            
+            if response.status_code == 200 and response.json().get("ok"):
+                logger.info("Метод 1: Вебхук успешно сброшен через requests")
+                result = True
+            else:
+                logger.warning(f"Метод 1: Не удалось сбросить вебхук через requests: {response.text}")
+        except Exception as e:
+            logger.warning(f"Метод 1: Ошибка при сбросе вебхука через requests: {e}")
+        
+        # Метод 2: Через curl (если requests не сработал)
+        if not result:
+            try:
+                token = os.environ.get("TELEGRAM_BOT_TOKEN")
+                if not token:
+                    from config import TOKEN
+                    token = TOKEN
+                    
+                curl_cmd = f"curl -s 'https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true'"
+                output = subprocess.check_output(curl_cmd, shell=True).decode()
+                
+                if '"ok":true' in output:
+                    logger.info("Метод 2: Вебхук успешно сброшен через curl")
+                    result = True
+                else:
+                    logger.warning(f"Метод 2: Не удалось сбросить вебхук через curl: {output}")
+            except Exception as e:
+                logger.warning(f"Метод 2: Ошибка при сбросе вебхука через curl: {e}")
+        
+        # Метод 3: Используем новый модуль stop_existing_bots
+        if not result and os.path.exists("stop_existing_bots.py"):
+            try:
+                import stop_existing_bots
+                if stop_existing_bots.reset_webhook():
+                    logger.info("Метод 3: Вебхук успешно сброшен через stop_existing_bots.py")
+                    result = True
+                else:
+                    logger.warning("Метод 3: Не удалось сбросить вебхук через stop_existing_bots.py")
+            except Exception as e:
+                logger.warning(f"Метод 3: Ошибка при сбросе вебхука через stop_existing_bots.py: {e}")
+        
+        # Дополнительная проверка успешности сброса вебхука
+        if result:
             logger.info("Вебхук успешно сброшен")
-            return True
         else:
-            logger.error(f"Ошибка при сбросе вебхука: {response.text}")
-            return False
+            logger.warning("Не удалось сбросить вебхук ни одним из методов")
+            
+        return result
     except Exception as e:
-        logger.error(f"Ошибка при сбросе вебхука: {e}")
+        logger.error(f"Критическая ошибка при сбросе вебхука: {e}")
         return False
 
 def main():
