@@ -466,12 +466,28 @@ async def edit_vehicle_start(callback: types.CallbackQuery, state: FSMContext):
         "skzi_valid_date", "notes", "mileage"
     ]
     
-    # Create keyboard with field buttons
+    # Create keyboard with field buttons and user-friendly names
     keyboard = []
+    field_names = {
+        "model": "🚗 Модель ТС",
+        "vin": "🔢 VIN номер",
+        "category": "📋 Категория",
+        "reg_number": "🔢 Гос. номер",
+        "qualification": "📄 Квалификация",
+        "tachograph_required": "📟 Тахограф (0/1)",
+        "osago_valid": "📝 Срок ОСАГО",
+        "tech_inspection_date": "🔍 Дата тех. осмотра",
+        "tech_inspection_valid": "📆 Срок тех. осмотра",
+        "skzi_install_date": "🔐 Дата уст. СКЗИ",
+        "skzi_valid_date": "📆 Срок СКЗИ",
+        "notes": "📝 Примечания",
+        "mileage": "🔄 Пробег"
+    }
+    
     for i, field in enumerate(fields):
         keyboard.append([
             InlineKeyboardButton(
-                text=field, 
+                text=field_names.get(field, field), 
                 callback_data=f"edit_field_{vehicle_id}_{i}"
             )
         ])
