@@ -656,9 +656,30 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
                     data = await state.get_data()
                     logging.info(f"Восстановили данные в состоянии: {data}")
                 else:
-                    logging.error(f"Пользователь {user_id} не найден в базе данных")
+                    # Проверяем, существует ли таблица users и есть ли в ней записи
+                    conn = sqlite3.connect('vehicles.db')
+                    cursor = conn.cursor()
+                    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
+                    table_exists = cursor.fetchone()
+                    
+                    if not table_exists:
+                        logging.error("Таблица users не существует в базе данных")
+                        message_text = "⚠️ Ошибка: Таблица пользователей не найдена. Необходимо инициализировать базу данных."
+                    else:
+                        # Проверяем, есть ли записи в таблице
+                        cursor.execute("SELECT COUNT(*) FROM users")
+                        count = cursor.fetchone()[0]
+                        if count == 0:
+                            logging.error("Таблица users пуста, нет зарегистрированных пользователей")
+                            message_text = "⚠️ Ошибка: В системе нет зарегистрированных пользователей. Пользователь должен сначала использовать команду /start."
+                        else:
+                            logging.error(f"Пользователь {user_id} не найден в базе данных")
+                            message_text = f"⚠️ Ошибка: Пользователь с ID {user_id} не найден. Попросите его выполнить команду /start или /myid."
+                    
+                    conn.close()
+                    
                     await callback.message.edit_text(
-                        "⚠️ Ошибка: Данные пользователя не найдены в базе. Пожалуйста, попробуйте снова.",
+                        message_text,
                         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
                             [InlineKeyboardButton(text="⬅️ Вернуться", callback_data="admin")]
                         ])
@@ -1595,31 +1616,50 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
     data = await state.get_data()
     logging.info(f"Текущее состояние: {data}")
     
-    # Восстанавливаем ID записи из callback data
-    maintenance_id = None
-    vehicle_id = None
-    
-    if len(callback_parts) > 3:
-        try:
-            maintenance_id = int(callback_parts[3])
-            logging.info(f"Извлекаем ID ТО из callback: {maintenance_id}")
-            
-            # Получаем vehicle_id из базы данных напрямую
-            conn = sqlite3.connect('vehicles.db')
-            conn.row_factory = sqlite3.Row
-            cursor = conn.cursor()
-            cursor.execute("SELECT vehicle_id FROM maintenance WHERE id = ?", (maintenance_id,))
-            result = cursor.fetchone()
-            conn.close()
-            
-            if result:
-                vehicle_id = result['vehicle_id']
-                logging.info(f"Получен ID ТС из базы данных: {vehicle_id}")
-            else:
-                # Если запись не найдена, сообщаем об ошибке и выходим
-                logging.error(f"Запись ТО с ID={maintenance_id} не найдена в базе данных")
+    # Проверяем данные в состоянии (state)
+    if 'to_delete_maintenance_id' in data and 'to_vehicle_id' in data:
+        # Данные уже есть в state - используем их напрямую
+        maintenance_id = data['to_delete_maintenance_id']
+        vehicle_id = data['to_vehicle_id']
+        logging.info(f"Используем данные из state: ТО ID={maintenance_id}, ТС ID={vehicle_id}")
+    else:
+        # Если нет данных в state, пытаемся извлечь из callback
+        maintenance_id = None
+        vehicle_id = None
+        
+        if len(callback_parts) > 3:
+            try:
+                maintenance_id = int(callback_parts[3])
+                logging.info(f"Извлекаем ID ТО из callback: {maintenance_id}")
+                
+                # Получаем vehicle_id из базы данных напрямую по ID записи ТО
+                conn = sqlite3.connect('vehicles.db')
+                conn.row_factory = sqlite3.Row
+                cursor = conn.cursor()
+                cursor.execute("SELECT vehicle_id FROM maintenance WHERE id = ?", (maintenance_id,))
+                result = cursor.fetchone()
+                conn.close()
+                
+                if result:
+                    vehicle_id = result['vehicle_id']
+                    logging.info(f"Получен ID ТС из базы данных: {vehicle_id}")
+                else:
+                    # Если запись не найдена, сообщаем об ошибке и выходим
+                    logging.error(f"Запись ТО с ID={maintenance_id} не найдена в базе данных")
+                    await callback.message.edit_text(
+                        "⚠️ Ошибка: Запись о ТО не найдена. Возможно, она уже была удалена.",
+                        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                            [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+                        ])
+                    )
+                    await callback.answer()
+                    await state.clear()
+                    return
+            except (ValueError, IndexError) as e:
+                # Ошибка при извлечении ID из callback
+                logging.error(f"Ошибка при извлечении ID из callback: {e}")
                 await callback.message.edit_text(
-                    "⚠️ Ошибка: Запись о ТО не найдена. Возможно, она уже была удалена.",
+                    "⚠️ Ошибка: Не удалось определить ID записи. Пожалуйста, попробуйте снова.",
                     reply_markup=InlineKeyboardMarkup(inline_keyboard=[
                         [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
                     ])
@@ -1627,30 +1667,18 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
                 await callback.answer()
                 await state.clear()
                 return
-        except (ValueError, IndexError) as e:
-            # Если не удалось извлечь ID из callback, ищем в state
-            logging.error(f"Ошибка при извлечении ID из callback: {e}")
-            if 'to_delete_maintenance_id' in data and 'to_vehicle_id' in data:
-                # Используем имеющиеся ключи без изменений
-                maintenance_id = data['to_delete_maintenance_id']
-                vehicle_id = data['to_vehicle_id']
-                logging.info(f"Используем данные из state: ТО ID={maintenance_id}, ТС ID={vehicle_id}")
-            elif 'target_id' in data and 'target_vehicle_id' in data and data.get('target_action') == 'delete_maintenance':
-                maintenance_id = data['target_id']
-                vehicle_id = data['target_vehicle_id']
-                logging.info(f"Используем данные из унифицированных ключей: ТО ID={maintenance_id}, ТС ID={vehicle_id}")
-            else:
-                # Если не нашли данные ни в callback, ни в state
-                logging.error("Не удалось определить ID записи ТО и автомобиля")
-                await callback.message.edit_text(
-                    "⚠️ Ошибка: Данные о ТО не найдены. Пожалуйста, попробуйте снова.",
-                    reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                        [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
-                    ])
-                )
-                await callback.answer()
-                await state.clear()
-                return
+        else:
+            # Неверный формат callback_data
+            logging.error(f"Неверный формат callback_data: {callback.data}")
+            await callback.message.edit_text(
+                "⚠️ Ошибка: Некорректный формат данных. Пожалуйста, попробуйте снова.",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+                ])
+            )
+            await callback.answer()
+            await state.clear()
+            return
     else:
         # Данные не найдены ни в callback, ни в состоянии
         logging.error(f"Отсутствуют необходимые данные в состоянии и в callback")
