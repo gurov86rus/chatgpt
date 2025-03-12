@@ -68,12 +68,12 @@ def main():
     # Сбрасываем вебхук
     reset_webhook()
     
-    # Запускаем ультра минимальный бот
-    logger.info("Запускаем ультра минимальный бот...")
+    # Запускаем улучшенный бот
+    logger.info("Запускаем улучшенный бот...")
     try:
         # Запускаем бота напрямую, без subprocess
-        import ultra_minimal_bot
-        ultra_minimal_bot.main()
+        import enhanced_bot
+        enhanced_bot.main()
     except KeyboardInterrupt:
         logger.info("Бот остановлен пользователем")
     except Exception as e:
