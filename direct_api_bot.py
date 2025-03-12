@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
-import logging
 import requests
 import time
+import logging
 import json
 from datetime import datetime
 
@@ -13,13 +13,13 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler("telegram_only.log")
+        logging.FileHandler("direct_bot.log")
     ]
 )
 
 logger = logging.getLogger(__name__)
 
-class TelegramBot:
+class DirectTelegramBot:
     def __init__(self, token):
         self.token = token
         self.api_url = f"https://api.telegram.org/bot{token}/"
@@ -55,7 +55,9 @@ class TelegramBot:
     
     def get_updates(self, offset=None, timeout=30):
         """Получает обновления от Telegram"""
-        params = {"timeout": timeout}
+        params = {
+            "timeout": timeout
+        }
         if offset:
             params["offset"] = offset
         
@@ -94,31 +96,7 @@ class TelegramBot:
             f"Ваш ID: {user.get('id')}"
         )
         
-        # Создаем клавиатуру для начального меню
-        keyboard = {
-            "inline_keyboard": [
-                [{"text": "🚗 Список транспорта", "callback_data": "vehicles"}],
-                [{"text": "🔧 Создать ТС", "callback_data": "add_vehicle"}]
-            ]
-        }
-        
-        self.send_message(chat_id, response_text, keyboard)
-    
-    def handle_callback_query(self, callback_query):
-        """Обрабатывает нажатие на inline-кнопку"""
-        callback_id = callback_query["id"]
-        data = callback_query["data"]
-        chat_id = callback_query["message"]["chat"]["id"]
-        
-        # Отправляем пустой ответ на callback query, чтобы убрать индикатор загрузки
-        self.api_request("answerCallbackQuery", {"callback_query_id": callback_id})
-        
-        if data == "vehicles":
-            self.send_message(chat_id, "Список транспортных средств (заглушка)")
-        elif data == "add_vehicle":
-            self.send_message(chat_id, "Создание транспортного средства (заглушка)")
-        else:
-            self.send_message(chat_id, f"Неизвестное действие: {data}")
+        self.send_message(chat_id, response_text)
     
     def handle_message(self, message):
         """Обрабатывает входящее сообщение"""
@@ -132,11 +110,9 @@ class TelegramBot:
         if text == "/start":
             logger.info(f"Получена команда /start от пользователя {chat_id}")
             self.handle_start_command(message)
-        elif text == "/help":
-            self.send_message(chat_id, "Справка по использованию бота:\n\n/start - Начать использование бота\n/help - Показать эту справку")
         else:
             # Эхо-ответ для всех остальных сообщений
-            self.send_message(chat_id, f"Вы отправили: {text}\n\nИспользуйте /start для начала работы с ботом")
+            self.send_message(chat_id, f"Вы отправили: {text}\n\nЭто тестовый бот, используйте /start")
     
     def run(self):
         """Запускает цикл обработки сообщений"""
@@ -165,9 +141,6 @@ class TelegramBot:
                     # Обрабатываем сообщение
                     if "message" in update:
                         self.handle_message(update["message"])
-                    # Обрабатываем callback query (нажатие на inline-кнопку)
-                    elif "callback_query" in update:
-                        self.handle_callback_query(update["callback_query"])
             except KeyboardInterrupt:
                 logger.info("Получен сигнал прерывания, останавливаем бота")
                 self.running = False
@@ -178,28 +151,22 @@ class TelegramBot:
                 logger.error(traceback.format_exc())
                 time.sleep(5)  # Пауза перед следующей попыткой
 
-def stop_existing_bots():
-    """Останавливает все запущенные экземпляры ботов"""
-    try:
-        os.system("pkill -f 'python.*bot' || true")
-        time.sleep(1)
-    except Exception as e:
-        logger.error(f"Ошибка при остановке ботов: {e}")
-
 def main():
     # Получаем токен из переменных окружения
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    token = os.environ.get("TELEGRAM_BOT_TOKEN")
     if not token:
         logger.critical("TELEGRAM_BOT_TOKEN не найден в переменных окружения")
         return
     
-    logger.info("Запуск основного бота...")
-    
     # Останавливаем все запущенные боты
-    stop_existing_bots()
+    try:
+        os.system("pkill -f 'python.*bot' || true")
+        time.sleep(1)  # Даем время на остановку процессов
+    except Exception as e:
+        logger.error(f"Ошибка при остановке ботов: {e}")
     
     # Создаем экземпляр бота и запускаем его
-    bot = TelegramBot(token)
+    bot = DirectTelegramBot(token)
     bot.run()
 
 if __name__ == "__main__":
