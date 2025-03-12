@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+Основной скрипт для запуска полнофункционального Telegram бота автопарка
+"""
 import os
 import logging
 import subprocess
 import sys
-import time
+import asyncio
 
-# Настройка логирования
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),
-        logging.FileHandler("main_wrapper.log")
+        logging.FileHandler("telegram_bot.log")
     ]
 )
 
@@ -20,30 +22,47 @@ logger = logging.getLogger(__name__)
 
 def stop_existing_bots():
     """Останавливает все запущенные экземпляры ботов"""
+    logger.info("Останавливаем все запущенные боты...")
     try:
-        logger.info("Останавливаю все запущенные экземпляры ботов...")
-        os.system("pkill -f 'python.*bot' || true")
-        time.sleep(2)
-        logger.info("Все боты остановлены")
+        subprocess.run(["pkill", "-f", "python.*bot"], check=False)
+        logger.info("Боты остановлены")
+        return True
     except Exception as e:
         logger.error(f"Ошибка при остановке ботов: {e}")
+        return False
 
 def check_token():
     """Проверяет доступность токена"""
+    logger.info("Проверяем токен...")
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     if not token:
-        logger.critical("TELEGRAM_BOT_TOKEN не найден в переменных окружения")
+        try:
+            from config import TOKEN
+            token = TOKEN
+        except:
+            logger.error("Токен не найден ни в переменных окружения, ни в config.py")
+            return False
+    
+    if not token:
+        logger.error("Токен пустой")
         return False
     
-    logger.info(f"Токен найден, начинается с {token[:5]}...")
+    logger.info("Токен доступен")
     return True
 
 def reset_webhook():
     """Сбрасывает вебхук бота"""
+    logger.info("Сбрасываем вебхук...")
     try:
-        token = os.environ.get("TELEGRAM_BOT_TOKEN")
         import requests
-        response = requests.get(f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true")
+        token = os.environ.get("TELEGRAM_BOT_TOKEN")
+        if not token:
+            from config import TOKEN
+            token = TOKEN
+            
+        url = f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true"
+        response = requests.get(url)
+        
         if response.status_code == 200 and response.json().get("ok"):
             logger.info("Вебхук успешно сброшен")
             return True
@@ -55,31 +74,41 @@ def reset_webhook():
         return False
 
 def main():
-    """Основная функция запуска бота"""
-    logger.info("Начинаем запуск бота...")
+    """Основная функция"""
+    logger.info("Запускаем полнофункциональный бот автопарка...")
+    
+    # Останавливаем все запущенные боты
+    stop_existing_bots()
     
     # Проверяем токен
     if not check_token():
+        logger.error("Ошибка проверки токена. Бот не запущен.")
         return
-    
-    # Останавливаем существующие боты
-    stop_existing_bots()
     
     # Сбрасываем вебхук
     reset_webhook()
     
-    # Запускаем стабильную версию бота
-    logger.info("Запускаем стабильную версию бота...")
+    # Запускаем полнофункциональный бот
     try:
-        # Запускаем бота напрямую, без subprocess
-        import stable_bot
-        stable_bot.main()
-    except KeyboardInterrupt:
-        logger.info("Бот остановлен пользователем")
+        import asyncio
+        # Пробуем загрузить основной модуль бота
+        try:
+            import telegram_bot
+            logger.info("Запускаем telegram_bot.py")
+            asyncio.run(telegram_bot.main())
+        except ImportError:
+            try:
+                import main_db
+                logger.info("Запускаем main_db.py")
+                asyncio.run(main_db.main())
+            except ImportError:
+                import fixed_bot
+                logger.info("Запускаем fixed_bot.py")
+                asyncio.run(fixed_bot.main())
     except Exception as e:
         logger.error(f"Ошибка при запуске бота: {e}")
-    
-    logger.info("Работа скрипта завершена")
+        import traceback
+        logger.error(traceback.format_exc())
 
 if __name__ == "__main__":
     main()
