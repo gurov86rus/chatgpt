@@ -1,8 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Load vehicles list first
-    fetch('/api/vehicles')
-        .then(response => response.json())
+    // Determine the base URL
+    const baseUrl = location.hostname.includes('replit') ? 
+                   location.origin : // If on replit, use the current origin
+                   ''; // Otherwise use relative path (for local development)
+    
+    console.log('Using base URL:', baseUrl);
+    
+    // Load vehicles list first with proper error handling
+    fetch(`${baseUrl}/api/vehicles`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(vehicles => {
+            console.log('Vehicles loaded:', vehicles);
             if (vehicles && vehicles.length > 0) {
                 // Select the first vehicle by default
                 loadVehicleData(vehicles[0].id);
@@ -60,24 +73,47 @@ function createVehicleSelector(vehicles) {
 }
 
 function loadVehicleData(vehicleId) {
+    // Get the base URL from the top level scope
+    const baseUrl = location.hostname.includes('replit') ? 
+                  location.origin : // If on replit, use the current origin
+                  ''; // Otherwise use relative path (for local development)
+    
     // Load vehicle info
-    fetch(`/api/vehicle/${vehicleId}`)
-        .then(response => response.json())
+    fetch(`${baseUrl}/api/vehicle/${vehicleId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Vehicle info loaded:', data);
             displayVehicleInfo(data);
             
             // Also load maintenance history
-            return fetch(`/api/maintenance/${vehicleId}`);
+            return fetch(`${baseUrl}/api/maintenance/${vehicleId}`);
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Maintenance data loaded:', data);
             displayMaintenanceHistory(data);
             
             // Also load fuel history
-            return fetch(`/api/fuel/${vehicleId}`);
+            return fetch(`${baseUrl}/api/fuel/${vehicleId}`);
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Fuel data loaded:', data);
             displayFuelStats(data);
         })
         .catch(error => {

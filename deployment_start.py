@@ -163,9 +163,14 @@ def main():
     if not init_db():
         logger.warning("Инициализация базы данных не удалась. Возможны проблемы с функциональностью.")
     
+    # Получаем информацию о домене Replit
+    replit_domain = os.environ.get("REPLIT_DOMAINS", "").split(",")[0]
+    logger.info(f"Домен Replit для доступа извне: {replit_domain}")
+    
     # Запускаем Flask-приложение
     logger.info(f"Запуск веб-сервера на порту {WEB_PORT} (режим: только веб)")
     try:
+        logger.info(f"Веб-интерфейс будет доступен по адресу: http://{replit_domain if replit_domain else '0.0.0.0'}:{WEB_PORT}")
         app.run(host='0.0.0.0', port=WEB_PORT, threaded=True)
     except Exception as e:
         logger.error(f"Ошибка при запуске веб-сервера: {e}")

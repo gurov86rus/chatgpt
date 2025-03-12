@@ -1,14 +1,44 @@
 import os
-from flask import Flask, render_template, jsonify, request
+import logging
+from flask import Flask, render_template, jsonify, request, make_response
 import db_operations as db
 from db_init import init_database
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('web_application.log')
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Initialize the database
 init_database()
 
+# Get Replit domain
+replit_domain = os.environ.get("REPLIT_DOMAINS", "").split(",")[0]
+logger.info(f"Replit domain: {replit_domain}")
+
 # Create Flask app
-app = Flask(__name__)
+app = Flask(__name__, 
+            static_folder='static',
+            static_url_path='/static')
 app.secret_key = os.environ.get("SESSION_SECRET", "secret-key-for-flask-app")
+
+# CORS support for all routes
+@app.after_request
+def add_cors_headers(response):
+    origin = request.headers.get('Origin')
+    logger.info(f"Request from origin: {origin}")
+    
+    # Allow all origins for now
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
 
 @app.route('/')
 def index():
