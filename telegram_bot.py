@@ -11,6 +11,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 from config import TOKEN
 from db_init import init_database
+import utils
 from utils import days_until, format_days_remaining, get_to_interval_based_on_mileage, edit_fuel_info
 
 # Configure logging
@@ -1406,6 +1407,7 @@ async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext
 @admin_required
 async def edit_fuel_start(callback: types.CallbackQuery, state: FSMContext):
     """Start fuel information editing process"""
+    # Correctly parse id from edit_fuel_{id} pattern
     vehicle_id = int(callback.data.split("_")[2])
     await state.update_data(vehicle_id=vehicle_id)
     
@@ -1533,7 +1535,7 @@ async def generate_pdf_report(callback: types.CallbackQuery):
         
         await callback.answer("✅ Отчет успешно сгенерирован!")
     except Exception as e:
-        logger.error(f"Error generating report: {e}")
+        logging.error(f"Error generating report: {e}")
         await callback.message.answer(f"❌ Ошибка при генерации отчета: {str(e)}")
         await callback.answer("❌ Ошибка при генерации отчета")
 
