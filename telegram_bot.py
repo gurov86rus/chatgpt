@@ -1602,9 +1602,15 @@ async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMCo
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("confirm_delete_maintenance_"))
-@admin_required
+# Убираем декоратор admin_required отсюда, чтобы избежать путаницы с ID
 async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMContext):
     """Handler for executing maintenance record deletion"""
+    # Сначала проверим права администратора напрямую
+    user_id = callback.from_user.id
+    if not is_admin(user_id):
+        await callback.answer("⚠️ У вас нет прав администратора для выполнения этой операции", show_alert=True)
+        return
+        
     # Добавляем подробное логирование
     logging.info(f"Получен callback: {callback.data}")
     callback_parts = callback.data.split("_")
