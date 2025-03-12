@@ -1,6 +1,7 @@
 import logging
 import sqlite3
 import asyncio
+import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -15,6 +16,29 @@ logging.basicConfig(level=logging.INFO)
 
 # Ensure database is initialized
 init_database()
+
+# Admin list - add your Telegram ID here
+ADMIN_IDS = [123456789]  # Замените на ваш Telegram ID
+
+# Function to check if user is admin
+def is_admin(user_id):
+    """Check if user is admin"""
+    return user_id in ADMIN_IDS
+
+# Decorator for admin-only functions
+def admin_required(func):
+    """Decorator to restrict function to admins only"""
+    async def wrapper(event, *args, **kwargs):
+        user_id = event.from_user.id
+        if not is_admin(user_id):
+            if isinstance(event, types.CallbackQuery):
+                await event.answer("⚠️ У вас нет прав администратора для выполнения этой операции", show_alert=True)
+                return
+            elif isinstance(event, types.Message):
+                await event.answer("⚠️ У вас нет прав администратора для выполнения этой операции")
+                return
+        return await func(event, *args, **kwargs)
+    return wrapper
 
 # Initialize bot and dispatcher
 bot = Bot(token=TOKEN)
@@ -70,8 +94,14 @@ def get_vehicle_buttons():
     
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
-def get_vehicle_card(vehicle_id):
-    """Generate detailed vehicle information card with all available data"""
+def get_vehicle_card(vehicle_id, user_id=None):
+    """
+    Generate detailed vehicle information card with all available data
+    
+    Args:
+        vehicle_id (int): Vehicle ID
+        user_id (int, optional): User ID, to check admin rights
+    """
     conn = sqlite3.connect('vehicles.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
@@ -170,14 +200,30 @@ def get_vehicle_card(vehicle_id):
     else:
         card += "🔹 Нет данных о ремонтах\n"
     
-    # Create action keyboard
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🔄 Обновить пробег", callback_data=f"update_mileage_{vehicle_id}")],
-        [InlineKeyboardButton(text="➕ Добавить ТО", callback_data=f"add_to_{vehicle_id}")],
-        [InlineKeyboardButton(text="🛠 Добавить ремонт", callback_data=f"add_repair_{vehicle_id}")],
-        [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f"edit_{vehicle_id}")],
-        [InlineKeyboardButton(text="⬅ Назад к списку", callback_data="back")]
-    ])
+    # Create action keyboard based on user's admin status
+    keyboard_buttons = []
+    
+    # Check if user is admin
+    is_user_admin = is_admin(user_id) if user_id is not None else False
+    
+    # For regular users, only show back button
+    if not is_user_admin:
+        keyboard_buttons = [
+            [InlineKeyboardButton(text="⬅ Назад к списку", callback_data="back")]
+        ]
+    else:
+        # For admins, show all control buttons
+        keyboard_buttons = [
+            [InlineKeyboardButton(text="🔄 Обновить пробег", callback_data=f"update_mileage_{vehicle_id}")],
+            [InlineKeyboardButton(text="➕ Добавить ТО", callback_data=f"add_to_{vehicle_id}")],
+            [InlineKeyboardButton(text="🛠 Добавить ремонт", callback_data=f"add_repair_{vehicle_id}")],
+            [InlineKeyboardButton(text="✏️ Редактировать ТС", callback_data=f"edit_{vehicle_id}")],
+            [InlineKeyboardButton(text="📋 Управление ТО", callback_data=f"manage_to_{vehicle_id}")],
+            [InlineKeyboardButton(text="🔧 Управление ремонтами", callback_data=f"manage_repairs_{vehicle_id}")],
+            [InlineKeyboardButton(text="⬅ Назад к списку", callback_data="back")]
+        ]
+    
+    keyboard = InlineKeyboardMarkup(inline_keyboard=keyboard_buttons)
     
     conn.close()
     return card, keyboard
@@ -222,7 +268,8 @@ async def help_command(message: types.Message):
 async def show_vehicle(callback: types.CallbackQuery):
     """Handler for vehicle selection"""
     vehicle_id = int(callback.data.split("_")[1])
-    card, keyboard = get_vehicle_card(vehicle_id)
+    user_id = callback.from_user.id
+    card, keyboard = get_vehicle_card(vehicle_id, user_id)
     
     await callback.message.edit_text(
         card,
@@ -242,6 +289,7 @@ async def back_to_menu(callback: types.CallbackQuery):
 
 # Update mileage handlers
 @dp.callback_query(lambda c: c.data.startswith("update_mileage_"))
+@admin_required
 async def update_mileage_start(callback: types.CallbackQuery, state: FSMContext):
     """Start mileage update process"""
     vehicle_id = int(callback.data.split("_")[2])
@@ -399,22 +447,59 @@ async def add_repair_start(callback: types.CallbackQuery, state: FSMContext):
 
 @dp.message(RepairState.date)
 async def process_repair_date(message: types.Message, state: FSMContext):
-    """Process repair date input"""
-    await state.update_data(date=message.text)
-    await message.answer(
-        "🔢 Введите текущий пробег на момент ремонта (в км):"
-    )
+    """Process repair date input for adding new repair"""
+    data = await state.get_data()
+    
+    # Check if we're editing an existing repair
+    if 'repair_id' in data:
+        # Handle edit mode
+        if message.text.strip() == "":
+            await state.update_data(new_date=data['current_date'])
+        else:
+            await state.update_data(new_date=message.text)
+        
+        await message.answer(
+            f"🔢 **Текущий пробег:** {data['current_mileage']} км\n\n"
+            f"Введите новое значение пробега в км (или оставьте текущее):",
+            parse_mode="Markdown"
+        )
+    else:
+        # Handle add mode
+        await state.update_data(date=message.text)
+        await message.answer(
+            "🔢 Введите текущий пробег на момент ремонта (в км):"
+        )
+    
     await state.set_state(RepairState.mileage)
 
 @dp.message(RepairState.mileage)
 async def process_repair_mileage(message: types.Message, state: FSMContext):
     """Process repair mileage input"""
+    data = await state.get_data()
+    
     try:
-        mileage = int(message.text)
-        await state.update_data(mileage=mileage)
-        await message.answer(
-            "📝 Опишите выполненные ремонтные работы:"
-        )
+        # Check if we're editing an existing repair
+        if 'repair_id' in data:
+            # Handle edit mode - use current mileage if input is empty
+            if message.text.strip() == "":
+                await state.update_data(new_mileage=data['current_mileage'])
+            else:
+                new_mileage = int(message.text)
+                await state.update_data(new_mileage=new_mileage)
+            
+            await message.answer(
+                f"📝 **Текущее описание ремонта:**\n{data['current_description']}\n\n"
+                f"Введите новое описание выполненных работ (или оставьте текущее):",
+                parse_mode="Markdown"
+            )
+        else:
+            # Handle add mode
+            mileage = int(message.text)
+            await state.update_data(mileage=mileage)
+            await message.answer(
+                "📝 Опишите выполненные ремонтные работы:"
+            )
+        
         await state.set_state(RepairState.description)
     except ValueError:
         await message.answer(
@@ -425,36 +510,89 @@ async def process_repair_mileage(message: types.Message, state: FSMContext):
 @dp.message(RepairState.description)
 async def process_repair_description(message: types.Message, state: FSMContext):
     """Process repair description input"""
-    await state.update_data(description=message.text)
-    await message.answer(
-        "💰 Укажите стоимость ремонта в рублях (или введите 0, если неизвестно):"
-    )
+    data = await state.get_data()
+    
+    # Check if we're editing an existing repair
+    if 'repair_id' in data:
+        # Handle edit mode - use current description if input is empty
+        if message.text.strip() == "":
+            await state.update_data(new_description=data['current_description'])
+        else:
+            await state.update_data(new_description=message.text)
+        
+        await message.answer(
+            f"💰 **Текущая стоимость:** {data['current_cost']} ₽\n\n"
+            f"Введите новую стоимость ремонта в рублях (или оставьте текущую, или введите 0):",
+            parse_mode="Markdown"
+        )
+    else:
+        # Handle add mode
+        await state.update_data(description=message.text)
+        await message.answer(
+            "💰 Укажите стоимость ремонта в рублях (или введите 0, если неизвестно):"
+        )
+    
     await state.set_state(RepairState.cost)
 
 @dp.message(RepairState.cost)
 async def process_repair_cost(message: types.Message, state: FSMContext):
     """Process repair cost input and save record"""
     try:
-        cost = int(message.text)
         data = await state.get_data()
-        vehicle_id = data["vehicle_id"]
         
-        conn = sqlite3.connect('vehicles.db')
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO repairs (vehicle_id, date, mileage, description, cost) VALUES (?, ?, ?, ?, ?)",
-            (vehicle_id, data["date"], data["mileage"], data["description"], cost if cost > 0 else None)
-        )
-        conn.commit()
-        conn.close()
-        
-        await state.clear()
-        await message.answer(
-            "✅ Запись о ремонте успешно добавлена!",
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="🔙 Вернуться к карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
-            ])
-        )
+        # Check if we're editing an existing repair
+        if 'repair_id' in data:
+            # Handle edit mode
+            if message.text.strip() == "":
+                new_cost = data['current_cost']
+            else:
+                new_cost = int(message.text)
+            
+            # Update repair record
+            conn = sqlite3.connect('vehicles.db')
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE repairs SET date = ?, mileage = ?, description = ?, cost = ? WHERE id = ?",
+                (
+                    data['new_date'], 
+                    data['new_mileage'], 
+                    data['new_description'], 
+                    new_cost if new_cost > 0 else None,
+                    data['repair_id']
+                )
+            )
+            conn.commit()
+            conn.close()
+            
+            await state.clear()
+            await message.answer(
+                "✅ Запись о ремонте успешно обновлена!",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="🔧 К списку ремонтов", callback_data=f"manage_repairs_{data['vehicle_id']}")],
+                    [InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{data['vehicle_id']}")]
+                ])
+            )
+        else:
+            # Handle add mode
+            cost = int(message.text)
+            vehicle_id = data["vehicle_id"]
+            
+            conn = sqlite3.connect('vehicles.db')
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO repairs (vehicle_id, date, mileage, description, cost) VALUES (?, ?, ?, ?, ?)",
+                (vehicle_id, data["date"], data["mileage"], data["description"], cost if cost > 0 else None)
+            )
+            conn.commit()
+            conn.close()
+            
+            await state.clear()
+            await message.answer(
+                "✅ Запись о ремонте успешно добавлена!",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="🔙 Вернуться к карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
+                ])
+            )
     except ValueError:
         await message.answer(
             "⚠️ Ошибка: Введите число без дополнительных символов.\n\n"
@@ -462,7 +600,7 @@ async def process_repair_cost(message: types.Message, state: FSMContext):
         )
 
 # Edit vehicle handlers
-@dp.callback_query(lambda c: c.data.startswith("edit_") and not c.data.startswith("edit_field_"))
+@dp.callback_query(lambda c: c.data.startswith("edit_") and not c.data.startswith("edit_field_") and not c.data.startswith("edit_repair_") and not c.data.startswith("edit_maintenance_"))
 async def edit_vehicle_start(callback: types.CallbackQuery, state: FSMContext):
     """Start vehicle editing process"""
     vehicle_id = int(callback.data.split("_")[1])
@@ -637,6 +775,528 @@ async def process_edit_value(message: types.Message, state: FSMContext):
             "⚠️ Ошибка: Неверный формат данных. Пожалуйста, введите корректное значение.\n\n"
             "Попробуйте снова:"
         )
+
+# Maintenance Management Handlers
+@dp.callback_query(lambda c: c.data.startswith("manage_to_"))
+async def manage_maintenance(callback: types.CallbackQuery):
+    """Handler for managing maintenance records"""
+    vehicle_id = int(callback.data.split("_")[2])
+    
+    # Get maintenance records
+    conn = sqlite3.connect('vehicles.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, date, mileage, works FROM maintenance 
+        WHERE vehicle_id = ? 
+        ORDER BY date DESC, mileage DESC
+    """, (vehicle_id,))
+    maintenance_records = cursor.fetchall()
+    conn.close()
+    
+    # Create keyboard with maintenance records
+    keyboard = []
+    if maintenance_records:
+        for record in maintenance_records:
+            # Limit works description to 30 chars
+            works_short = record['works'][:30] + ('...' if len(record['works']) > 30 else '')
+            keyboard.append([
+                InlineKeyboardButton(
+                    text=f"📅 {record['date']} | {record['mileage']} км | {works_short}", 
+                    callback_data=f"maintenance_{record['id']}"
+                )
+            ])
+    else:
+        keyboard.append([
+            InlineKeyboardButton(
+                text="🔹 Нет записей о ТО", 
+                callback_data=f"no_action"
+            )
+        ])
+    
+    # Add back button
+    keyboard.append([
+        InlineKeyboardButton(
+            text="⬅ Назад к ТС", 
+            callback_data=f"vehicle_{vehicle_id}"
+        )
+    ])
+    
+    await callback.message.edit_text(
+        "📋 **Управление записями о ТО**\n\n"
+        "Выберите запись для просмотра:",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
+        parse_mode="Markdown"
+    )
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("maintenance_"))
+async def show_maintenance_record(callback: types.CallbackQuery):
+    """Handler for showing maintenance record details"""
+    maintenance_id = int(callback.data.split("_")[1])
+    
+    # Get maintenance record
+    conn = sqlite3.connect('vehicles.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT m.id, m.date, m.mileage, m.works, m.vehicle_id, v.model, v.reg_number
+        FROM maintenance m
+        JOIN vehicles v ON m.vehicle_id = v.id
+        WHERE m.id = ?
+    """, (maintenance_id,))
+    record = cursor.fetchone()
+    conn.close()
+    
+    if not record:
+        await callback.answer("⚠️ Запись не найдена")
+        return
+    
+    # Create keyboard with actions
+    keyboard = [
+        [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f"edit_maintenance_{maintenance_id}")],
+        [InlineKeyboardButton(text="🗑 Удалить", callback_data=f"delete_maintenance_{maintenance_id}")],
+        [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_to_{record['vehicle_id']}")]
+    ]
+    
+    await callback.message.edit_text(
+        f"📋 **Запись о ТО #{maintenance_id}**\n\n"
+        f"🚗 **ТС:** {record['model']} ({record['reg_number']})\n"
+        f"📅 **Дата:** {record['date']}\n"
+        f"🔢 **Пробег:** {record['mileage']} км\n\n"
+        f"📝 **Выполненные работы:**\n{record['works']}",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
+        parse_mode="Markdown"
+    )
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("edit_maintenance_"))
+async def edit_maintenance_start(callback: types.CallbackQuery, state: FSMContext):
+    """Handler for starting maintenance record edit"""
+    maintenance_id = int(callback.data.split("_")[2])
+    
+    # Get maintenance record
+    conn = sqlite3.connect('vehicles.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, date, mileage, works, vehicle_id FROM maintenance WHERE id = ?", (maintenance_id,))
+    record = cursor.fetchone()
+    conn.close()
+    
+    if not record:
+        await callback.answer("⚠️ Запись не найдена")
+        return
+    
+    # Save record data to state
+    await state.update_data(
+        maintenance_id=maintenance_id,
+        vehicle_id=record['vehicle_id'],
+        current_date=record['date'],
+        current_mileage=record['mileage'],
+        current_works=record['works']
+    )
+    
+    await callback.message.edit_text(
+        f"✏️ **Редактирование записи о ТО #{maintenance_id}**\n\n"
+        f"Текущая дата: {record['date']}\n\n"
+        f"Введите новую дату в формате ДД.ММ.ГГГГ (или оставьте текущую):",
+        parse_mode="Markdown"
+    )
+    
+    await state.set_state(MaintenanceEditState.date)
+    await callback.answer()
+
+@dp.message(MaintenanceEditState.date)
+async def process_maintenance_edit_date(message: types.Message, state: FSMContext):
+    """Process maintenance edit date input"""
+    data = await state.get_data()
+    
+    # Use current date if input is empty
+    if message.text.strip() == "":
+        await state.update_data(new_date=data['current_date'])
+    else:
+        await state.update_data(new_date=message.text)
+    
+    await message.answer(
+        f"🔢 **Текущий пробег:** {data['current_mileage']} км\n\n"
+        f"Введите новое значение пробега в км (или оставьте текущее):",
+        parse_mode="Markdown"
+    )
+    await state.set_state(MaintenanceEditState.mileage)
+
+@dp.message(MaintenanceEditState.mileage)
+async def process_maintenance_edit_mileage(message: types.Message, state: FSMContext):
+    """Process maintenance edit mileage input"""
+    data = await state.get_data()
+    
+    try:
+        # Use current mileage if input is empty
+        if message.text.strip() == "":
+            await state.update_data(new_mileage=data['current_mileage'])
+        else:
+            new_mileage = int(message.text)
+            await state.update_data(new_mileage=new_mileage)
+        
+        await message.answer(
+            f"📝 **Текущее описание работ:**\n{data['current_works']}\n\n"
+            f"Введите новое описание выполненных работ (или оставьте текущее):",
+            parse_mode="Markdown"
+        )
+        await state.set_state(MaintenanceEditState.works)
+    except ValueError:
+        await message.answer(
+            "⚠️ Ошибка: Введите число без дополнительных символов.\n\n"
+            "Попробуйте снова:"
+        )
+
+@dp.message(MaintenanceEditState.works)
+async def process_maintenance_edit_works(message: types.Message, state: FSMContext):
+    """Process maintenance edit works input and save changes"""
+    data = await state.get_data()
+    
+    # Use current works if input is empty
+    if message.text.strip() == "":
+        new_works = data['current_works']
+    else:
+        new_works = message.text
+    
+    # Update maintenance record
+    conn = sqlite3.connect('vehicles.db')
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE maintenance SET date = ?, mileage = ?, works = ? WHERE id = ?",
+        (data['new_date'], data['new_mileage'], new_works, data['maintenance_id'])
+    )
+    
+    # If this is the most recent maintenance, update vehicle's last_to_date
+    cursor.execute("""
+        SELECT id FROM maintenance 
+        WHERE vehicle_id = ? 
+        ORDER BY date DESC, mileage DESC 
+        LIMIT 1
+    """, (data['vehicle_id'],))
+    latest_maintenance = cursor.fetchone()
+    
+    if latest_maintenance and latest_maintenance[0] == data['maintenance_id']:
+        cursor.execute(
+            "UPDATE vehicles SET last_to_date = ? WHERE id = ?",
+            (data['new_date'], data['vehicle_id'])
+        )
+    
+    conn.commit()
+    conn.close()
+    
+    await state.clear()
+    
+    await message.answer(
+        "✅ Запись о техническом обслуживании успешно обновлена!",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="📋 К списку ТО", callback_data=f"manage_to_{data['vehicle_id']}")],
+            [InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{data['vehicle_id']}")]
+        ])
+    )
+
+@dp.callback_query(lambda c: c.data.startswith("delete_maintenance_"))
+async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMContext):
+    """Handler for confirming maintenance record deletion"""
+    maintenance_id = int(callback.data.split("_")[2])
+    
+    # Get maintenance record
+    conn = sqlite3.connect('vehicles.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, date, mileage, works, vehicle_id FROM maintenance WHERE id = ?", (maintenance_id,))
+    record = cursor.fetchone()
+    conn.close()
+    
+    if not record:
+        await callback.answer("⚠️ Запись не найдена")
+        return
+    
+    # Save maintenance_id and vehicle_id to state
+    await state.update_data(
+        maintenance_id=maintenance_id,
+        vehicle_id=record['vehicle_id']
+    )
+    await state.set_state(MaintenanceDeleteState.maintenance_id)
+    
+    # Create confirmation keyboard
+    keyboard = [
+        [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"confirm_delete_maintenance_{maintenance_id}")],
+        [InlineKeyboardButton(text="❌ Отмена", callback_data=f"maintenance_{maintenance_id}")]
+    ]
+    
+    await callback.message.edit_text(
+        f"⚠️ **Подтверждение удаления**\n\n"
+        f"Вы действительно хотите удалить запись о ТО от {record['date']} (пробег: {record['mileage']} км)?\n\n"
+        f"Это действие нельзя отменить.",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
+        parse_mode="Markdown"
+    )
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("confirm_delete_maintenance_"))
+async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMContext):
+    """Handler for executing maintenance record deletion"""
+    data = await state.get_data()
+    vehicle_id = data['vehicle_id']
+    maintenance_id = data['maintenance_id']
+    
+    # Delete maintenance record
+    conn = sqlite3.connect('vehicles.db')
+    cursor = conn.cursor()
+    
+    # Check if this is the latest maintenance record
+    cursor.execute("""
+        SELECT id FROM maintenance 
+        WHERE vehicle_id = ? 
+        ORDER BY date DESC, mileage DESC 
+        LIMIT 1
+    """, (vehicle_id,))
+    latest_maintenance = cursor.fetchone()
+    
+    # Delete the record
+    cursor.execute("DELETE FROM maintenance WHERE id = ?", (maintenance_id,))
+    
+    # If this was the latest record, update the vehicle's last_to_date
+    if latest_maintenance and latest_maintenance[0] == maintenance_id:
+        # Get the new latest record
+        cursor.execute("""
+            SELECT date FROM maintenance 
+            WHERE vehicle_id = ? 
+            ORDER BY date DESC, mileage DESC 
+            LIMIT 1
+        """, (vehicle_id,))
+        new_latest = cursor.fetchone()
+        
+        if new_latest:
+            cursor.execute(
+                "UPDATE vehicles SET last_to_date = ? WHERE id = ?",
+                (new_latest[0], vehicle_id)
+            )
+        else:
+            cursor.execute(
+                "UPDATE vehicles SET last_to_date = NULL WHERE id = ?",
+                (vehicle_id,)
+            )
+    
+    conn.commit()
+    conn.close()
+    
+    await state.clear()
+    
+    await callback.message.edit_text(
+        "✅ Запись о техническом обслуживании успешно удалена!",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="📋 К списку ТО", callback_data=f"manage_to_{vehicle_id}")],
+            [InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
+        ])
+    )
+    await callback.answer()
+
+# Repair Management Handlers
+@dp.callback_query(lambda c: c.data.startswith("manage_repairs_"))
+async def manage_repairs(callback: types.CallbackQuery):
+    """Handler for managing repair records"""
+    vehicle_id = int(callback.data.split("_")[2])
+    
+    # Get repair records
+    conn = sqlite3.connect('vehicles.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, date, mileage, description, cost FROM repairs 
+        WHERE vehicle_id = ? 
+        ORDER BY date DESC, mileage DESC
+    """, (vehicle_id,))
+    repair_records = cursor.fetchall()
+    conn.close()
+    
+    # Create keyboard with repair records
+    keyboard = []
+    if repair_records:
+        for record in repair_records:
+            # Limit description to 30 chars
+            desc_short = record['description'][:30] + ('...' if len(record['description']) > 30 else '')
+            cost_text = f" | {record['cost']} ₽" if record['cost'] else ""
+            keyboard.append([
+                InlineKeyboardButton(
+                    text=f"🛠 {record['date']} | {record['mileage']} км{cost_text}", 
+                    callback_data=f"repair_{record['id']}"
+                )
+            ])
+    else:
+        keyboard.append([
+            InlineKeyboardButton(
+                text="🔹 Нет записей о ремонтах", 
+                callback_data=f"no_action"
+            )
+        ])
+    
+    # Add back button
+    keyboard.append([
+        InlineKeyboardButton(
+            text="⬅ Назад к ТС", 
+            callback_data=f"vehicle_{vehicle_id}"
+        )
+    ])
+    
+    await callback.message.edit_text(
+        "🔧 **Управление записями о ремонтах**\n\n"
+        "Выберите запись для просмотра:",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
+        parse_mode="Markdown"
+    )
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data == "no_action")
+async def no_action(callback: types.CallbackQuery):
+    """Handler for empty action"""
+    await callback.answer("Нет доступных записей")
+
+@dp.callback_query(lambda c: c.data.startswith("repair_"))
+async def show_repair_record(callback: types.CallbackQuery):
+    """Handler for showing repair record details"""
+    repair_id = int(callback.data.split("_")[1])
+    
+    # Get repair record
+    conn = sqlite3.connect('vehicles.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT r.id, r.date, r.mileage, r.description, r.cost, r.vehicle_id, v.model, v.reg_number
+        FROM repairs r
+        JOIN vehicles v ON r.vehicle_id = v.id
+        WHERE r.id = ?
+    """, (repair_id,))
+    record = cursor.fetchone()
+    conn.close()
+    
+    if not record:
+        await callback.answer("⚠️ Запись не найдена")
+        return
+    
+    # Format cost display
+    cost_display = f"{record['cost']} ₽" if record['cost'] else "Не указана"
+    
+    # Create keyboard with actions
+    keyboard = [
+        [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f"edit_repair_{repair_id}")],
+        [InlineKeyboardButton(text="🗑 Удалить", callback_data=f"delete_repair_{repair_id}")],
+        [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_repairs_{record['vehicle_id']}")]
+    ]
+    
+    await callback.message.edit_text(
+        f"🛠 **Запись о ремонте #{repair_id}**\n\n"
+        f"🚗 **ТС:** {record['model']} ({record['reg_number']})\n"
+        f"📅 **Дата:** {record['date']}\n"
+        f"🔢 **Пробег:** {record['mileage']} км\n"
+        f"💰 **Стоимость:** {cost_display}\n\n"
+        f"📝 **Описание работ:**\n{record['description']}",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
+        parse_mode="Markdown"
+    )
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("edit_repair_"))
+async def edit_repair_start(callback: types.CallbackQuery, state: FSMContext):
+    """Handler for starting repair record edit"""
+    repair_id = int(callback.data.split("_")[2])
+    
+    # Get repair record
+    conn = sqlite3.connect('vehicles.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, date, mileage, description, cost, vehicle_id FROM repairs WHERE id = ?", (repair_id,))
+    record = cursor.fetchone()
+    conn.close()
+    
+    if not record:
+        await callback.answer("⚠️ Запись не найдена")
+        return
+    
+    # Save record data to state
+    await state.update_data(
+        repair_id=repair_id,
+        vehicle_id=record['vehicle_id'],
+        current_date=record['date'],
+        current_mileage=record['mileage'],
+        current_description=record['description'],
+        current_cost=record['cost'] or 0
+    )
+    
+    await callback.message.edit_text(
+        f"✏️ **Редактирование записи о ремонте #{repair_id}**\n\n"
+        f"Текущая дата: {record['date']}\n\n"
+        f"Введите новую дату в формате ДД.ММ.ГГГГ (или оставьте текущую):",
+        parse_mode="Markdown"
+    )
+    
+    await state.set_state(RepairState.date)
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("delete_repair_"))
+async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext):
+    """Handler for confirming repair record deletion"""
+    repair_id = int(callback.data.split("_")[2])
+    
+    # Get repair record
+    conn = sqlite3.connect('vehicles.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, date, mileage, description, vehicle_id FROM repairs WHERE id = ?", (repair_id,))
+    record = cursor.fetchone()
+    conn.close()
+    
+    if not record:
+        await callback.answer("⚠️ Запись не найдена")
+        return
+    
+    # Save repair_id and vehicle_id to state
+    await state.update_data(
+        repair_id=repair_id,
+        vehicle_id=record['vehicle_id']
+    )
+    
+    # Create confirmation keyboard
+    keyboard = [
+        [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"confirm_delete_repair_{repair_id}")],
+        [InlineKeyboardButton(text="❌ Отмена", callback_data=f"repair_{repair_id}")]
+    ]
+    
+    await callback.message.edit_text(
+        f"⚠️ **Подтверждение удаления**\n\n"
+        f"Вы действительно хотите удалить запись о ремонте от {record['date']} (пробег: {record['mileage']} км)?\n\n"
+        f"Это действие нельзя отменить.",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
+        parse_mode="Markdown"
+    )
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("confirm_delete_repair_"))
+async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext):
+    """Handler for executing repair record deletion"""
+    data = await state.get_data()
+    vehicle_id = data['vehicle_id']
+    repair_id = data['repair_id']
+    
+    # Delete repair record
+    conn = sqlite3.connect('vehicles.db')
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
+    conn.commit()
+    conn.close()
+    
+    await state.clear()
+    
+    await callback.message.edit_text(
+        "✅ Запись о ремонте успешно удалена!",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="🔧 К списку ремонтов", callback_data=f"manage_repairs_{vehicle_id}")],
+            [InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
+        ])
+    )
+    await callback.answer()
 
 # Main function to run the bot
 async def main():
