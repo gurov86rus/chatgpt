@@ -781,7 +781,6 @@ async def process_edit_value(message: types.Message, state: FSMContext):
 
 # Maintenance Management Handlers
 @dp.callback_query(lambda c: c.data.startswith("manage_to_"))
-@admin_required
 async def manage_maintenance(callback: types.CallbackQuery):
     """Handler for managing maintenance records"""
     vehicle_id = int(callback.data.split("_")[2])
