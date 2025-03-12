@@ -1733,55 +1733,65 @@ async def no_action(callback: types.CallbackQuery):
 @dp.callback_query(lambda c: c.data.startswith("repair_"))
 async def show_repair_record(callback: types.CallbackQuery):
     """Handler for showing repair record details"""
-    repair_id = int(callback.data.split("_")[1])
-    
-    # Get repair record
-    conn = sqlite3.connect('vehicles.db')
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT r.id, r.date, r.mileage, r.description, r.cost, r.vehicle_id, v.model, v.reg_number
-        FROM repairs r
-        JOIN vehicles v ON r.vehicle_id = v.id
-        WHERE r.id = ?
-    """, (repair_id,))
-    record = cursor.fetchone()
-    conn.close()
-    
-    if not record:
-        await callback.answer("⚠️ Запись не найдена")
-        return
-    
-    # Format cost display
-    cost_display = f"{record['cost']} ₽" if record['cost'] else "Не указана"
-    
-    # Check if user is admin
-    user_id = callback.from_user.id
-    admin = is_admin(user_id)
-    
-    # Create keyboard with actions based on user role
-    if admin:
-        keyboard = [
-            [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f"edit_repair_{repair_id}")],
-            [InlineKeyboardButton(text="🗑 Удалить", callback_data=f"delete_repair_{repair_id}")],
-            [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_repairs_{record['vehicle_id']}")]
-        ]
-    else:
-        keyboard = [
-            [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_repairs_{record['vehicle_id']}")]
-        ]
-    
-    await callback.message.edit_text(
-        f"🛠 **Запись о ремонте #{repair_id}**\n\n"
-        f"🚗 **ТС:** {record['model']} ({record['reg_number']})\n"
-        f"📅 **Дата:** {record['date']}\n"
-        f"🔢 **Пробег:** {record['mileage']} км\n"
-        f"💰 **Стоимость:** {cost_display}\n\n"
-        f"📝 **Описание работ:**\n{record['description']}",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
-        parse_mode="Markdown"
-    )
-    await callback.answer()
+    try:
+        parts = callback.data.split("_")
+        if len(parts) < 2:
+            await callback.answer("⚠️ Неверный формат данных")
+            return
+            
+        repair_id = int(parts[1])
+        logging.info(f"Запрос на просмотр записи ремонта с ID={repair_id}")
+        
+        # Get repair record
+        conn = sqlite3.connect('vehicles.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT r.id, r.date, r.mileage, r.description, r.cost, r.vehicle_id, v.model, v.reg_number
+            FROM repairs r
+            JOIN vehicles v ON r.vehicle_id = v.id
+            WHERE r.id = ?
+        """, (repair_id,))
+        record = cursor.fetchone()
+        conn.close()
+        
+        if not record:
+            await callback.answer("⚠️ Запись не найдена")
+            return
+        
+        # Format cost display
+        cost_display = f"{record['cost']} ₽" if record['cost'] else "Не указана"
+        
+        # Check if user is admin
+        user_id = callback.from_user.id
+        admin = is_admin(user_id)
+        
+        # Create keyboard with actions based on user role
+        if admin:
+            keyboard = [
+                [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f"edit_repair_{repair_id}")],
+                [InlineKeyboardButton(text="🗑 Удалить", callback_data=f"delete_repair_{repair_id}")],
+                [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_repairs_{record['vehicle_id']}")]
+            ]
+        else:
+            keyboard = [
+                [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_repairs_{record['vehicle_id']}")]
+            ]
+        
+        await callback.message.edit_text(
+            f"🛠 **Запись о ремонте #{repair_id}**\n\n"
+            f"🚗 **ТС:** {record['model']} ({record['reg_number']})\n"
+            f"📅 **Дата:** {record['date']}\n"
+            f"🔢 **Пробег:** {record['mileage']} км\n"
+            f"💰 **Стоимость:** {cost_display}\n\n"
+            f"📝 **Описание работ:**\n{record['description']}",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
+            parse_mode="Markdown"
+        )
+        await callback.answer()
+    except Exception as e:
+        logging.error(f"Ошибка при отображении записи ремонта: {e}")
+        await callback.answer("⚠️ Произошла ошибка при загрузке данных", show_alert=True)
 
 @dp.callback_query(lambda c: c.data.startswith("edit_repair_"))
 @admin_required
