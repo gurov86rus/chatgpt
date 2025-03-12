@@ -1401,6 +1401,142 @@ async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext
     )
     await callback.answer()
 
+# Fuel information handling
+@dp.callback_query(lambda c: c.data.startswith("edit_fuel_"))
+@admin_required
+async def edit_fuel_start(callback: types.CallbackQuery, state: FSMContext):
+    """Start fuel information editing process"""
+    vehicle_id = int(callback.data.split("_")[2])
+    await state.update_data(vehicle_id=vehicle_id)
+    
+    # Get current fuel information
+    conn = sqlite3.connect('vehicles.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT fuel_type, fuel_tank_capacity, avg_fuel_consumption 
+        FROM vehicles 
+        WHERE id = ?
+    """, (vehicle_id,))
+    fuel_data = cursor.fetchone()
+    conn.close()
+    
+    # Create a message with the current values
+    message_text = (
+        f"⛽ **Редактирование информации о топливе**\n\n"
+        f"Текущие значения:\n"
+        f"🛢 **Тип топлива:** `{fuel_data['fuel_type'] or '-'}`\n"
+        f"🛢 **Объем бака:** `{fuel_data['fuel_tank_capacity'] or '-'} л`\n"
+        f"🛢 **Средний расход:** `{fuel_data['avg_fuel_consumption'] or '-'} л/100км`\n\n"
+        f"Введите тип топлива (например, 'Дизель', 'АИ-95' и т.д.):"
+    )
+    
+    await callback.message.edit_text(
+        message_text,
+        parse_mode="Markdown"
+    )
+    await state.set_state(FuelInfoState.fuel_type)
+    await callback.answer()
+
+@dp.message(FuelInfoState.fuel_type)
+async def process_fuel_type(message: types.Message, state: FSMContext):
+    """Process fuel type input"""
+    await state.update_data(fuel_type=message.text.strip())
+    await message.answer(
+        "🛢 Введите объем топливного бака в литрах (например, 60):"
+    )
+    await state.set_state(FuelInfoState.fuel_tank_capacity)
+
+@dp.message(FuelInfoState.fuel_tank_capacity)
+async def process_fuel_tank_capacity(message: types.Message, state: FSMContext):
+    """Process fuel tank capacity input"""
+    try:
+        if message.text.strip():
+            capacity = float(message.text.strip())
+            await state.update_data(fuel_tank_capacity=capacity)
+        else:
+            await state.update_data(fuel_tank_capacity=None)
+            
+        await message.answer(
+            "🛢 Введите средний расход топлива в л/100км (например, 8.5):"
+        )
+        await state.set_state(FuelInfoState.avg_fuel_consumption)
+    except ValueError:
+        await message.answer(
+            "⚠️ Ошибка: Введите число без дополнительных символов.\n\n"
+            "Попробуйте снова или оставьте поле пустым:"
+        )
+
+@dp.message(FuelInfoState.avg_fuel_consumption)
+async def process_fuel_consumption(message: types.Message, state: FSMContext):
+    """Process fuel consumption input and save all fuel data"""
+    data = await state.get_data()
+    vehicle_id = data["vehicle_id"]
+    
+    # Prepare fuel consumption value
+    avg_fuel_consumption = None
+    if message.text.strip():
+        try:
+            avg_fuel_consumption = float(message.text.strip())
+        except ValueError:
+            await message.answer(
+                "⚠️ Ошибка: Введите число без дополнительных символов.\n\n"
+                "Попробуйте снова или оставьте поле пустым:"
+            )
+            return
+    
+    # Update fuel information in the database
+    success = edit_fuel_info(
+        vehicle_id=vehicle_id,
+        fuel_type=data.get("fuel_type"),
+        fuel_tank_capacity=data.get("fuel_tank_capacity"),
+        avg_fuel_consumption=avg_fuel_consumption
+    )
+    
+    if success:
+        await state.clear()
+        await message.answer(
+            "✅ Информация о топливе успешно обновлена!",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="🔙 Вернуться к карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
+            ])
+        )
+    else:
+        await message.answer(
+            "❌ Ошибка при обновлении информации о топливе.",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="🔙 Вернуться к карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
+            ])
+        )
+
+# Report generation handler
+@dp.callback_query(lambda c: c.data == "generate_report")
+@admin_required
+async def generate_pdf_report(callback: types.CallbackQuery):
+    """Generate and send PDF report"""
+    try:
+        # Generate the report
+        report_path = utils.generate_expiration_report()
+        
+        # Send the report
+        with open(report_path, 'rb') as pdf:
+            await callback.message.answer_document(
+                types.BufferedInputFile(
+                    pdf.read(),
+                    filename=f"report_{datetime.datetime.now().strftime('%Y%m%d')}.pdf"
+                ),
+                caption="📊 Отчет о сроках действия документов для всех транспортных средств"
+            )
+        
+        # Cleanup the file
+        os.remove(report_path)
+        
+        await callback.answer("✅ Отчет успешно сгенерирован!")
+    except Exception as e:
+        logger.error(f"Error generating report: {e}")
+        await callback.message.answer(f"❌ Ошибка при генерации отчета: {str(e)}")
+        await callback.answer("❌ Ошибка при генерации отчета")
+
 # Main function to run the bot
 async def main():
     # Initialize database
