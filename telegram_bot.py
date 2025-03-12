@@ -3,12 +3,13 @@ import sqlite3
 import asyncio
 import os
 import datetime
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, BufferedInputFile
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.exceptions import TelegramAPIError
 from config import TOKEN
 from db_init import init_database
 import utils
@@ -66,10 +67,21 @@ def admin_required(func):
     
     return wrapper
 
-# Initialize bot and dispatcher
-bot = Bot(token=TOKEN)
-storage = MemoryStorage()
-dp = Dispatcher(storage=storage)
+# Initialize bot and dispatcher with enhanced error handling
+try:
+    # Create Bot instance with a default parse mode and more detailed error handling
+    bot = Bot(token=TOKEN, parse_mode="Markdown")
+    logging.info(f"Bot initialized with ID: {TOKEN.split(':')[0]}")
+    
+    # Initialize storage and dispatcher
+    storage = MemoryStorage()
+    dp = Dispatcher(storage=storage)
+    logging.info("Dispatcher successfully initialized")
+except Exception as e:
+    logging.error(f"Error initializing bot or dispatcher: {e}")
+    import traceback
+    logging.error(traceback.format_exc())
+    raise
 
 # States for form input
 class MaintenanceState(StatesGroup):
