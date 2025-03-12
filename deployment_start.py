@@ -1,11 +1,11 @@
+
 import os
 import logging
 import sys
-import asyncio
+import multiprocessing
 from db_init import init_database
 from telegram_bot import main as run_telegram_bot
 from app import app
-from threading import Thread
 
 # Configure logging
 logging.basicConfig(
@@ -32,14 +32,19 @@ except Exception as e:
     logger.error(f"Error initializing database: {e}")
     logger.error(f"Stack trace: {sys.exc_info()}")
 
-# Run both web server and telegram bot
-if __name__ == "__main__":
-    # Start the Telegram bot in a separate thread
-    logger.info("Starting Telegram bot")
-    bot_thread = Thread(target=lambda: asyncio.run(run_telegram_bot()))
-    bot_thread.daemon = True
-    bot_thread.start()
+# Функция для запуска Telegram бота в отдельном процессе
+def run_telegram_bot_process():
+    import asyncio
+    asyncio.run(run_telegram_bot())
 
-    # Start Flask web server in the main thread
+# Основная функция
+if __name__ == "__main__":
+    # Запуск Telegram бота в отдельном процессе
+    logger.info("Starting Telegram bot in separate process")
+    bot_process = multiprocessing.Process(target=run_telegram_bot_process)
+    bot_process.daemon = True
+    bot_process.start()
+    
+    # Запуск Flask в основном процессе
     logger.info("Starting web server on port 5000")
     app.run(host='0.0.0.0', port=5000, threaded=True)
