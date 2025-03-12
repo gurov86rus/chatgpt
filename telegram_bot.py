@@ -69,8 +69,14 @@ def admin_required(func):
 
 # Initialize bot and dispatcher with enhanced error handling
 try:
-    # Create Bot instance with a default parse mode and more detailed error handling
-    bot = Bot(token=TOKEN, parse_mode="Markdown")
+    # Импортируем DefaultBotProperties для новой версии aiogram 3.7.0+
+    from aiogram.client.default import DefaultBotProperties
+    
+    # Create Bot instance with updated initialization for aiogram 3.7.0+
+    bot = Bot(
+        token=TOKEN, 
+        default=DefaultBotProperties(parse_mode="Markdown")
+    )
     logging.info(f"Bot initialized with ID: {TOKEN.split(':')[0]}")
     
     # Initialize storage and dispatcher
