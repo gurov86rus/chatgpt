@@ -27,7 +27,10 @@ if __name__ == "__main__":
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     if not token:
         logger.error("TELEGRAM_BOT_TOKEN не задан в переменных окружения")
-        logger.info("Пожалуйста, установите переменную TELEGRAM_BOT_TOKEN и попробуйте снова")
+        logger.info("Пожалуйста, установите переменную TELEGRAM_BOT_TOKEN в Secrets (в разделе 'Tools' -> 'Secrets')")
+        # Вывод список всех доступных переменных окружения для диагностики
+        env_vars = [k for k in os.environ.keys() if not k.startswith("_")]
+        logger.info(f"Доступные переменные окружения: {', '.join(env_vars)}")
         sys.exit(1)
     else:
         # Логирование части токена для диагностики (безопасно, только первые цифры)

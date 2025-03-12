@@ -1,11 +1,16 @@
 import os
 from dotenv import load_dotenv
 import logging
+import sys
 
 # Настройка логирования для диагностики
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,  # Изменено на DEBUG для более подробных логов
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("bot_debug.log")
+    ]
 )
 
 logger = logging.getLogger(__name__)
@@ -17,6 +22,10 @@ try:
     logger.info("Файл .env обработан")
 except Exception as e:
     logger.warning(f"Ошибка при загрузке .env файла: {e}")
+
+# Вывод всех переменных окружения для диагностики (без значений)
+env_vars = [k for k in os.environ.keys() if not k.startswith("_")]
+logger.info(f"Доступные переменные окружения: {', '.join(env_vars)}")
 
 # Получаем токен из переменных окружения
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -33,5 +42,6 @@ if TOKEN:
         logger.warning(f"Токен найден, но имеет неожиданный формат (длина: {len(TOKEN)})")
 else:
     logger.error("Токен TELEGRAM_BOT_TOKEN не найден в переменных окружения")
-    logger.info("Переменные окружения: " + ", ".join([k for k in os.environ.keys() if not k.startswith("_")]))
-    raise ValueError("No TELEGRAM_BOT_TOKEN found in environment variables. Please set it in Replit Secrets or .env file.")
+    logger.error("Переменные окружения: " + ", ".join(env_vars))
+    logger.error("Пожалуйста, установите TELEGRAM_BOT_TOKEN в Secrets (в разделе 'Tools' -> 'Secrets')")
+    sys.exit(1)  # Останавливаем программу, если токен не найден
