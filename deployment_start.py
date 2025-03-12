@@ -15,9 +15,6 @@ import threading
 import psutil
 import requests
 
-from db_init import init_database
-from app import app
-
 # Настройка логирования
 logging.basicConfig(
     level=logging.INFO,
@@ -96,20 +93,43 @@ def reset_telegram_webhook():
     """Сбрасывает вебхук для избежания конфликтов"""
     logger.info("Сброс вебхука Telegram...")
     try:
+        # Получаем токен из переменных окружения
         token = os.environ.get("TELEGRAM_BOT_TOKEN")
         if not token:
             try:
+                # Если токена нет в переменных, пытаемся импортировать модуль config
                 import config
-                token = config.TOKEN
-            except Exception:
-                logger.warning("Не удалось получить токен Telegram для сброса вебхука")
+                token = getattr(config, "TOKEN", None)
+                if not token:
+                    logger.warning("Не найден токен в модуле config")
+                    return False
+            except Exception as e:
+                logger.warning(f"Не удалось импортировать модуль config: {e}")
                 return False
         
-        # Формируем URL для запроса
+        # Пробуем загрузить токен из deploy_project/config.py если есть
+        if not token and os.path.exists("deploy_project/config.py"):
+            sys.path.append("deploy_project")
+            try:
+                import config as deploy_config
+                token = getattr(deploy_config, "TOKEN", None)
+                if token:
+                    logger.info(f"Найден токен в deploy_project/config.py")
+            except Exception as e:
+                logger.warning(f"Не удалось импортировать deploy_project/config.py: {e}")
+        
+        if not token:
+            logger.warning("Не удалось получить токен Telegram, невозможно сбросить вебхук")
+            return False
+            
+        # Проверка токена
+        logger.info(f"Используется токен с ID: {token.split(':')[0] if ':' in token else '?'}")
+            
+        # Формируем URL для сброса вебхука
         url = f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true"
         
         # Отправляем запрос
-        response = requests.get(url)
+        response = requests.get(url, timeout=10)
         
         # Проверяем ответ
         if response.status_code == 200 and response.json().get("ok"):
@@ -125,28 +145,32 @@ def reset_telegram_webhook():
 def init_db():
     """Инициализирует базу данных"""
     logger.info("Инициализация базы данных...")
+    
     try:
-        init_database()
-        logger.info("База данных успешно инициализирована")
-        return True
+        # Попытка импортировать модуль из корневой директории
+        if os.path.exists("db_init.py"):
+            logger.info("Импорт db_init.py из корневой директории")
+            sys.path.append(os.getcwd())
+            import db_init
+            db_init.init_database()
+            logger.info("База данных успешно инициализирована")
+            return True
+            
+        # Попытка импортировать модуль из директории deploy_project
+        elif os.path.exists("deploy_project/db_init.py"):
+            logger.info("Импорт db_init.py из директории deploy_project")
+            sys.path.append(os.path.join(os.getcwd(), "deploy_project"))
+            from deploy_project import db_init
+            db_init.init_database()
+            logger.info("База данных успешно инициализирована")
+            return True
+            
+        else:
+            logger.warning("Не найден файл db_init.py")
+            return False
+            
     except Exception as e:
         logger.error(f"Ошибка при инициализации базы данных: {e}")
-        return False
-
-def start_token_monitor():
-    """Запускает мониторинг токена в фоновом режиме"""
-    logger.info("Запуск мониторинга токена...")
-    try:
-        if os.path.exists("token_monitor.py"):
-            import token_monitor
-            token_monitor.start_monitor_thread()
-            logger.info("✅ Запущен фоновый мониторинг токена")
-            return True
-        else:
-            logger.warning("Файл token_monitor.py не найден")
-            return False
-    except Exception as e:
-        logger.warning(f"Ошибка при запуске мониторинга токена: {e}")
         return False
 
 def start_bot_thread():
@@ -155,16 +179,16 @@ def start_bot_thread():
     
     def run_bot():
         try:
-            # Останавливаем существующие боты
-            if os.path.exists("stop_existing_bots.py"):
-                logger.info("Останавливаем существующие боты...")
-                import stop_existing_bots
-                stopped_count = stop_existing_bots.main()
-                logger.info(f"Остановлено {stopped_count} экземпляров ботов")
-            
-            # Запускаем бота через основной скрипт
-            logger.info("Запуск main.py для запуска бота...")
-            subprocess.run([sys.executable, "main.py"], check=False)
+            # Проверяем наличие файлов для запуска
+            if os.path.exists("main.py"):
+                logger.info("Запуск main.py для запуска бота...")
+                subprocess.run([sys.executable, "main.py"], check=False)
+            elif os.path.exists("telegram_bot.py"):
+                logger.info("Запуск telegram_bot.py...")
+                subprocess.run([sys.executable, "telegram_bot.py"], check=False)
+            else:
+                logger.warning("Не найдены файлы main.py или telegram_bot.py для запуска бота")
+                
         except Exception as e:
             logger.error(f"Ошибка при запуске бота: {e}")
     
@@ -178,14 +202,16 @@ def get_replit_domain():
     """Получает домен Replit для доступа к приложению извне"""
     replit_domain = None
     try:
-        replit_domain = os.environ.get("REPL_SLUG")
+        replit_slug = os.environ.get("REPL_SLUG")
         replit_id = os.environ.get("REPL_ID")
         replit_owner = os.environ.get("REPL_OWNER")
         
         if replit_id and replit_owner:
-            replit_domain = f"{replit_id}-00-{replit_owner}"
+            replit_domain = f"https://{replit_id}.{replit_owner}.repl.co"
+            logger.info(f"Домен Replit: {replit_domain}")
+        elif replit_slug:
+            logger.info(f"Slug Replit: {replit_slug}")
         
-        logger.info(f"Домен Replit: {replit_domain}")
     except Exception as e:
         logger.warning(f"Не удалось определить домен Replit: {e}")
         
@@ -197,17 +223,20 @@ def main():
     logger.info("Запуск веб-интерфейса системы управления автопарком")
     logger.info("=" * 50)
     
-    # Проверка и обновление токена
+    # Проверка наличия модуля config
     try:
-        if os.path.exists("startup_token_fix.py"):
-            import startup_token_fix
-            startup_token_fix.main()
-            logger.info("Токен успешно обновлен")
+        # Сначала пытаемся импортировать из папки deploy_project
+        if os.path.exists("deploy_project/config.py"):
+            sys.path.insert(0, os.path.join(os.getcwd(), "deploy_project"))
+            import config
+            logger.info("Модуль config.py из deploy_project успешно импортирован")
+        # Если не удалось, пытаемся импортировать из корневой директории
+        elif os.path.exists("config.py"):
+            sys.path.insert(0, os.getcwd())
+            import config
+            logger.info("Модуль config.py из корневой директории успешно импортирован")
     except Exception as e:
-        logger.warning(f"Ошибка при обновлении токена: {e}")
-    
-    # Запуск мониторинга токена
-    start_token_monitor()
+        logger.warning(f"Ошибка при импорте модуля config: {e}")
     
     # Инициализация базы данных
     init_db()
@@ -223,20 +252,38 @@ def main():
     
     # Получение домена Replit
     replit_domain = get_replit_domain()
-    logger.info(f"Домен Replit для доступа извне: {replit_domain}")
+    if replit_domain:
+        logger.info(f"Веб-интерфейс будет доступен по адресу: {replit_domain}")
     
-    # Запуск бота в отдельном потоке
+    # Запуск бота в отдельном потоке, если он не запрещен переменной окружения
     bot_thread = None
-    if 'BOT_DISABLED' not in os.environ:
+    if not os.environ.get("BOT_DISABLED"):
         bot_thread = start_bot_thread()
     
     # Запуск веб-сервера
-    logger.info(f"Запуск веб-сервера на порту {port} (режим: только веб)")
-    if replit_domain:
-        logger.info(f"Веб-интерфейс будет доступен по адресу: http://{replit_domain}.replit.dev:{port}")
+    logger.info(f"Запуск веб-сервера на порту {port}")
     
     # Запускаем Flask-приложение
-    app.run(host='0.0.0.0', port=port)
+    try:
+        # Сначала пытаемся импортировать из папки deploy_project
+        if os.path.exists("deploy_project/app.py"):
+            sys.path.insert(0, os.path.join(os.getcwd(), "deploy_project"))
+            from app import app
+            logger.info("Запуск веб-приложения из deploy_project/app.py")
+        # Если не удалось, пытаемся импортировать из корневой директории
+        elif os.path.exists("app.py"):
+            from app import app
+            logger.info("Запуск веб-приложения из app.py")
+        else:
+            logger.error("Не найден файл app.py")
+            sys.exit(1)
+            
+        # Запускаем приложение
+        app.run(host='0.0.0.0', port=port)
+        
+    except Exception as e:
+        logger.error(f"Ошибка при запуске Flask-приложения: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

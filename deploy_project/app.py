@@ -44,6 +44,11 @@ def index():
     """Display vehicle information on web interface"""
     return render_template('index.html')
 
+@app.route('/about')
+def about():
+    """Display information about the system"""
+    return render_template('about.html')
+
 @app.route('/api/vehicles')
 def get_vehicles():
     """API endpoint to get list of all vehicles"""

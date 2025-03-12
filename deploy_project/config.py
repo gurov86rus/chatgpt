@@ -7,7 +7,6 @@
 import os
 import logging
 import dotenv
-import time
 
 # Настройка логирования
 logging.basicConfig(
@@ -17,81 +16,55 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# Принудительная установка токена
-NEW_TOKEN = "1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8"
-os.environ["TELEGRAM_BOT_TOKEN"] = NEW_TOKEN
-logger.info(f"ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: {NEW_TOKEN.split(':')[0]})")
-
-# Загрузка переменных окружения из файла .env
-try:
+# Загрузка переменных окружения из .env файла, если он существует
+if os.path.exists(".env"):
     logger.info("Попытка загрузки переменных окружения из .env файла")
-    dotenv.load_dotenv(".env")
+    dotenv.load_dotenv()
     logger.info("Файл .env обработан")
-except Exception as e:
-    logger.warning(f"Ошибка при загрузке .env файла: {e}")
 
-# Доступные переменные окружения (для отладки)
-try:
-    env_vars = ", ".join(list(os.environ.keys()))
-    logger.info(f"Доступные переменные окружения: {env_vars}")
-except Exception as e:
-    logger.warning(f"Не удалось получить список переменных окружения: {e}")
+# Список переменных окружения
+logger.debug(f"Доступные переменные окружения: {' '.join(os.environ.keys())}")
 
-# Получение токена из переменных окружения
-try:
+# Токен Telegram бота
+if not os.environ.get("TELEGRAM_BOT_TOKEN"):
+    logger.warning("ТОКЕН БОТА НЕ НАЙДЕН В ПЕРЕМЕННЫХ ОКРУЖЕНИЯ, УСТАНАВЛИВАЕМ ЗНАЧЕНИЕ ПО УМОЛЧАНИЮ")
+    # Если токена нет в переменных окружения, устанавливаем его принудительно
+    TOKEN = "1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8"
+    os.environ["TELEGRAM_BOT_TOKEN"] = TOKEN
+    logger.info(f"ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: {TOKEN.split(':')[0] if ':' in TOKEN else 'неизвестный формат'})")
+else:
     TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
-    if TOKEN:
-        token_id = TOKEN.split(':')[0] if ':' in TOKEN else "неизвестный формат"
-        token_length = len(TOKEN)
-        logger.info(f"Токен найден в переменных окружения (ID: {token_id}, длина: {token_length} символов)")
-    else:
-        TOKEN = NEW_TOKEN
-        logger.warning("Токен не найден в переменных окружения, используем захардкоженный токен")
-except Exception as e:
-    logger.error(f"Ошибка при получении токена: {e}")
-    TOKEN = NEW_TOKEN
+    token_id = TOKEN.split(':')[0] if ':' in TOKEN else "неизвестный формат"
+    token_length = len(TOKEN)
+    logger.info(f"Токен найден в переменных окружения (ID: {token_id}, длина: {token_length} символов)")
 
-# База данных
-DB_PATH = "autopark.db"
+# Настройки базы данных
+DB_PATH = os.environ.get("DB_PATH", "vehicles.db")
 
-# Настройки приложения
-APP_NAME = "Система управления автопарком"
-VERSION = "1.0.0"
-DEBUG = False
+# Настройки мониторинга
+CHECK_INTERVAL = int(os.environ.get("CHECK_INTERVAL", 1800))  # 30 минут
 
-# Права администратора (ID пользователей Telegram)
-ADMIN_IDS = [
-    123456789,  # Замените на реальные ID администраторов
-    987654321
-]
+# Настройки аутентификации
+ADMIN_IDS = [int(id) for id in os.environ.get("ADMIN_IDS", "12345,67890").split(",") if id.strip()]
 
-# Интервал ТО (в километрах)
-TO_INTERVAL = 10000
+# Настройки для веб-интерфейса
+WEB_HOST = os.environ.get("WEB_HOST", "0.0.0.0")
+WEB_PORT = int(os.environ.get("WEB_PORT", 5000))
+DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "t")
 
-# Максимальное количество хранимых резервных копий
-MAX_BACKUPS = 10
-
-# Настройки резервного копирования
-BACKUP_FOLDER = "backups"
-if not os.path.exists(BACKUP_FOLDER):
-    try:
-        os.makedirs(BACKUP_FOLDER)
-        logger.info(f"Создана папка для резервных копий: {BACKUP_FOLDER}")
-    except Exception as e:
-        logger.error(f"Ошибка при создании папки для резервных копий: {e}")
-
-# Проверка токена при запуске
 def check_token():
     """
     Проверяет доступность токена и выводит информацию о нем
     """
-    if TOKEN:
-        token_id = TOKEN.split(':')[0] if ':' in TOKEN else "неизвестный формат"
-        token_length = len(TOKEN)
-        logger.info(f"Проверка токена: ID {token_id}, длина {token_length} символов")
-    else:
-        logger.error("Токен недоступен, проверьте переменные окружения или файл .env")
-    return TOKEN is not None
+    if not TOKEN:
+        logger.error("Токен Telegram бота не найден!")
+        return False
+        
+    token_id = TOKEN.split(':')[0] if ':' in TOKEN else "неизвестный формат"
+    token_length = len(TOKEN)
+    logger.info(f"Используется токен бота с ID: {token_id}, длина токена: {token_length} символов")
+    
+    return True
 
-# Принудительная установка токена при импорте модуля
-check_token()
+if __name__ == "__main__":
+    check_token()
