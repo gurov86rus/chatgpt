@@ -876,6 +876,7 @@ async def show_maintenance_record(callback: types.CallbackQuery):
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("edit_maintenance_"))
+@admin_required
 async def edit_maintenance_start(callback: types.CallbackQuery, state: FSMContext):
     """Handler for starting maintenance record edit"""
     maintenance_id = int(callback.data.split("_")[2])
@@ -1002,6 +1003,7 @@ async def process_maintenance_edit_works(message: types.Message, state: FSMConte
     )
 
 @dp.callback_query(lambda c: c.data.startswith("delete_maintenance_"))
+@admin_required
 async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMContext):
     """Handler for confirming maintenance record deletion"""
     maintenance_id = int(callback.data.split("_")[2])
@@ -1041,6 +1043,7 @@ async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMCo
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("confirm_delete_maintenance_"))
+@admin_required
 async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMContext):
     """Handler for executing maintenance record deletion"""
     data = await state.get_data()
@@ -1204,6 +1207,7 @@ async def show_repair_record(callback: types.CallbackQuery):
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("edit_repair_"))
+@admin_required
 async def edit_repair_start(callback: types.CallbackQuery, state: FSMContext):
     """Handler for starting repair record edit"""
     repair_id = int(callback.data.split("_")[2])
@@ -1241,6 +1245,7 @@ async def edit_repair_start(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("delete_repair_"))
+@admin_required
 async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext):
     """Handler for confirming repair record deletion"""
     repair_id = int(callback.data.split("_")[2])
@@ -1279,6 +1284,7 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("confirm_delete_repair_"))
+@admin_required
 async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext):
     """Handler for executing repair record deletion"""
     data = await state.get_data()
