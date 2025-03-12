@@ -1381,10 +1381,20 @@ async def manage_maintenance(callback: types.CallbackQuery):
     )
     await callback.answer()
 
-@dp.callback_query(lambda c: c.data.startswith("maintenance_"))
+@dp.callback_query(lambda c: c.data.startswith("maintenance_") and not c.data.startswith("maintenance_delete_"))
 async def show_maintenance_record(callback: types.CallbackQuery):
     """Handler for showing maintenance record details"""
-    maintenance_id = int(callback.data.split("_")[1])
+    # Проверяем формат callback data
+    callback_parts = callback.data.split("_")
+    if len(callback_parts) < 2 or callback_parts[0] != "maintenance":
+        await callback.answer("⚠️ Неверный формат данных", show_alert=True)
+        return
+        
+    try:
+        maintenance_id = int(callback_parts[1])
+    except ValueError:
+        await callback.answer("⚠️ Неверный формат ID записи", show_alert=True)
+        return
     
     # Get maintenance record
     conn = sqlite3.connect('vehicles.db')
