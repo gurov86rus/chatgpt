@@ -586,6 +586,9 @@ def is_user_admin(user_id: int) -> bool:
         
         if user:
             return bool(user[0])
+        
+        # Изменим сообщение об ошибке, чтобы оно не путалось с ID технического обслуживания
+        logging.warning(f"Пользователь с Telegram ID {user_id} не зарегистрирован в системе")
         return False
     except Exception as e:
         logging.error(f"Error checking admin status for user {user_id}: {e}")
