@@ -15,7 +15,13 @@ import utils
 from utils import days_until, format_days_remaining, get_to_interval_based_on_mileage, edit_fuel_info
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),  # Вывод в консоль
+    ]
+)
 
 # Ensure database is initialized
 init_database()
