@@ -359,6 +359,7 @@ async def process_mileage_update(message: types.Message, state: FSMContext):
 
 # Maintenance record handlers
 @dp.callback_query(lambda c: c.data.startswith("add_to_"))
+@admin_required
 async def add_to_start(callback: types.CallbackQuery, state: FSMContext):
     """Start maintenance record addition"""
     vehicle_id = int(callback.data.split("_")[2])
@@ -432,6 +433,7 @@ async def process_to_works(message: types.Message, state: FSMContext):
 
 # Repair record handlers
 @dp.callback_query(lambda c: c.data.startswith("add_repair_"))
+@admin_required
 async def add_repair_start(callback: types.CallbackQuery, state: FSMContext):
     """Start repair record addition"""
     vehicle_id = int(callback.data.split("_")[2])
@@ -601,6 +603,7 @@ async def process_repair_cost(message: types.Message, state: FSMContext):
 
 # Edit vehicle handlers
 @dp.callback_query(lambda c: c.data.startswith("edit_") and not c.data.startswith("edit_field_") and not c.data.startswith("edit_repair_") and not c.data.startswith("edit_maintenance_"))
+@admin_required
 async def edit_vehicle_start(callback: types.CallbackQuery, state: FSMContext):
     """Start vehicle editing process"""
     vehicle_id = int(callback.data.split("_")[1])
@@ -778,6 +781,7 @@ async def process_edit_value(message: types.Message, state: FSMContext):
 
 # Maintenance Management Handlers
 @dp.callback_query(lambda c: c.data.startswith("manage_to_"))
+@admin_required
 async def manage_maintenance(callback: types.CallbackQuery):
     """Handler for managing maintenance records"""
     vehicle_id = int(callback.data.split("_")[2])
@@ -831,6 +835,7 @@ async def manage_maintenance(callback: types.CallbackQuery):
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("maintenance_"))
+@admin_required
 async def show_maintenance_record(callback: types.CallbackQuery):
     """Handler for showing maintenance record details"""
     maintenance_id = int(callback.data.split("_")[1])
