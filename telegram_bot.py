@@ -18,22 +18,7 @@ logging.basicConfig(level=logging.INFO)
 init_database()
 
 # Admin list - add your Telegram ID here
-ADMIN_IDS = [123456789]  # Замените на ваш Telegram ID
-
-# Add additional command to help with admin setup
-@dp.message(Command("myid"))
-async def show_my_id(message: types.Message):
-    """Handler to show user's Telegram ID"""
-    user_id = message.from_user.id
-    user_name = message.from_user.full_name
-    await message.answer(
-        f"👤 **Информация о пользователе**\n\n"
-        f"🆔 Ваш Telegram ID: `{user_id}`\n"
-        f"👤 Имя: {user_name}\n"
-        f"🔑 Статус: {'Администратор' if is_admin(user_id) else 'Обычный пользователь'}\n\n"
-        f"ℹ️ Чтобы стать администратором, добавьте ваш ID в список ADMIN_IDS в файле telegram_bot.py",
-        parse_mode="Markdown"
-    )
+ADMIN_IDS = [936544929]  # ID пользователя добавлен
 
 # Function to check if user is admin
 def is_admin(user_id):
@@ -276,7 +261,8 @@ async def help_command(message: types.Message):
         "ℹ️ **Справка по использованию бота:**\n\n"
         "🚗 **Основные команды:**\n"
         "/start - Показать список автомобилей\n"
-        "/help - Показать эту справку\n\n"
+        "/help - Показать эту справку\n"
+        "/myid - Показать ваш Telegram ID\n\n"
         "⚙️ **Работа с автомобилем:**\n"
         "- Нажмите на автомобиль в списке, чтобы увидеть подробную информацию\n"
         "- Используйте кнопки под карточкой автомобиля для внесения новых данных\n\n"
@@ -287,6 +273,20 @@ async def help_command(message: types.Message):
         "- Редактирование данных ТС\n\n"
         "🔔 **Уведомления:**\n"
         "Система автоматически предупредит об истечении сроков документов и необходимости ТО"
+    )
+
+@dp.message(Command("myid"))
+async def show_my_id(message: types.Message):
+    """Handler to show user's Telegram ID"""
+    user_id = message.from_user.id
+    user_name = message.from_user.full_name
+    await message.answer(
+        f"👤 **Информация о пользователе**\n\n"
+        f"🆔 Ваш Telegram ID: `{user_id}`\n"
+        f"👤 Имя: {user_name}\n"
+        f"🔑 Статус: {'Администратор' if is_admin(user_id) else 'Обычный пользователь'}\n\n"
+        f"ℹ️ Чтобы стать администратором, добавьте ваш ID в список ADMIN_IDS в файле telegram_bot.py",
+        parse_mode="Markdown"
     )
 
 # Callback query handlers
