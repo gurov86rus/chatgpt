@@ -50,22 +50,42 @@ def stop_existing_bots():
         return False
 
 def check_token():
-    """Проверяет доступность токена"""
+    """Проверяет доступность токена и гарантирует использование нового токена"""
     logger.info("Проверяем токен...")
+    
+    # Принудительно устанавливаем новый токен бота
+    NEW_TOKEN = "1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8"
+    os.environ["TELEGRAM_BOT_TOKEN"] = NEW_TOKEN
+    logger.info(f"Принудительно установлен новый токен бота (ID: {NEW_TOKEN.split(':')[0]})")
+    
+    # Проверяем токен в переменных окружения
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     if not token:
         try:
             from config import TOKEN
             token = TOKEN
-        except:
-            logger.error("Токен не найден ни в переменных окружения, ни в config.py")
+            logger.info(f"Токен загружен из config.py (ID: {token.split(':')[0] if ':' in token else 'неизвестный формат'})")
+        except Exception as e:
+            logger.error(f"Токен не найден ни в переменных окружения, ни в config.py: {e}")
             return False
     
     if not token:
         logger.error("Токен пустой")
         return False
+    else:
+        token_id = token.split(':')[0] if ':' in token else "неизвестно"
+        logger.info(f"Используется токен с ID: {token_id}")
     
-    logger.info("Токен доступен")
+    # Запускаем скрипт startup_token_fix.py для дополнительной гарантии
+    try:
+        if os.path.exists("startup_token_fix.py"):
+            import startup_token_fix
+            startup_token_fix.main()
+            logger.info("Запущен startup_token_fix.py для дополнительной фиксации токена")
+    except Exception as e:
+        logger.warning(f"Ошибка при запуске startup_token_fix.py: {e}")
+    
+    logger.info("Токен доступен и готов к использованию")
     return True
 
 def reset_webhook():
@@ -106,6 +126,15 @@ def main():
     # Сбрасываем вебхук
     reset_webhook()
     
+    # Запускаем мониторинг токена в фоновом режиме
+    try:
+        if os.path.exists("token_monitor.py"):
+            import token_monitor
+            token_monitor.start_monitor_thread()
+            logger.info("Запущен фоновый мониторинг токена")
+    except Exception as e:
+        logger.warning(f"Не удалось запустить мониторинг токена: {e}")
+        
     # Запускаем полнофункциональный бот
     try:
         # Пробуем загрузить основной модуль бота

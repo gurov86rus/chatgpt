@@ -114,7 +114,19 @@ def ensure_port_available(port):
 
 def reset_telegram_webhook():
     """Сбрасывает вебхук для избежания конфликтов"""
-    # Принудительно устанавливаем новый токен бота
+    # Запускаем скрипт обновления токена, если доступен
+    try:
+        if os.path.exists("startup_token_fix.py"):
+            logger.info("Запуск startup_token_fix.py для обновления токена...")
+            import startup_token_fix
+            startup_token_fix.main()
+            logger.info("✅ Токен обновлен с помощью startup_token_fix.py")
+        else:
+            logger.warning("Файл startup_token_fix.py не найден")
+    except Exception as e:
+        logger.warning(f"⚠️ Ошибка при запуске startup_token_fix.py: {e}")
+    
+    # Принудительно устанавливаем новый токен бота (на всякий случай)
     NEW_TOKEN = "1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8"
     os.environ["TELEGRAM_BOT_TOKEN"] = NEW_TOKEN
     logger.info(f"Принудительно установлен новый токен бота (ID: {NEW_TOKEN.split(':')[0]})")
@@ -163,6 +175,17 @@ def main():
     
     # Сбрасываем вебхук для избежания конфликтов
     reset_telegram_webhook()
+    
+    # Запускаем мониторинг токена в фоновом режиме
+    try:
+        if os.path.exists("token_monitor.py"):
+            import token_monitor
+            token_monitor.start_monitor_thread()
+            logger.info("✅ Запущен фоновый мониторинг токена")
+        else:
+            logger.warning("⚠️ Файл token_monitor.py не найден")
+    except Exception as e:
+        logger.warning(f"⚠️ Не удалось запустить мониторинг токена: {e}")
     
     # Инициализируем базу данных
     if not init_db():
