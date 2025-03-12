@@ -1442,6 +1442,9 @@ async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMCo
     """Handler for confirming maintenance record deletion"""
     maintenance_id = int(callback.data.split("_")[2])
     
+    # Очищаем старое состояние перед началом нового действия
+    await state.clear()
+    
     # Get maintenance record
     conn = sqlite3.connect('vehicles.db')
     conn.row_factory = sqlite3.Row
@@ -1454,12 +1457,13 @@ async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMCo
         await callback.answer("⚠️ Запись не найдена")
         return
     
-    # Save maintenance_id and vehicle_id to state
+    # Save maintenance_id and vehicle_id to state с четкими названиями
     await state.update_data(
-        maintenance_id=maintenance_id,
-        vehicle_id=record['vehicle_id']
+        to_delete_maintenance_id=maintenance_id,
+        to_vehicle_id=record['vehicle_id'],
+        to_date=record['date'],
+        to_mileage=record['mileage']
     )
-    await state.set_state(MaintenanceDeleteState.maintenance_id)
     
     # Create confirmation keyboard
     keyboard = [
@@ -1482,8 +1486,8 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
     """Handler for executing maintenance record deletion"""
     data = await state.get_data()
     
-    # Проверяем, есть ли данные о транспортном средстве и ТО
-    if 'vehicle_id' not in data or 'maintenance_id' not in data:
+    # Проверяем, есть ли данные о транспортном средстве и ТО с новыми названиями ключей
+    if 'to_delete_maintenance_id' not in data or 'to_vehicle_id' not in data:
         await callback.message.edit_text(
             "⚠️ Ошибка: Данные о ТО не найдены. Пожалуйста, попробуйте снова.",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -1494,8 +1498,8 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
         await state.clear()
         return
     
-    vehicle_id = data['vehicle_id']
-    maintenance_id = data['maintenance_id']
+    vehicle_id = data['to_vehicle_id']
+    maintenance_id = data['to_delete_maintenance_id']
     
     # Delete maintenance record
     conn = sqlite3.connect('vehicles.db')
@@ -1708,6 +1712,9 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
     """Handler for confirming repair record deletion"""
     repair_id = int(callback.data.split("_")[2])
     
+    # Очищаем старое состояние перед началом нового действия
+    await state.clear()
+    
     # Get repair record
     conn = sqlite3.connect('vehicles.db')
     conn.row_factory = sqlite3.Row
@@ -1720,10 +1727,12 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
         await callback.answer("⚠️ Запись не найдена")
         return
     
-    # Save repair_id and vehicle_id to state
+    # Save repair_id and vehicle_id to state с четкими названиями
     await state.update_data(
-        repair_id=repair_id,
-        vehicle_id=record['vehicle_id']
+        repair_delete_id=repair_id,
+        repair_vehicle_id=record['vehicle_id'],
+        repair_date=record['date'],
+        repair_mileage=record['mileage']
     )
     
     # Create confirmation keyboard
@@ -1747,8 +1756,8 @@ async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext
     """Handler for executing repair record deletion"""
     data = await state.get_data()
     
-    # Проверяем, есть ли данные о транспортном средстве и ремонте
-    if 'vehicle_id' not in data or 'repair_id' not in data:
+    # Проверяем, есть ли данные о транспортном средстве и ремонте с новыми ключами
+    if 'repair_delete_id' not in data or 'repair_vehicle_id' not in data:
         await callback.message.edit_text(
             "⚠️ Ошибка: Данные о ремонте не найдены. Пожалуйста, попробуйте снова.",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -1759,8 +1768,8 @@ async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext
         await state.clear()
         return
     
-    vehicle_id = data['vehicle_id']
-    repair_id = data['repair_id']
+    vehicle_id = data['repair_vehicle_id']
+    repair_id = data['repair_delete_id']
     
     # Delete repair record
     conn = sqlite3.connect('vehicles.db')
