@@ -1,0 +1,241 @@
+import logging
+import sqlite3
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters import Command
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State, StatesGroup
+from config import TOKEN
+
+# Логирование
+logging.basicConfig(level=logging.INFO)
+
+# Бот и диспетчер
+bot = Bot(token=TOKEN)
+dp = Dispatcher()
+
+# Состояния
+class MaintenanceState(StatesGroup):
+    date = State()
+    mileage = State()
+    works = State()
+
+class RepairState(StatesGroup):
+    date = State()
+    mileage = State()
+    description = State()
+    cost = State()
+
+class EditState(StatesGroup):
+    field = State()
+    value = State()
+
+# Получение списка авто
+def get_vehicle_buttons():
+    conn = sqlite3.connect('vehicles.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, model, reg_number FROM vehicles")
+    vehicles = cursor.fetchall()
+    conn.close()
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=f"{v[1]} ({v[2]})", callback_data=f"vehicle_{v[0]}")] for v in vehicles
+    ])
+    return keyboard
+
+# Карта авто
+def get_vehicle_card(vehicle_id):
+    conn = sqlite3.connect('vehicles.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM vehicles WHERE id = ?", (vehicle_id,))
+    vehicle = cursor.fetchone()
+
+    cursor.execute("SELECT date, mileage, works FROM maintenance WHERE vehicle_id = ?", (vehicle_id,))
+    to_history = cursor.fetchall()
+
+    cursor.execute("SELECT date, mileage, description, cost FROM repairs WHERE vehicle_id = ?", (vehicle_id,))
+    repairs = cursor.fetchall()
+
+    card = (
+        f"🚛 **{vehicle[1]} ({vehicle[4]})**\n"
+        f"📜 **VIN:** `{vehicle[2] or '-'}`\n"
+        f"📏 **Пробег:** `{vehicle[12] or 0} км`\n"  # Поле mileage (индекс 12 после добавления)
+        f"📅 **ОСАГО до:** `{vehicle[7] or '-'}`\n"
+        f"🔧 **Техосмотр до:** `{vehicle[9] or '-'}`\n"
+        f"🛠 **Тахограф:** {'✔ Требуется' if vehicle[6] else '❌ Не требуется'}\n"
+        f"\n📜 **История ТО:**\n"
+    )
+    for record in to_history:
+        card += f"📅 `{record[0]}` – `{record[1]} км` – {record[2]}\n"
+    card += "\n🛠 **Внеплановые ремонты:**\n"
+    for record in repairs:
+        card += f"🔧 `{record[0]}` – `{record[1]} км` – {record[2]} – 💰 `{record[3]} руб.`\n" if record[3] else f"🔧 `{record[0]}` – `{record[1]} км` – {record[2]}\n"
+    if not to_history and not repairs:
+        card += "🔹 Нет данных.\n"
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="➕ Добавить ТО", callback_data=f"add_to_{vehicle_id}")],
+        [InlineKeyboardButton(text="🛠 Добавить ремонт", callback_data=f"add_repair_{vehicle_id}")],
+        [InlineKeyboardButton(text="🔄 Редактировать", callback_data=f"edit_{vehicle_id}")],
+        [InlineKeyboardButton(text="⬅ Назад", callback_data="back")]
+    ])
+    conn.close()
+    return card, keyboard
+
+# Обработчик /start
+@dp.message(Command("start"))
+async def start_command(message: types.Message):
+    await message.answer("Выберите автомобиль:", reply_markup=get_vehicle_buttons())
+
+# Обработчик выбора авто
+@dp.callback_query(lambda c: c.data.startswith("vehicle_"))
+async def show_vehicle(callback: types.CallbackQuery):
+    vehicle_id = int(callback.data.split("_")[1])
+    card, keyboard = get_vehicle_card(vehicle_id)
+    await callback.message.edit_text(card, reply_markup=keyboard)
+    await callback.answer()
+
+# Обработчик "Назад"
+@dp.callback_query(lambda c: c.data == "back")
+async def back_to_menu(callback: types.CallbackQuery):
+    await callback.message.edit_text("Выберите автомобиль:", reply_markup=get_vehicle_buttons())
+    await callback.answer()
+
+# Обработчик добавления ТО
+@dp.callback_query(lambda c: c.data.startswith("add_to_"))
+async def add_to_start(callback: types.CallbackQuery, state: FSMContext):
+    vehicle_id = int(callback.data.split("_")[2])
+    await state.update_data(vehicle_id=vehicle_id)
+    await callback.message.edit_text("Введите дату ТО (например, 2025-06-10):")
+    await state.set_state(MaintenanceState.date)
+    await callback.answer()
+
+@dp.message(MaintenanceState.date)
+async def process_to_date(message: types.Message, state: FSMContext):
+    await state.update_data(date=message.text)
+    await message.answer("Введите пробег (в км):")
+    await state.set_state(MaintenanceState.mileage)
+
+@dp.message(MaintenanceState.mileage)
+async def process_to_mileage(message: types.Message, state: FSMContext):
+    await state.update_data(mileage=int(message.text))
+    await message.answer("Опишите работы:")
+    await state.set_state(MaintenanceState.works)
+
+@dp.message(MaintenanceState.works)
+async def process_to_works(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    conn = sqlite3.connect('vehicles.db')
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO maintenance (vehicle_id, date, mileage, works) VALUES (?, ?, ?, ?)",
+                   (data["vehicle_id"], data["date"], data["mileage"], message.text))
+    # Обновляем пробег автомобиля
+    cursor.execute("UPDATE vehicles SET mileage = ? WHERE id = ?", (data["mileage"], data["vehicle_id"]))
+    conn.commit()
+    conn.close()
+    await state.clear()
+    card, keyboard = get_vehicle_card(data["vehicle_id"])
+    await message.answer("ТО добавлено!", reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Вернуться", callback_data=f"vehicle_{data['vehicle_id']}")]]))
+    await message.delete()
+
+# Обработчик добавления ремонта (аналогично)
+@dp.callback_query(lambda c: c.data.startswith("add_repair_"))
+async def add_repair_start(callback: types.CallbackQuery, state: FSMContext):
+    vehicle_id = int(callback.data.split("_")[2])
+    await state.update_data(vehicle_id=vehicle_id)
+    await callback.message.edit_text("Введите дату ремонта (например, 2025-06-10):")
+    await state.set_state(RepairState.date)
+    await callback.answer()
+
+@dp.message(RepairState.date)
+async def process_repair_date(message: types.Message, state: FSMContext):
+    await state.update_data(date=message.text)
+    await message.answer("Введите пробег (в км):")
+    await state.set_state(RepairState.mileage)
+
+@dp.message(RepairState.mileage)
+async def process_repair_mileage(message: types.Message, state: FSMContext):
+    await state.update_data(mileage=int(message.text))
+    await message.answer("Опишите ремонт:")
+    await state.set_state(RepairState.description)
+
+@dp.message(RepairState.description)
+async def process_repair_description(message: types.Message, state: FSMContext):
+    await state.update_data(description=message.text)
+    await message.answer("Укажите стоимость (в рублях):")
+    await state.set_state(RepairState.cost)
+
+@dp.message(RepairState.cost)
+async def process_repair_cost(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    conn = sqlite3.connect('vehicles.db')
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO repairs (vehicle_id, date, mileage, description, cost) VALUES (?, ?, ?, ?, ?)",
+                   (data["vehicle_id"], data["date"], data["mileage"], data["description"], int(message.text)))
+    # Обновляем пробег автомобиля
+    cursor.execute("UPDATE vehicles SET mileage = ? WHERE id = ?", (data["mileage"], data["vehicle_id"]))
+    conn.commit()
+    conn.close()
+    await state.clear()
+    card, keyboard = get_vehicle_card(data["vehicle_id"])
+    await message.answer("Ремонт добавлен!", reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Вернуться", callback_data=f"vehicle_{data['vehicle_id']}")]]))
+    await message.delete()
+
+# Обработчик редактирования
+@dp.callback_query(lambda c: c.data.startswith("edit_"))
+async def edit_vehicle_start(callback: types.CallbackQuery, state: FSMContext):
+    vehicle_id = int(callback.data.split("_")[1])
+    await state.update_data(vehicle_id=vehicle_id)
+    fields = [
+        "model", "vin", "category", "reg_number", "qualification", "tachograph_required",
+        "osago_valid", "tech_inspection_date", "tech_inspection_valid", "skzi_install_date",
+        "skzi_valid_date", "notes", "mileage"
+    ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=f, callback_data=f"edit_field_{vehicle_id}_{i}")] for i, f in enumerate(fields)
+    ])
+    await callback.message.edit_text("Выберите поле для редактирования:", reply_markup=keyboard)
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("edit_field_"))
+async def select_field(callback: types.CallbackQuery, state: FSMContext):
+    vehicle_id, field_index = map(int, callback.data.split("_")[2:])
+    await state.update_data(field_index=field_index)
+    fields = [
+        "model", "vin", "category", "reg_number", "qualification", "tachograph_required",
+        "osago_valid", "tech_inspection_date", "tech_inspection_valid", "skzi_install_date",
+        "skzi_valid_date", "notes", "mileage"
+    ]
+    await callback.message.edit_text(f"Введите новое значение для {fields[field_index]} (формат: для даты - ГГГГ-ММ-ДД, для тахографа - 0/1):")
+    await state.set_state(EditState.value)
+    await callback.answer()
+
+@dp.message(EditState.value)
+async def process_edit_value(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    vehicle_id = data["vehicle_id"]
+    field_index = data["field_index"]
+    value = message.text
+    fields = [
+        "model", "vin", "category", "reg_number", "qualification", "tachograph_required",
+        "osago_valid", "tech_inspection_date", "tech_inspection_valid", "skzi_install_date",
+        "skzi_valid_date", "notes", "mileage"
+    ]
+    conn = sqlite3.connect('vehicles.db')
+    cursor = conn.cursor()
+    if fields[field_index] in ["tachograph_required", "mileage"]:
+        value = int(value)
+    cursor.execute(f"UPDATE vehicles SET {fields[field_index]} = ? WHERE id = ?", (value, vehicle_id))
+    conn.commit()
+    conn.close()
+    await state.clear()
+    card, keyboard = get_vehicle_card(vehicle_id)
+    await message.answer("Данные обновлены!", reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Вернуться", callback_data=f"vehicle_{vehicle_id}")]]))
+    await message.delete()
+
+# Запуск
+async def main():
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
