@@ -1,5 +1,6 @@
 import sqlite3
 import logging
+import datetime
 from typing import List, Dict, Tuple, Optional, Union, Any
 
 def get_connection():
@@ -427,3 +428,165 @@ def get_maintenance_alert(vehicle_id: int) -> str:
     except Exception as e:
         logging.error(f"Error getting maintenance alert for vehicle {vehicle_id}: {e}")
         return ""
+
+# User operations 
+def register_user(user_id: int, username: str, full_name: str, is_admin: bool = False) -> bool:
+    """
+    Register a new user or update existing user's information
+    
+    Args:
+        user_id (int): Telegram user ID
+        username (str): Username
+        full_name (str): Full name
+        is_admin (bool): Whether the user is an admin
+        
+    Returns:
+        bool: True if registered/updated successfully, False otherwise
+    """
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        # Check if user already exists
+        cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+        user = cursor.fetchone()
+        
+        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        if user:
+            # Update existing user
+            cursor.execute("""
+            UPDATE users 
+            SET username = ?, full_name = ?, last_activity = ?, interaction_count = interaction_count + 1
+            WHERE id = ?
+            """, (username, full_name, current_time, user_id))
+        else:
+            # Register new user
+            cursor.execute("""
+            INSERT INTO users (id, username, full_name, is_admin, first_seen, last_activity)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """, (user_id, username, full_name, is_admin, current_time, current_time))
+        
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        logging.error(f"Error registering user {user_id}: {e}")
+        return False
+
+def get_all_users() -> List[Dict]:
+    """
+    Get all registered users
+    
+    Returns:
+        List of dictionaries with user data
+    """
+    try:
+        conn = get_connection()
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT * FROM users ORDER BY first_seen DESC")
+        users = [dict(row) for row in cursor.fetchall()]
+        
+        conn.close()
+        return users
+    except Exception as e:
+        logging.error(f"Error retrieving users: {e}")
+        return []
+
+def set_admin_status(user_id: int, is_admin: bool) -> bool:
+    """
+    Set a user's admin status
+    
+    Args:
+        user_id (int): Telegram user ID
+        is_admin (bool): Whether the user should be an admin
+        
+    Returns:
+        bool: True if updated successfully, False otherwise
+    """
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("UPDATE users SET is_admin = ? WHERE id = ?", (is_admin, user_id))
+        
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        logging.error(f"Error setting admin status for user {user_id}: {e}")
+        return False
+
+def get_user_stats() -> Dict:
+    """
+    Get user statistics
+    
+    Returns:
+        Dictionary with user statistics
+    """
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        # Get total number of users
+        cursor.execute("SELECT COUNT(*) FROM users")
+        total_users = cursor.fetchone()[0]
+        
+        # Get number of active users (active in the last 7 days)
+        seven_days_ago = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')
+        cursor.execute("SELECT COUNT(*) FROM users WHERE last_activity > ?", (seven_days_ago,))
+        active_users = cursor.fetchone()[0]
+        
+        # Get number of new users in the last 30 days
+        thirty_days_ago = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S')
+        cursor.execute("SELECT COUNT(*) FROM users WHERE first_seen > ?", (thirty_days_ago,))
+        new_users = cursor.fetchone()[0]
+        
+        # Get number of admins
+        cursor.execute("SELECT COUNT(*) FROM users WHERE is_admin = 1")
+        admin_count = cursor.fetchone()[0]
+        
+        conn.close()
+        
+        return {
+            "total_users": total_users,
+            "active_users": active_users,
+            "new_users": new_users,
+            "admin_count": admin_count
+        }
+    except Exception as e:
+        logging.error(f"Error getting user stats: {e}")
+        return {
+            "total_users": 0,
+            "active_users": 0,
+            "new_users": 0,
+            "admin_count": 0
+        }
+
+def is_user_admin(user_id: int) -> bool:
+    """
+    Check if a user is an admin
+    
+    Args:
+        user_id (int): Telegram user ID
+        
+    Returns:
+        bool: True if the user is an admin, False otherwise
+    """
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT is_admin FROM users WHERE id = ?", (user_id,))
+        user = cursor.fetchone()
+        
+        conn.close()
+        
+        if user:
+            return bool(user[0])
+        return False
+    except Exception as e:
+        logging.error(f"Error checking admin status for user {user_id}: {e}")
+        return False

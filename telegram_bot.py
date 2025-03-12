@@ -12,6 +12,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.exceptions import TelegramAPIError
 from config import TOKEN
 from db_init import init_database
+from db_operations import register_user, get_all_users, get_user_stats, is_user_admin, set_admin_status
 import utils
 from utils import days_until, format_days_remaining, get_to_interval_based_on_mileage, edit_fuel_info
 
@@ -34,7 +35,12 @@ ADMIN_IDS = [936544929]  # ID пользователя добавлен
 # Function to check if user is admin
 def is_admin(user_id):
     """Check if user is admin"""
-    return user_id in ADMIN_IDS
+    # Первоначальная проверка по статичному списку админов для доступа до инициализации базы
+    if user_id in ADMIN_IDS:
+        return True
+    
+    # Проверка через базу данных для динамического управления админами
+    return is_user_admin(user_id)
 
 # Decorator for admin-only functions
 def admin_required(func):
@@ -333,6 +339,9 @@ async def start_command(message: types.Message):
     user_id = message.from_user.id
     user_name = message.from_user.full_name
     
+    # Регистрируем пользователя в системе
+    register_user(user_id, message.from_user.username or "", user_name)
+    
     # Show user ID
     user_id_info = f"🆔 Ваш Telegram ID: {user_id}"
     if is_admin(user_id):
@@ -387,6 +396,7 @@ async def help_command(message: types.Message):
     if is_admin(message.from_user.id):
         help_text += (
             "/backup - Создать резервную копию базы данных\n"
+            "/users - Просмотр списка пользователей\n"
         )
     
     # Общая справка
@@ -419,6 +429,10 @@ async def show_my_id(message: types.Message):
     """Handler to show user's Telegram ID"""
     user_id = message.from_user.id
     user_name = message.from_user.full_name
+    
+    # Регистрируем пользователя при запросе ID
+    register_user(user_id, message.from_user.username or "", user_name)
+    
     await message.answer(
         f"👤 **Информация о пользователе**\n\n"
         f"🆔 Ваш Telegram ID: `{user_id}`\n"
@@ -427,6 +441,67 @@ async def show_my_id(message: types.Message):
         f"ℹ️ Чтобы стать администратором, добавьте ваш ID в список ADMIN_IDS в файле telegram_bot.py",
         parse_mode="Markdown"
     )
+
+@dp.message(Command("users"))
+@admin_required
+async def show_users(message: types.Message):
+    """Handler for showing registered users (admin only)"""
+    users = get_all_users()
+    stats = get_user_stats()
+    
+    if not users:
+        await message.answer("⚠️ Список пользователей пуст.")
+        return
+    
+    # Статистика пользователей
+    stats_text = (
+        f"📊 **Статистика пользователей:**\n"
+        f"👥 Всего пользователей: {stats['total_users']}\n"
+        f"👤 Активных за 7 дней: {stats['active_users']}\n"
+        f"🆕 Новых за 30 дней: {stats['new_users']}\n"
+        f"🔑 Администраторов: {stats['admin_count']}\n\n"
+    )
+    
+    # Список пользователей
+    users_text = "👥 **Список пользователей:**\n\n"
+    
+    for user in users:
+        admin_status = "👑 Администратор" if user.get('is_admin') else "👤 Пользователь"
+        username = f"@{user.get('username')}" if user.get('username') else "нет"
+        
+        users_text += (
+            f"🆔 `{user.get('id')}`\n"
+            f"👤 Имя: {user.get('full_name')}\n"
+            f"🔖 Username: {username}\n"
+            f"🔑 Статус: {admin_status}\n"
+            f"📅 Первый вход: {user.get('first_seen')}\n"
+            f"🕒 Последняя активность: {user.get('last_activity')}\n"
+            f"🔄 Действий: {user.get('interaction_count', 0)}\n\n"
+        )
+    
+    # Отправляем несколько сообщений, если список слишком длинный
+    max_message_length = 4000
+    
+    if len(stats_text + users_text) <= max_message_length:
+        await message.answer(stats_text + users_text, parse_mode="Markdown")
+    else:
+        await message.answer(stats_text, parse_mode="Markdown")
+        
+        # Разделяем список пользователей на части
+        remaining_text = users_text
+        while remaining_text:
+            # Находим безопасную точку разделения (между записями пользователей)
+            split_point = remaining_text[:max_message_length].rfind("\n\n")
+            if split_point == -1:  # Если не нашли двойной перенос, разделяем по одинарному
+                split_point = remaining_text[:max_message_length].rfind("\n")
+            if split_point == -1:  # Если и это не помогло, просто отрезаем максимальную длину
+                split_point = max_message_length - 1
+            
+            # Отправляем часть текста
+            await message.answer(remaining_text[:split_point+1], parse_mode="Markdown")
+            
+            # Обновляем оставшийся текст
+            remaining_text = remaining_text[split_point+1:]
 
 # Callback query handlers
 @dp.callback_query(lambda c: c.data.startswith("vehicle_"))
