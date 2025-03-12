@@ -1679,7 +1679,9 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
             await callback.answer()
             await state.clear()
             return
-    else:
+    
+    # Проверяем, что maintenance_id и vehicle_id определены
+    if maintenance_id is None or vehicle_id is None:
         # Данные не найдены ни в callback, ни в состоянии
         logging.error(f"Отсутствуют необходимые данные в состоянии и в callback")
         await callback.message.edit_text(
