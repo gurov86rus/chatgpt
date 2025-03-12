@@ -1565,10 +1565,10 @@ async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMCo
         to_mileage=record['mileage']
     )
     
-    # Create confirmation keyboard
+    # Create confirmation keyboard с изменённым callback data
     keyboard = [
         [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"confirm_delete_maintenance_{maintenance_id}")],
-        [InlineKeyboardButton(text="❌ Отмена", callback_data=f"maintenance_{maintenance_id}")]
+        [InlineKeyboardButton(text="❌ Отмена", callback_data=f"manage_to_{record['vehicle_id']}")]
     ]
     
     await callback.message.edit_text(
@@ -1595,56 +1595,31 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
     data = await state.get_data()
     logging.info(f"Текущее состояние: {data}")
     
-    # Проверяем все возможные варианты хранения ID ТО и транспортного средства
-    if 'to_delete_maintenance_id' in data and 'to_vehicle_id' in data:
-        # Используем имеющиеся ключи без изменений - ЭТО УЖЕ ЕСТЬ В СОСТОЯНИИ
-        maintenance_id = data['to_delete_maintenance_id']
-        vehicle_id = data['to_vehicle_id']
-        logging.info(f"Используем данные из стандартных ключей: ТО ID={maintenance_id}, ТС ID={vehicle_id}")
-    elif 'target_id' in data and 'target_vehicle_id' in data and data.get('target_action') == 'delete_maintenance':
-        # Извлекаем из новых унифицированных ключей
-        maintenance_id = data['target_id']
-        vehicle_id = data['target_vehicle_id']
-        logging.info(f"Используем данные из унифицированных ключей: ТО ID={maintenance_id}, ТС ID={vehicle_id}")
-    else:
-        # Пытаемся получить ID из самого callback
-        if len(callback_parts) > 3:
-            try:
-                maintenance_id = int(callback_parts[3])
-                logging.info(f"Извлекаем ID ТО из callback: {maintenance_id}")
-                
-                # Получаем vehicle_id из базы данных
-                conn = sqlite3.connect('vehicles.db')
-                conn.row_factory = sqlite3.Row
-                cursor = conn.cursor()
-                cursor.execute("SELECT vehicle_id FROM maintenance WHERE id = ?", (maintenance_id,))
-                result = cursor.fetchone()
-                conn.close()
-                
-                if result:
-                    vehicle_id = result['vehicle_id']
-                    logging.info(f"Получен ID ТС из базы данных: {vehicle_id}")
-                    
-                    # Обновляем состояние с четко названными ключами
-                    await state.update_data(
-                        to_delete_maintenance_id=maintenance_id,
-                        to_vehicle_id=vehicle_id
-                    )
-                else:
-                    logging.error(f"Запись ТО {maintenance_id} не найдена в базе данных")
-                    await callback.message.edit_text(
-                        "⚠️ Ошибка: Запись о ТО не найдена. Пожалуйста, попробуйте снова.",
-                        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                            [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
-                        ])
-                    )
-                    await callback.answer()
-                    await state.clear()
-                    return
-            except (ValueError, TypeError, IndexError) as e:
-                logging.error(f"Ошибка при извлечении ID из callback: {e}")
+    # Восстанавливаем ID записи из callback data
+    maintenance_id = None
+    vehicle_id = None
+    
+    if len(callback_parts) > 3:
+        try:
+            maintenance_id = int(callback_parts[3])
+            logging.info(f"Извлекаем ID ТО из callback: {maintenance_id}")
+            
+            # Получаем vehicle_id из базы данных напрямую
+            conn = sqlite3.connect('vehicles.db')
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT vehicle_id FROM maintenance WHERE id = ?", (maintenance_id,))
+            result = cursor.fetchone()
+            conn.close()
+            
+            if result:
+                vehicle_id = result['vehicle_id']
+                logging.info(f"Получен ID ТС из базы данных: {vehicle_id}")
+            else:
+                # Если запись не найдена, сообщаем об ошибке и выходим
+                logging.error(f"Запись ТО с ID={maintenance_id} не найдена в базе данных")
                 await callback.message.edit_text(
-                    "⚠️ Ошибка: Неверный формат данных. Пожалуйста, попробуйте снова.",
+                    "⚠️ Ошибка: Запись о ТО не найдена. Возможно, она уже была удалена.",
                     reply_markup=InlineKeyboardMarkup(inline_keyboard=[
                         [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
                     ])
@@ -1652,17 +1627,42 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
                 await callback.answer()
                 await state.clear()
                 return
-        else:
-            logging.error(f"Отсутствуют необходимые данные в состоянии и в callback")
-            await callback.message.edit_text(
-                "⚠️ Ошибка: Данные о ТО не найдены. Пожалуйста, попробуйте снова.",
-                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
-                ])
-            )
-            await callback.answer()
-            await state.clear()
-            return
+        except (ValueError, IndexError) as e:
+            # Если не удалось извлечь ID из callback, ищем в state
+            logging.error(f"Ошибка при извлечении ID из callback: {e}")
+            if 'to_delete_maintenance_id' in data and 'to_vehicle_id' in data:
+                # Используем имеющиеся ключи без изменений
+                maintenance_id = data['to_delete_maintenance_id']
+                vehicle_id = data['to_vehicle_id']
+                logging.info(f"Используем данные из state: ТО ID={maintenance_id}, ТС ID={vehicle_id}")
+            elif 'target_id' in data and 'target_vehicle_id' in data and data.get('target_action') == 'delete_maintenance':
+                maintenance_id = data['target_id']
+                vehicle_id = data['target_vehicle_id']
+                logging.info(f"Используем данные из унифицированных ключей: ТО ID={maintenance_id}, ТС ID={vehicle_id}")
+            else:
+                # Если не нашли данные ни в callback, ни в state
+                logging.error("Не удалось определить ID записи ТО и автомобиля")
+                await callback.message.edit_text(
+                    "⚠️ Ошибка: Данные о ТО не найдены. Пожалуйста, попробуйте снова.",
+                    reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                        [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+                    ])
+                )
+                await callback.answer()
+                await state.clear()
+                return
+    else:
+        # Данные не найдены ни в callback, ни в состоянии
+        logging.error(f"Отсутствуют необходимые данные в состоянии и в callback")
+        await callback.message.edit_text(
+            "⚠️ Ошибка: Данные о ТО не найдены. Пожалуйста, попробуйте снова.",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+            ])
+        )
+        await callback.answer()
+        await state.clear()
+        return
     
     logging.info(f"Удаление записи ТО: ID={maintenance_id}, Vehicle ID={vehicle_id}")
     
