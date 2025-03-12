@@ -97,12 +97,15 @@ async def send_backup_to_admin(admin_id, backup_file):
             return False
             
         # Отправляем файл
-        with open(backup_file, 'rb') as file:
-            await bot.send_document(
-                admin_id,
-                file,
-                caption=f"📁 Резервная копия базы данных от {datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}"
-            )
+        # В новых версиях aiogram нужно использовать FSInputFile
+        from aiogram.types import FSInputFile
+        
+        document = FSInputFile(backup_file)
+        await bot.send_document(
+            admin_id,
+            document=document,
+            caption=f"📁 Резервная копия базы данных от {datetime.datetime.now().strftime('%d.%m.%Y %H:%M')}"
+        )
         return True
     except Exception as e:
         logging.error(f"Ошибка при отправке резервной копии: {e}")
@@ -141,8 +144,12 @@ async def scheduled_backup(hour=3, minute=0):
             backup_file = await create_backup()
             if backup_file:
                 for admin_id in ADMIN_IDS:
-                    await send_backup_to_admin(admin_id, backup_file)
-                logging.info("Резервное копирование успешно выполнено и отправлено администраторам")
+                    success = await send_backup_to_admin(admin_id, backup_file)
+                    if success:
+                        logging.info(f"Резервная копия успешно отправлена администратору {admin_id}")
+                    else:
+                        logging.error(f"Не удалось отправить резервную копию администратору {admin_id}")
+                logging.info("Резервное копирование выполнено")
         except Exception as e:
             logging.error(f"Ошибка в запланированном резервном копировании: {e}")
             # Ждем 1 час перед повторной попыткой в случае ошибки
