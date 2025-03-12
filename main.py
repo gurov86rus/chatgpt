@@ -86,12 +86,21 @@ async def back_to_main(callback_query: types.CallbackQuery, state: FSMContext = 
     # Answer callback to remove loading indicator
     await callback_query.answer()
     
-    # Edit or send new message with main menu
-    await callback_query.message.edit_text(
-        get_vehicle_card() + get_maintenance_history(),
-        parse_mode="Markdown",
-        reply_markup=get_main_keyboard()
-    )
+    try:
+        # Edit or send new message with main menu
+        await callback_query.message.edit_text(
+            get_vehicle_card() + get_maintenance_history(),
+            parse_mode="Markdown",
+            reply_markup=get_main_keyboard()
+        )
+    except Exception as e:
+        # Handle the case when message content is the same
+        if "message is not modified" in str(e):
+            # Just log it, no need to take action
+            logging.info("Message content is the same, no changes needed")
+        else:
+            # For other errors, log and potentially handle
+            logging.error(f"Error in back_to_main: {e}")
 
 @dp.callback_query(Text("show_history"))
 async def show_history(callback_query: types.CallbackQuery):
