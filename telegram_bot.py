@@ -1548,7 +1548,7 @@ async def delete_maintenance_execute(callback: types.CallbackQuery, state: FSMCo
     
     # Проверяем все возможные варианты хранения ID ТО и транспортного средства
     if 'to_delete_maintenance_id' in data and 'to_vehicle_id' in data:
-        # Используем имеющиеся ключи без изменений
+        # Используем имеющиеся ключи без изменений - ЭТО УЖЕ ЕСТЬ В СОСТОЯНИИ
         maintenance_id = data['to_delete_maintenance_id']
         vehicle_id = data['to_vehicle_id']
         logging.info(f"Используем данные из стандартных ключей: ТО ID={maintenance_id}, ТС ID={vehicle_id}")
