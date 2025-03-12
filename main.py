@@ -4,6 +4,7 @@ import sys
 import logging
 import asyncio
 import traceback
+import requests
 
 # This file allows both configurations to work:
 # 1. The Web Application workflow uses this as "main:app"
@@ -14,14 +15,17 @@ logging.basicConfig(
     level=logging.DEBUG,  # Изменено с INFO на DEBUG для большей детализации
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler()  # Добавлен обработчик для вывода логов в консоль
+        logging.StreamHandler(),  # Добавлен обработчик для вывода логов в консоль
+        logging.FileHandler("bot_workflow.log")  # Запись логов в файл
     ]
 )
 
 logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
+    logger.info("========================")
     logger.info("Запуск Telegram бота")
+    logger.info("========================")
     
     # Проверка наличия переменной окружения с токеном
     token = os.getenv("TELEGRAM_BOT_TOKEN")
@@ -42,10 +46,41 @@ if __name__ == "__main__":
         else:
             logger.warning("Формат токена может быть некорректным, проверьте его")
     
-    # Проверка доступности API Telegram
-    import requests
-    
+    # Проверяем, нет ли других экземпляров бота
     try:
+        # Попытка получить список запущенных процессов
+        import psutil
+        current_pid = os.getpid()
+        telegram_processes = []
+        
+        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+            try:
+                if proc.info['pid'] != current_pid:
+                    cmdline = ' '.join(proc.info['cmdline'] or [])
+                    if 'python' in cmdline and ('telegram_bot' in cmdline or 'main.py' in cmdline):
+                        telegram_processes.append(proc.info['pid'])
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                pass
+        
+        if telegram_processes:
+            logger.warning(f"Обнаружены другие процессы бота: {telegram_processes}")
+            # В данный момент мы просто логируем, но не останавливаем их
+    except ImportError:
+        logger.info("Модуль psutil не найден, пропускаем проверку процессов")
+    except Exception as e:
+        logger.warning(f"Ошибка при проверке процессов: {e}")
+    
+    # Проверка доступности API Telegram
+    try:
+        # Сброс вебхука для работы в режиме polling
+        logger.info("Сброс вебхука...")
+        response = requests.get(f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true")
+        webhook_result = response.json()
+        if webhook_result.get('ok'):
+            logger.info("✅ Вебхук успешно сброшен")
+        else:
+            logger.warning(f"Проблема при сбросе вебхука: {webhook_result}")
+        
         # Тест соединения с API Telegram через getMe
         logger.info("Проверка соединения с API Telegram...")
         response = requests.get(f"https://api.telegram.org/bot{token}/getMe", timeout=10)
@@ -63,15 +98,6 @@ if __name__ == "__main__":
             logger.error(f"Ошибка соединения с API Telegram: Код {response.status_code}")
             logger.debug(f"Ответ API: {response.text}")
     
-        # Сброс вебхука для работы в режиме polling
-        logger.info("Сброс вебхука...")
-        response = requests.get(f"https://api.telegram.org/bot{token}/deleteWebhook?drop_pending_updates=true")
-        webhook_result = response.json()
-        if webhook_result.get('ok'):
-            logger.info("✅ Вебхук успешно сброшен")
-        else:
-            logger.warning(f"Проблема при сбросе вебхука: {webhook_result}")
-    
     except requests.exceptions.RequestException as e:
         logger.error(f"❌ Не удалось подключиться к API Telegram: {e}")
         logger.debug(traceback.format_exc())
@@ -83,9 +109,19 @@ if __name__ == "__main__":
     
     # Запуск бота через aiogram
     try:
-        logger.info("Импортирование и запуск бота...")
+        logger.info("Запуск минимального тестового бота...")
         
-        # Динамический импорт для изоляции ошибок
+        # Сначала пробуем запустить минимальный тестовый бот
+        try:
+            from minimal_test_bot import main as run_minimal_bot
+            logger.info("✅ Модуль minimal_test_bot успешно импортирован")
+            logger.info("Запуск минимального тестового бота...")
+            asyncio.run(run_minimal_bot())
+            sys.exit(0)  # Выход после запуска тестового бота
+        except ImportError as e:
+            logger.warning(f"Модуль minimal_test_bot не найден: {e}, запускаем основной бот")
+        
+        # Если тестовый бот не найден, запускаем основной бот
         try:
             from telegram_bot import main as run_telegram_bot
             logger.info("✅ Модуль telegram_bot успешно импортирован")
