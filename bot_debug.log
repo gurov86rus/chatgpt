@@ -700,3 +700,343 @@ paragraph text '<para>\u041e\u0442\u0447\u0435\u0442 \u043e\u0431 \u0438\u0441\u
 2025-03-13 18:37:00,160 - aiogram.dispatcher - WARNING - Received SIGINT signal
 2025-03-13 18:37:00,162 - aiogram.dispatcher - INFO - Polling stopped for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
 2025-03-13 18:37:00,162 - aiogram.dispatcher - INFO - Polling stopped
+2025-03-13 18:44:43,838 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-13 18:44:43,838 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-13 18:44:43,838 - config - INFO - Файл .env обработан
+2025-03-13 18:44:43,838 - config - INFO - Доступные переменные окружения: SHELL, SESSION_MANAGER, COLORTERM, HISTCONTROL, no_proxy, XDG_MENU_PREFIX, HISTSIZE, HOSTNAME, SSH_AUTH_SOCK, MEMORY_PRESSURE_WRITE, XMODIFIERS, DESKTOP_SESSION, SSH_AGENT_PID, GPG_TTY, EDITOR, PWD, LOGNAME, XDG_SESSION_DESKTOP, XDG_SESSION_TYPE, SYSTEMD_EXEC_PID, XAUTHORITY, SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS, ftp_proxy, GDM_LANG, HOME, USERNAME, LANG, LS_COLORS, XDG_CURRENT_DESKTOP, VIRTUAL_ENV, MEMORY_PRESSURE_WATCH, VTE_VERSION, WAYLAND_DISPLAY, GNOME_TERMINAL_SCREEN, https_proxy, STEAM_FRAME_FORCE_CLOSE, MOZ_GMP_PATH, GNOME_SETUP_DISPLAY, XDG_SESSION_CLASS, TERM, LESSOPEN, USER, NO_PROXY, FTP_PROXY, GNOME_TERMINAL_SERVICE, DISPLAY, SHLVL, HTTPS_PROXY, HTTP_PROXY, QT_IM_MODULE, VIRTUAL_ENV_PROMPT, http_proxy, XDG_RUNTIME_DIR, PS1, ALL_PROXY, DEBUGINFOD_URLS, DEBUGINFOD_IMA_CERT_PATH, XDG_DATA_DIRS, all_proxy, PATH, GDMSESSION, DBUS_SESSION_BUS_ADDRESS, MAIL, SYSTEMD_SLEEP_FREEZE_USER_SESSIONS, TELEGRAM_BOT_TOKEN
+2025-03-13 18:44:43,838 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-13 18:44:43,899 - root - INFO - Database initialized successfully
+2025-03-13 18:44:43,900 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-13 18:44:43,905 - root - INFO - Проверка соединения с API Telegram...
+2025-03-13 18:44:43,906 - root - INFO - Dispatcher successfully initialized
+2025-03-13 18:44:43,908 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-13 18:44:43,909 - root - INFO - Database initialized successfully
+2025-03-13 18:44:43,914 - root - INFO - Планировщик резервного копирования запущен
+2025-03-13 18:44:43,916 - root - INFO - Следующее автоматическое резервное копирование запланировано через 8.0 часов
+2025-03-13 18:44:44,850 - root - INFO - Starting vehicle maintenance bot...
+2025-03-13 18:44:44,850 - aiogram.dispatcher - INFO - Start polling
+2025-03-13 18:44:45,059 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 18:44:46,939 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 18:44:46,943 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 18:44:48,059 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 18:44:48,439 - root - INFO - Отправлен список автомобилей
+2025-03-13 18:44:48,440 - aiogram.event - INFO - Update id=330718172 is handled. Duration 1501 ms by bot id=1023647955
+2025-03-13 18:45:47,732 - aiogram.event - INFO - Update id=330718173 is handled. Duration 1510 ms by bot id=1023647955
+2025-03-13 18:45:51,316 - aiogram.event - INFO - Update id=330718174 is handled. Duration 621 ms by bot id=1023647955
+2025-03-13 18:45:53,156 - aiogram.event - INFO - Update id=330718175 is handled. Duration 524 ms by bot id=1023647955
+2025-03-13 18:45:56,212 - aiogram.event - INFO - Update id=330718176 is handled. Duration 465 ms by bot id=1023647955
+2025-03-13 18:45:58,995 - aiogram.event - INFO - Update id=330718177 is handled. Duration 642 ms by bot id=1023647955
+2025-03-13 18:46:02,401 - aiogram.event - INFO - Update id=330718178 is handled. Duration 613 ms by bot id=1023647955
+2025-03-13 18:46:03,808 - aiogram.event - INFO - Update id=330718179 is handled. Duration 534 ms by bot id=1023647955
+2025-03-13 18:46:04,828 - root - INFO - Запрос на удаление записи ТО с ID=37
+2025-03-13 18:46:05,300 - aiogram.event - INFO - Update id=330718180 is handled. Duration 473 ms by bot id=1023647955
+2025-03-13 18:46:06,158 - root - INFO - Выполнение удаления записи ТО с ID=37
+2025-03-13 18:46:06,496 - root - INFO - Запись ТО с ID=37 для ТС ID=9 успешно удалена
+2025-03-13 18:46:06,750 - aiogram.event - INFO - Update id=330718181 is handled. Duration 593 ms by bot id=1023647955
+2025-03-13 18:46:10,943 - aiogram.event - INFO - Update id=330718182 is handled. Duration 509 ms by bot id=1023647955
+2025-03-13 18:46:14,827 - aiogram.event - INFO - Update id=330718183 is handled. Duration 547 ms by bot id=1023647955
+2025-03-13 18:46:18,888 - aiogram.event - INFO - Update id=330718184 is handled. Duration 776 ms by bot id=1023647955
+2025-03-13 18:46:22,611 - aiogram.event - INFO - Update id=330718185 is handled. Duration 482 ms by bot id=1023647955
+2025-03-13 18:46:23,502 - root - INFO - Запрос на просмотр записи ремонта с ID=17
+2025-03-13 18:46:23,999 - aiogram.event - INFO - Update id=330718186 is handled. Duration 499 ms by bot id=1023647955
+2025-03-13 18:46:24,592 - root - INFO - Запрос на удаление записи ремонта с ID=17
+2025-03-13 18:46:25,134 - aiogram.event - INFO - Update id=330718187 is handled. Duration 542 ms by bot id=1023647955
+2025-03-13 18:46:25,857 - root - INFO - Выполнение удаления записи ремонта с ID=17
+2025-03-13 18:46:25,858 - root - INFO - Вызов функции delete_repair с repair_id=17
+2025-03-13 18:46:25,858 - root - INFO - Проверка существования записи с ID=17
+2025-03-13 18:46:25,858 - root - INFO - Найдена запись ремонта с vehicle_id=15 для ID=17
+2025-03-13 18:46:25,858 - root - INFO - Удаление записи ремонта с ID=17
+2025-03-13 18:46:25,863 - root - INFO - Успешно удалена запись о ремонте с ID=17
+2025-03-13 18:46:26,106 - root - INFO - Запись ремонта с ID=17 для ТС ID=15 успешно удалена
+2025-03-13 18:46:26,360 - aiogram.event - INFO - Update id=330718188 is handled. Duration 503 ms by bot id=1023647955
+2025-03-13 18:46:30,849 - aiogram.event - INFO - Update id=330718189 is handled. Duration 695 ms by bot id=1023647955
+2025-03-13 18:46:33,357 - aiogram.event - INFO - Update id=330718190 is handled. Duration 482 ms by bot id=1023647955
+2025-03-13 18:46:35,995 - aiogram.event - INFO - Update id=330718191 is handled. Duration 516 ms by bot id=1023647955
+2025-03-13 18:46:39,985 - aiogram.event - INFO - Update id=330718192 is handled. Duration 484 ms by bot id=1023647955
+2025-03-13 18:46:43,364 - aiogram.event - INFO - Update id=330718193 is handled. Duration 629 ms by bot id=1023647955
+2025-03-13 18:46:44,338 - root - INFO - Запрос на просмотр записи ремонта с ID=13
+2025-03-13 18:46:44,847 - aiogram.event - INFO - Update id=330718194 is handled. Duration 509 ms by bot id=1023647955
+2025-03-13 18:46:45,677 - root - INFO - Запрос на удаление записи ремонта с ID=13
+2025-03-13 18:46:46,176 - aiogram.event - INFO - Update id=330718195 is handled. Duration 501 ms by bot id=1023647955
+2025-03-13 18:46:46,910 - root - INFO - Выполнение удаления записи ремонта с ID=13
+2025-03-13 18:46:46,910 - root - INFO - Вызов функции delete_repair с repair_id=13
+2025-03-13 18:46:46,910 - root - INFO - Проверка существования записи с ID=13
+2025-03-13 18:46:46,910 - root - INFO - Найдена запись ремонта с vehicle_id=10 для ID=13
+2025-03-13 18:46:46,910 - root - INFO - Удаление записи ремонта с ID=13
+2025-03-13 18:46:46,918 - root - INFO - Успешно удалена запись о ремонте с ID=13
+2025-03-13 18:46:47,223 - root - INFO - Запись ремонта с ID=13 для ТС ID=10 успешно удалена
+2025-03-13 18:46:47,540 - aiogram.event - INFO - Update id=330718196 is handled. Duration 631 ms by bot id=1023647955
+2025-03-13 18:46:51,351 - aiogram.event - INFO - Update id=330718197 is handled. Duration 532 ms by bot id=1023647955
+2025-03-13 18:46:53,749 - aiogram.event - INFO - Update id=330718198 is handled. Duration 456 ms by bot id=1023647955
+2025-03-13 18:46:57,727 - aiogram.event - INFO - Update id=330718199 is handled. Duration 609 ms by bot id=1023647955
+2025-03-13 18:46:59,871 - aiogram.event - INFO - Update id=330718200 is handled. Duration 481 ms by bot id=1023647955
+2025-03-13 18:47:01,975 - aiogram.event - INFO - Update id=330718201 is handled. Duration 584 ms by bot id=1023647955
+2025-03-13 18:47:05,072 - aiogram.event - INFO - Update id=330718202 is handled. Duration 489 ms by bot id=1023647955
+2025-03-13 18:47:06,012 - root - INFO - Запрос на просмотр записи ремонта с ID=8
+2025-03-13 18:47:06,595 - aiogram.event - INFO - Update id=330718203 is handled. Duration 584 ms by bot id=1023647955
+2025-03-13 18:47:07,341 - root - INFO - Запрос на удаление записи ремонта с ID=8
+2025-03-13 18:47:07,963 - aiogram.event - INFO - Update id=330718204 is handled. Duration 622 ms by bot id=1023647955
+2025-03-13 18:47:08,693 - root - INFO - Выполнение удаления записи ремонта с ID=8
+2025-03-13 18:47:08,693 - root - INFO - Вызов функции delete_repair с repair_id=8
+2025-03-13 18:47:08,693 - root - INFO - Проверка существования записи с ID=8
+2025-03-13 18:47:08,693 - root - INFO - Найдена запись ремонта с vehicle_id=5 для ID=8
+2025-03-13 18:47:08,693 - root - INFO - Удаление записи ремонта с ID=8
+2025-03-13 18:47:08,724 - root - INFO - Успешно удалена запись о ремонте с ID=8
+2025-03-13 18:47:08,976 - root - INFO - Запись ремонта с ID=8 для ТС ID=5 успешно удалена
+2025-03-13 18:47:09,215 - aiogram.event - INFO - Update id=330718205 is handled. Duration 525 ms by bot id=1023647955
+2025-03-13 18:47:10,443 - aiogram.event - INFO - Update id=330718206 is handled. Duration 458 ms by bot id=1023647955
+2025-03-13 18:47:11,064 - root - INFO - Запрос на просмотр записи ремонта с ID=9
+2025-03-13 18:47:11,831 - aiogram.event - INFO - Update id=330718207 is handled. Duration 769 ms by bot id=1023647955
+2025-03-13 18:47:12,344 - root - INFO - Запрос на удаление записи ремонта с ID=9
+2025-03-13 18:47:13,017 - aiogram.event - INFO - Update id=330718208 is handled. Duration 674 ms by bot id=1023647955
+2025-03-13 18:47:13,699 - root - INFO - Выполнение удаления записи ремонта с ID=9
+2025-03-13 18:47:13,699 - root - INFO - Вызов функции delete_repair с repair_id=9
+2025-03-13 18:47:13,699 - root - INFO - Проверка существования записи с ID=9
+2025-03-13 18:47:13,699 - root - INFO - Найдена запись ремонта с vehicle_id=5 для ID=9
+2025-03-13 18:47:13,699 - root - INFO - Удаление записи ремонта с ID=9
+2025-03-13 18:47:13,707 - root - INFO - Успешно удалена запись о ремонте с ID=9
+2025-03-13 18:47:14,083 - root - INFO - Запись ремонта с ID=9 для ТС ID=5 успешно удалена
+2025-03-13 18:47:14,329 - aiogram.event - INFO - Update id=330718209 is handled. Duration 631 ms by bot id=1023647955
+2025-03-13 18:47:37,352 - aiogram.event - INFO - Update id=330718210 is handled. Duration 1556 ms by bot id=1023647955
+2025-03-13 18:47:40,701 - aiogram.event - INFO - Update id=330718211 is handled. Duration 468 ms by bot id=1023647955
+2025-03-13 18:47:43,177 - aiogram.event - INFO - Update id=330718212 is handled. Duration 504 ms by bot id=1023647955
+2025-03-13 18:47:46,396 - aiogram.event - INFO - Update id=330718213 is handled. Duration 464 ms by bot id=1023647955
+2025-03-13 18:47:47,217 - root - INFO - Запрос на просмотр записи ремонта с ID=14
+2025-03-13 18:47:47,690 - aiogram.event - INFO - Update id=330718214 is handled. Duration 473 ms by bot id=1023647955
+2025-03-13 18:47:48,810 - root - INFO - Запрос на удаление записи ремонта с ID=14
+2025-03-13 18:47:49,311 - aiogram.event - INFO - Update id=330718215 is handled. Duration 509 ms by bot id=1023647955
+2025-03-13 18:47:50,064 - root - INFO - Выполнение удаления записи ремонта с ID=14
+2025-03-13 18:47:50,065 - root - INFO - Вызов функции delete_repair с repair_id=14
+2025-03-13 18:47:50,065 - root - INFO - Проверка существования записи с ID=14
+2025-03-13 18:47:50,065 - root - INFO - Найдена запись ремонта с vehicle_id=11 для ID=14
+2025-03-13 18:47:50,065 - root - INFO - Удаление записи ремонта с ID=14
+2025-03-13 18:47:50,073 - root - INFO - Успешно удалена запись о ремонте с ID=14
+2025-03-13 18:47:50,320 - root - INFO - Запись ремонта с ID=14 для ТС ID=11 успешно удалена
+2025-03-13 18:47:50,571 - aiogram.event - INFO - Update id=330718216 is handled. Duration 507 ms by bot id=1023647955
+2025-03-13 18:47:52,588 - aiogram.event - INFO - Update id=330718217 is handled. Duration 531 ms by bot id=1023647955
+2025-03-13 18:47:53,139 - root - INFO - Запрос на просмотр записи ремонта с ID=15
+2025-03-13 18:47:53,920 - aiogram.event - INFO - Update id=330718218 is handled. Duration 782 ms by bot id=1023647955
+2025-03-13 18:47:54,434 - root - INFO - Запрос на удаление записи ремонта с ID=15
+2025-03-13 18:47:54,911 - aiogram.event - INFO - Update id=330718219 is handled. Duration 477 ms by bot id=1023647955
+2025-03-13 18:47:55,662 - root - INFO - Выполнение удаления записи ремонта с ID=15
+2025-03-13 18:47:55,662 - root - INFO - Вызов функции delete_repair с repair_id=15
+2025-03-13 18:47:55,662 - root - INFO - Проверка существования записи с ID=15
+2025-03-13 18:47:55,662 - root - INFO - Найдена запись ремонта с vehicle_id=11 для ID=15
+2025-03-13 18:47:55,662 - root - INFO - Удаление записи ремонта с ID=15
+2025-03-13 18:47:55,693 - root - INFO - Успешно удалена запись о ремонте с ID=15
+2025-03-13 18:47:55,940 - root - INFO - Запись ремонта с ID=15 для ТС ID=11 успешно удалена
+2025-03-13 18:47:56,159 - aiogram.event - INFO - Update id=330718220 is handled. Duration 499 ms by bot id=1023647955
+2025-03-13 18:47:57,986 - aiogram.event - INFO - Update id=330718221 is handled. Duration 585 ms by bot id=1023647955
+2025-03-13 18:48:31,399 - aiogram.event - INFO - Update id=330718222 is handled. Duration 1661 ms by bot id=1023647955
+2025-03-13 18:48:34,648 - aiogram.event - INFO - Update id=330718223 is handled. Duration 494 ms by bot id=1023647955
+2025-03-13 18:48:36,794 - aiogram.event - INFO - Update id=330718224 is handled. Duration 473 ms by bot id=1023647955
+2025-03-13 18:48:39,680 - aiogram.event - INFO - Update id=330718225 is handled. Duration 493 ms by bot id=1023647955
+2025-03-13 18:48:43,025 - aiogram.event - INFO - Update id=330718226 is handled. Duration 647 ms by bot id=1023647955
+2025-03-13 18:48:45,526 - aiogram.event - INFO - Update id=330718227 is handled. Duration 504 ms by bot id=1023647955
+2025-03-13 18:48:49,076 - aiogram.event - INFO - Update id=330718228 is handled. Duration 500 ms by bot id=1023647955
+2025-03-13 18:48:50,869 - aiogram.event - INFO - Update id=330718229 is handled. Duration 533 ms by bot id=1023647955
+2025-03-13 18:48:53,612 - aiogram.event - INFO - Update id=330718230 is handled. Duration 673 ms by bot id=1023647955
+2025-03-13 18:50:44,241 - aiogram.event - INFO - Update id=330718231 is handled. Duration 1054 ms by bot id=1023647955
+2025-03-13 18:50:46,573 - aiogram.event - INFO - Update id=330718232 is handled. Duration 347 ms by bot id=1023647955
+2025-03-13 18:50:53,440 - aiogram.event - INFO - Update id=330718233 is handled. Duration 366 ms by bot id=1023647955
+2025-03-13 18:51:02,254 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 18:51:02,263 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 18:51:02,549 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 18:51:02,872 - root - INFO - Отправлен список автомобилей
+2025-03-13 18:51:02,873 - aiogram.event - INFO - Update id=330718234 is handled. Duration 618 ms by bot id=1023647955
+2025-03-13 18:51:05,668 - aiogram.event - INFO - Update id=330718235 is handled. Duration 341 ms by bot id=1023647955
+2025-03-13 18:51:09,067 - aiogram.event - INFO - Update id=330718236 is handled. Duration 270 ms by bot id=1023647955
+2025-03-13 18:51:23,352 - root - INFO - Резервная копия создана: backups/vehicles_backup_20250313_185123.db
+2025-03-13 18:51:24,969 - aiogram.event - INFO - Update id=330718237 is handled. Duration 1863 ms by bot id=1023647955
+2025-03-13 18:51:37,989 - aiogram.event - INFO - Update id=330718238 is handled. Duration 332 ms by bot id=1023647955
+2025-03-13 18:51:43,683 - aiogram.event - INFO - Update id=330718239 is handled. Duration 314 ms by bot id=1023647955
+2025-03-13 18:51:56,408 - aiogram.event - INFO - Update id=330718240 is not handled. Duration 1 ms by bot id=1023647955
+2025-03-13 18:54:17,087 - aiogram.event - INFO - Update id=330718241 is handled. Duration 1081 ms by bot id=1023647955
+2025-03-13 18:54:36,026 - aiogram.event - INFO - Update id=330718242 is handled. Duration 1038 ms by bot id=1023647955
+2025-03-13 18:54:58,559 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 18:54:58,567 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 18:54:59,648 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 18:55:00,044 - root - INFO - Отправлен список автомобилей
+2025-03-13 18:55:00,044 - aiogram.event - INFO - Update id=330718243 is handled. Duration 1485 ms by bot id=1023647955
+2025-03-13 18:55:04,710 - aiogram.event - INFO - Update id=330718244 is handled. Duration 272 ms by bot id=1023647955
+2025-03-13 18:56:02,698 - aiogram.event - INFO - Update id=330718245 is handled. Duration 1231 ms by bot id=1023647955
+2025-03-13 18:58:51,896 - aiogram.event - INFO - Update id=330718246 is handled. Duration 1463 ms by bot id=1023647955
+2025-03-13 18:58:59,963 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 18:58:59,995 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 18:59:00,297 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 18:59:00,578 - root - INFO - Отправлен список автомобилей
+2025-03-13 18:59:00,579 - aiogram.event - INFO - Update id=330718247 is handled. Duration 615 ms by bot id=1023647955
+2025-03-13 18:59:04,532 - aiogram.event - INFO - Update id=330718248 is handled. Duration 288 ms by bot id=1023647955
+2025-03-13 18:59:07,353 - aiogram.event - INFO - Update id=330718249 is handled. Duration 262 ms by bot id=1023647955
+2025-03-13 18:59:11,206 - aiogram.event - INFO - Update id=330718250 is handled. Duration 266 ms by bot id=1023647955
+2025-03-13 18:59:29,961 - root - INFO - Начало процесса добавления администратора. Состояние: {'action': 'add'}
+2025-03-13 18:59:31,600 - aiogram.event - INFO - Update id=330718251 is handled. Duration 1638 ms by bot id=1023647955
+2025-03-13 18:59:37,112 - root - INFO - Обработка ID пользователя: 894643021, текущее состояние: {'action': 'add'}
+2025-03-13 18:59:37,113 - root - INFO - Найден пользователь: Мила 🌺, админ: False
+2025-03-13 18:59:37,113 - root - INFO - Обновленное состояние перед подтверждением: {'action': 'add', 'target_user_id': 894643021, 'target_user_name': 'Мила 🌺'}
+2025-03-13 18:59:37,383 - root - INFO - Установлено состояние AdminManageState.action
+2025-03-13 18:59:37,383 - aiogram.event - INFO - Update id=330718252 is handled. Duration 272 ms by bot id=1023647955
+2025-03-13 18:59:40,003 - root - INFO - Получен callback: confirm_add
+2025-03-13 18:59:40,003 - root - INFO - Извлечено действие из callback: add
+2025-03-13 18:59:40,003 - root - INFO - Текущее состояние: {'action': 'add', 'target_user_id': 894643021, 'target_user_name': 'Мила 🌺'}
+2025-03-13 18:59:40,003 - root - INFO - Обрабатываем изменение статуса администратора для пользователя Мила 🌺 (ID: 894643021), действие: add
+2025-03-13 18:59:40,003 - root - INFO - Устанавливаем статус администратора: True
+2025-03-13 18:59:40,013 - root - INFO - Результат установки статуса: True
+2025-03-13 18:59:40,740 - aiogram.event - INFO - Update id=330718253 is handled. Duration 738 ms by bot id=1023647955
+2025-03-13 18:59:43,860 - aiogram.event - INFO - Update id=330718254 is not handled. Duration 1 ms by bot id=1023647955
+2025-03-13 19:01:08,854 - root - INFO - Пользователь 894643021 (Мила 🌺) запустил команду /start
+2025-03-13 19:01:08,889 - root - INFO - Пользователь 894643021 зарегистрирован/обновлен в системе
+2025-03-13 19:01:09,975 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 19:01:10,280 - root - INFO - Отправлен список автомобилей
+2025-03-13 19:01:10,281 - aiogram.event - INFO - Update id=330718255 is handled. Duration 1427 ms by bot id=1023647955
+2025-03-13 19:01:22,658 - aiogram.event - INFO - Update id=330718256 is handled. Duration 664 ms by bot id=1023647955
+2025-03-13 19:01:40,825 - aiogram.event - INFO - Update id=330718257 is not handled. Duration 1 ms by bot id=1023647955
+2025-03-13 19:01:49,769 - aiogram.event - INFO - Update id=330718258 is handled. Duration 949 ms by bot id=1023647955
+2025-03-13 19:01:58,032 - aiogram.event - INFO - Update id=330718259 is handled. Duration 253 ms by bot id=1023647955
+2025-03-13 19:02:00,047 - root - INFO - Начало процесса удаления администратора. Состояние: {'action': 'remove'}
+2025-03-13 19:02:00,635 - aiogram.event - INFO - Update id=330718260 is handled. Duration 589 ms by bot id=1023647955
+2025-03-13 19:02:04,897 - aiogram.event - INFO - Update id=330718261 is handled. Duration 408 ms by bot id=1023647955
+2025-03-13 19:02:16,450 - root - INFO - Обработка ID пользователя: 894643021, текущее состояние: {'action': 'remove'}
+2025-03-13 19:02:16,450 - root - INFO - Найден пользователь: Мила 🌺, админ: True
+2025-03-13 19:02:16,451 - root - INFO - Обновленное состояние перед подтверждением: {'action': 'remove', 'target_user_id': 894643021, 'target_user_name': 'Мила 🌺'}
+2025-03-13 19:02:16,708 - root - INFO - Установлено состояние AdminManageState.action
+2025-03-13 19:02:16,709 - aiogram.event - INFO - Update id=330718262 is handled. Duration 259 ms by bot id=1023647955
+2025-03-13 19:02:18,237 - root - INFO - Получен callback: confirm_remove
+2025-03-13 19:02:18,237 - root - INFO - Извлечено действие из callback: remove
+2025-03-13 19:02:18,237 - root - INFO - Текущее состояние: {'action': 'remove', 'target_user_id': 894643021, 'target_user_name': 'Мила 🌺'}
+2025-03-13 19:02:18,237 - root - INFO - Обрабатываем изменение статуса администратора для пользователя Мила 🌺 (ID: 894643021), действие: remove
+2025-03-13 19:02:18,237 - root - INFO - Устанавливаем статус администратора: False
+2025-03-13 19:02:18,246 - root - INFO - Результат установки статуса: True
+2025-03-13 19:02:18,935 - aiogram.event - INFO - Update id=330718263 is handled. Duration 698 ms by bot id=1023647955
+2025-03-13 19:02:19,837 - aiogram.event - INFO - Update id=330718264 is not handled. Duration 1 ms by bot id=1023647955
+2025-03-13 19:04:26,160 - aiogram.dispatcher - WARNING - Received SIGINT signal
+2025-03-13 19:04:26,160 - aiogram.dispatcher - INFO - Polling stopped for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 19:04:26,160 - aiogram.dispatcher - INFO - Polling stopped
+2025-03-13 19:04:26,530 - asyncio - ERROR - Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x7fb87696ee90>
+2025-03-13 19:04:30,100 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-13 19:04:30,100 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-13 19:04:30,100 - config - INFO - Файл .env обработан
+2025-03-13 19:04:30,100 - config - INFO - Доступные переменные окружения: SHELL, SESSION_MANAGER, COLORTERM, HISTCONTROL, no_proxy, XDG_MENU_PREFIX, HISTSIZE, HOSTNAME, SSH_AUTH_SOCK, MEMORY_PRESSURE_WRITE, XMODIFIERS, DESKTOP_SESSION, SSH_AGENT_PID, GPG_TTY, EDITOR, PWD, LOGNAME, XDG_SESSION_DESKTOP, XDG_SESSION_TYPE, SYSTEMD_EXEC_PID, XAUTHORITY, SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS, ftp_proxy, GDM_LANG, HOME, USERNAME, LANG, LS_COLORS, XDG_CURRENT_DESKTOP, VIRTUAL_ENV, MEMORY_PRESSURE_WATCH, VTE_VERSION, WAYLAND_DISPLAY, GNOME_TERMINAL_SCREEN, https_proxy, STEAM_FRAME_FORCE_CLOSE, MOZ_GMP_PATH, GNOME_SETUP_DISPLAY, XDG_SESSION_CLASS, TERM, LESSOPEN, USER, NO_PROXY, FTP_PROXY, GNOME_TERMINAL_SERVICE, DISPLAY, SHLVL, HTTPS_PROXY, HTTP_PROXY, QT_IM_MODULE, VIRTUAL_ENV_PROMPT, http_proxy, XDG_RUNTIME_DIR, PS1, ALL_PROXY, DEBUGINFOD_URLS, DEBUGINFOD_IMA_CERT_PATH, XDG_DATA_DIRS, all_proxy, PATH, GDMSESSION, DBUS_SESSION_BUS_ADDRESS, MAIL, SYSTEMD_SLEEP_FREEZE_USER_SESSIONS, TELEGRAM_BOT_TOKEN
+2025-03-13 19:04:30,100 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-13 19:04:30,164 - root - INFO - Database initialized successfully
+2025-03-13 19:04:30,164 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-13 19:04:30,170 - root - INFO - Проверка соединения с API Telegram...
+2025-03-13 19:04:30,171 - root - INFO - Dispatcher successfully initialized
+2025-03-13 19:04:30,173 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-13 19:04:30,174 - root - INFO - Database initialized successfully
+2025-03-13 19:04:30,179 - root - INFO - Планировщик резервного копирования запущен
+2025-03-13 19:04:30,181 - root - INFO - Следующее автоматическое резервное копирование запланировано через 7.0 часов
+2025-03-13 19:04:31,151 - root - INFO - Starting vehicle maintenance bot...
+2025-03-13 19:04:31,151 - aiogram.dispatcher - INFO - Start polling
+2025-03-13 19:04:31,369 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 19:04:39,540 - aiogram.event - INFO - Update id=330718265 is not handled. Duration 1 ms by bot id=1023647955
+2025-03-13 19:14:01,843 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 19:14:01,851 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 19:14:02,967 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 19:14:03,261 - root - INFO - Отправлен список автомобилей
+2025-03-13 19:14:03,262 - aiogram.event - INFO - Update id=330718266 is handled. Duration 1419 ms by bot id=1023647955
+2025-03-13 19:14:05,825 - aiogram.event - INFO - Update id=330718267 is handled. Duration 400 ms by bot id=1023647955
+2025-03-13 19:14:08,761 - aiogram.event - INFO - Update id=330718268 is handled. Duration 271 ms by bot id=1023647955
+2025-03-13 19:18:18,250 - root - INFO - Пользователь 894643021 (Мила 🌺) запустил команду /start
+2025-03-13 19:18:18,257 - root - INFO - Пользователь 894643021 зарегистрирован/обновлен в системе
+2025-03-13 19:18:19,345 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 19:18:19,618 - root - INFO - Отправлен список автомобилей
+2025-03-13 19:18:19,618 - aiogram.event - INFO - Update id=330718269 is handled. Duration 1367 ms by bot id=1023647955
+2025-03-13 19:18:21,785 - aiogram.event - INFO - Update id=330718270 is handled. Duration 667 ms by bot id=1023647955
+2025-03-13 19:18:26,656 - aiogram.event - INFO - Update id=330718271 is handled. Duration 483 ms by bot id=1023647955
+2025-03-13 19:20:46,143 - aiogram.event - INFO - Update id=330718272 is handled. Duration 1109 ms by bot id=1023647955
+2025-03-13 19:29:06,174 - aiogram.dispatcher - WARNING - Received SIGINT signal
+2025-03-13 19:29:06,175 - aiogram.dispatcher - INFO - Polling stopped for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 19:29:06,176 - aiogram.dispatcher - INFO - Polling stopped
+2025-03-13 19:30:10,494 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-13 19:30:10,494 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-13 19:30:10,495 - config - INFO - Файл .env обработан
+2025-03-13 19:30:10,495 - config - INFO - Доступные переменные окружения: SHELL, SESSION_MANAGER, COLORTERM, HISTCONTROL, no_proxy, XDG_MENU_PREFIX, HISTSIZE, HOSTNAME, SSH_AUTH_SOCK, MEMORY_PRESSURE_WRITE, XMODIFIERS, DESKTOP_SESSION, SSH_AGENT_PID, GPG_TTY, EDITOR, PWD, LOGNAME, XDG_SESSION_DESKTOP, XDG_SESSION_TYPE, SYSTEMD_EXEC_PID, XAUTHORITY, SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS, ftp_proxy, GDM_LANG, HOME, USERNAME, LANG, LS_COLORS, XDG_CURRENT_DESKTOP, VIRTUAL_ENV, MEMORY_PRESSURE_WATCH, VTE_VERSION, WAYLAND_DISPLAY, GNOME_TERMINAL_SCREEN, https_proxy, STEAM_FRAME_FORCE_CLOSE, MOZ_GMP_PATH, GNOME_SETUP_DISPLAY, XDG_SESSION_CLASS, TERM, LESSOPEN, USER, NO_PROXY, FTP_PROXY, GNOME_TERMINAL_SERVICE, DISPLAY, SHLVL, HTTPS_PROXY, HTTP_PROXY, QT_IM_MODULE, VIRTUAL_ENV_PROMPT, http_proxy, XDG_RUNTIME_DIR, PS1, ALL_PROXY, DEBUGINFOD_URLS, DEBUGINFOD_IMA_CERT_PATH, XDG_DATA_DIRS, all_proxy, PATH, GDMSESSION, DBUS_SESSION_BUS_ADDRESS, MAIL, SYSTEMD_SLEEP_FREEZE_USER_SESSIONS, TELEGRAM_BOT_TOKEN
+2025-03-13 19:30:10,495 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-13 19:30:10,557 - root - INFO - Database initialized successfully
+2025-03-13 19:30:10,557 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-13 19:30:10,563 - root - INFO - Проверка соединения с API Telegram...
+2025-03-13 19:30:10,564 - root - INFO - Dispatcher successfully initialized
+2025-03-13 19:30:10,567 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-13 19:30:10,568 - root - INFO - Database initialized successfully
+2025-03-13 19:30:10,574 - root - INFO - Планировщик резервного копирования запущен
+2025-03-13 19:30:10,575 - root - INFO - Следующее автоматическое резервное копирование запланировано через 7.0 часов
+2025-03-13 19:30:11,631 - root - INFO - Starting vehicle maintenance bot...
+2025-03-13 19:30:11,631 - aiogram.dispatcher - INFO - Start polling
+2025-03-13 19:30:11,868 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 19:30:24,629 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 19:30:24,659 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 19:30:25,723 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 19:30:26,037 - root - INFO - Отправлен список автомобилей
+2025-03-13 19:30:26,037 - aiogram.event - INFO - Update id=330718273 is handled. Duration 1408 ms by bot id=1023647955
+2025-03-13 19:30:28,637 - aiogram.event - INFO - Update id=330718274 is handled. Duration 287 ms by bot id=1023647955
+2025-03-13 19:30:31,874 - aiogram.event - INFO - Update id=330718275 is handled. Duration 420 ms by bot id=1023647955
+2025-03-13 19:35:49,432 - aiogram.event - INFO - Update id=330718276 is handled. Duration 1228 ms by bot id=1023647955
+2025-03-13 19:36:08,363 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 19:36:08,375 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 19:36:09,443 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 19:36:09,713 - root - INFO - Отправлен список автомобилей
+2025-03-13 19:36:09,713 - aiogram.event - INFO - Update id=330718277 is handled. Duration 1350 ms by bot id=1023647955
+2025-03-13 19:36:14,624 - aiogram.event - INFO - Update id=330718278 is handled. Duration 614 ms by bot id=1023647955
+2025-03-13 19:36:19,872 - root - INFO - Используются локальные шрифты DejaVuSans
+2025-03-13 19:36:19,880 - root - INFO - PDF отчет успешно создан: report_20250313.pdf
+2025-03-13 19:36:21,281 - aiogram.event - INFO - Update id=330718279 is handled. Duration 1434 ms by bot id=1023647955
+2025-03-13 19:37:19,929 - aiogram.event - INFO - Update id=330718280 is handled. Duration 1404 ms by bot id=1023647955
+2025-03-13 19:37:23,065 - aiogram.event - INFO - Update id=330718281 is handled. Duration 546 ms by bot id=1023647955
+2025-03-13 19:37:26,599 - aiogram.event - INFO - Update id=330718282 is handled. Duration 496 ms by bot id=1023647955
+2025-03-13 19:37:36,389 - aiogram.event - INFO - Update id=330718283 is handled. Duration 558 ms by bot id=1023647955
+2025-03-13 19:37:39,191 - aiogram.event - INFO - Update id=330718284 is handled. Duration 490 ms by bot id=1023647955
+2025-03-13 19:37:41,716 - aiogram.event - INFO - Update id=330718285 is handled. Duration 254 ms by bot id=1023647955
+2025-03-13 19:37:45,020 - aiogram.event - INFO - Update id=330718286 is handled. Duration 734 ms by bot id=1023647955
+2025-03-13 19:37:49,225 - aiogram.event - INFO - Update id=330718287 is handled. Duration 697 ms by bot id=1023647955
+2025-03-13 19:37:59,214 - aiogram.event - INFO - Update id=330718288 is handled. Duration 241 ms by bot id=1023647955
+2025-03-13 19:38:16,851 - aiogram.event - INFO - Update id=330718289 is handled. Duration 1077 ms by bot id=1023647955
+2025-03-13 19:38:23,001 - aiogram.event - INFO - Update id=330718290 is handled. Duration 372 ms by bot id=1023647955
+2025-03-13 19:38:25,864 - aiogram.event - INFO - Update id=330718291 is handled. Duration 572 ms by bot id=1023647955
+2025-03-13 19:38:59,533 - root - INFO - Используются локальные шрифты DejaVuSans
+2025-03-13 19:38:59,540 - root - INFO - PDF отчет успешно создан: report_20250313.pdf
+2025-03-13 19:39:01,716 - aiogram.event - INFO - Update id=330718292 is handled. Duration 2208 ms by bot id=1023647955
+2025-03-13 19:39:35,977 - aiogram.event - INFO - Update id=330718293 is handled. Duration 1357 ms by bot id=1023647955
+2025-03-13 19:39:45,901 - aiogram.event - INFO - Update id=330718294 is handled. Duration 302 ms by bot id=1023647955
+2025-03-13 19:39:48,496 - aiogram.event - INFO - Update id=330718295 is handled. Duration 565 ms by bot id=1023647955
+2025-03-13 19:40:21,211 - aiogram.event - INFO - Update id=330718296 is handled. Duration 1430 ms by bot id=1023647955
+2025-03-13 19:40:27,130 - aiogram.event - INFO - Update id=330718297 is handled. Duration 268 ms by bot id=1023647955
+2025-03-13 19:40:30,205 - aiogram.event - INFO - Update id=330718298 is handled. Duration 596 ms by bot id=1023647955
+2025-03-13 19:41:14,386 - root - INFO - Используются локальные шрифты DejaVuSans
+2025-03-13 19:41:14,396 - root - INFO - PDF отчет успешно создан: report_20250313.pdf
+2025-03-13 19:41:16,537 - aiogram.event - INFO - Update id=330718299 is handled. Duration 2175 ms by bot id=1023647955
+2025-03-13 19:41:49,241 - aiogram.event - INFO - Update id=330718300 is handled. Duration 1392 ms by bot id=1023647955
+2025-03-13 19:41:52,381 - aiogram.event - INFO - Update id=330718301 is handled. Duration 530 ms by bot id=1023647955
+2025-03-13 19:42:02,157 - aiogram.event - INFO - Update id=330718302 is handled. Duration 281 ms by bot id=1023647955
+2025-03-13 19:42:04,332 - aiogram.event - INFO - Update id=330718303 is handled. Duration 714 ms by bot id=1023647955
+2025-03-13 19:42:11,289 - root - INFO - Используются локальные шрифты DejaVuSans
+2025-03-13 19:42:11,297 - root - INFO - PDF отчет успешно создан: report_20250313.pdf
+2025-03-13 19:42:12,733 - aiogram.event - INFO - Update id=330718304 is handled. Duration 1469 ms by bot id=1023647955
+2025-03-13 19:42:31,043 - aiogram.event - INFO - Update id=330718305 is handled. Duration 1266 ms by bot id=1023647955
+2025-03-13 19:42:38,126 - aiogram.event - INFO - Update id=330718306 is handled. Duration 817 ms by bot id=1023647955
+2025-03-13 19:42:46,719 - aiogram.event - INFO - Update id=330718307 is handled. Duration 297 ms by bot id=1023647955
+2025-03-13 19:42:48,924 - aiogram.event - INFO - Update id=330718308 is handled. Duration 556 ms by bot id=1023647955
+2025-03-13 19:42:50,036 - root - INFO - Используются локальные шрифты DejaVuSans
+2025-03-13 19:42:50,044 - root - INFO - PDF отчет успешно создан: report_20250313.pdf
+2025-03-13 19:42:51,479 - aiogram.event - INFO - Update id=330718309 is handled. Duration 1468 ms by bot id=1023647955
+2025-03-13 19:42:59,276 - aiogram.event - INFO - Update id=330718310 is handled. Duration 529 ms by bot id=1023647955
+2025-03-13 19:43:03,917 - aiogram.event - INFO - Update id=330718311 is handled. Duration 699 ms by bot id=1023647955
+2025-03-13 19:43:11,933 - aiogram.event - INFO - Update id=330718312 is handled. Duration 422 ms by bot id=1023647955
+2025-03-13 19:43:14,187 - aiogram.event - INFO - Update id=330718313 is handled. Duration 525 ms by bot id=1023647955
+2025-03-13 19:43:15,940 - root - INFO - Используются локальные шрифты DejaVuSans
+2025-03-13 19:43:15,947 - root - INFO - PDF отчет успешно создан: report_20250313.pdf
+2025-03-13 19:43:17,492 - aiogram.event - INFO - Update id=330718314 is handled. Duration 1578 ms by bot id=1023647955
+2025-03-13 19:43:53,179 - aiogram.event - INFO - Update id=330718315 is handled. Duration 1320 ms by bot id=1023647955
+2025-03-13 19:43:58,680 - aiogram.event - INFO - Update id=330718316 is handled. Duration 269 ms by bot id=1023647955
+2025-03-13 19:44:01,688 - aiogram.event - INFO - Update id=330718317 is handled. Duration 511 ms by bot id=1023647955
+2025-03-13 19:44:03,236 - root - INFO - Используются локальные шрифты DejaVuSans
+2025-03-13 19:44:03,243 - root - INFO - PDF отчет успешно создан: report_20250313.pdf
+2025-03-13 19:44:04,473 - aiogram.event - INFO - Update id=330718318 is handled. Duration 1316 ms by bot id=1023647955
+2025-03-13 19:47:34,048 - root - INFO - Используются локальные шрифты DejaVuSans
+2025-03-13 19:47:34,057 - root - INFO - PDF отчет успешно создан: report_20250313.pdf
+2025-03-13 19:47:36,239 - aiogram.event - INFO - Update id=330718319 is handled. Duration 2215 ms by bot id=1023647955
+2025-03-13 19:55:37,132 - aiogram.event - INFO - Update id=330718320 is handled. Duration 985 ms by bot id=1023647955
+2025-03-13 20:01:53,203 - aiogram.dispatcher - WARNING - Received SIGINT signal
+2025-03-13 20:01:53,204 - aiogram.dispatcher - INFO - Polling stopped for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 20:01:53,204 - aiogram.dispatcher - INFO - Polling stopped

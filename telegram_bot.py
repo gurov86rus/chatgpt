@@ -15,7 +15,7 @@ from db_init import init_database
 from db_operations import register_user, get_all_users, get_user_stats, is_user_admin, set_admin_status, delete_repair
 import utils
 from utils import days_until, format_days_remaining, get_to_interval_based_on_mileage, edit_fuel_info
-
+#ver 0.0.13
 # Configure logging
 logging.basicConfig(
     level=logging.DEBUG,  # Изменено с INFO на DEBUG для большей детализации
