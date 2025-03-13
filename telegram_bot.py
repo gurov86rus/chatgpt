@@ -1770,12 +1770,17 @@ async def no_action(callback: types.CallbackQuery):
 async def show_repair_record(callback: types.CallbackQuery):
     """Handler for showing repair record details"""
     try:
+        # Формат строки: show_repair_ID или repair_ID
         parts = callback.data.split("_")
-        if len(parts) < 2:
+        if callback.data.startswith("show_repair_"):
+            # Формат: show_repair_ID
+            repair_id = int(parts[-1])  # Последний элемент - ID ремонта
+        elif len(parts) >= 2:
+            # Формат: repair_ID
+            repair_id = int(parts[1])
+        else:
             await callback.answer("⚠️ Неверный формат данных")
             return
-            
-        repair_id = int(parts[1])
         logging.info(f"Запрос на просмотр записи ремонта с ID={repair_id}")
         
         # Get repair record
@@ -1833,7 +1838,9 @@ async def show_repair_record(callback: types.CallbackQuery):
 @admin_required
 async def edit_repair_start(callback: types.CallbackQuery, state: FSMContext):
     """Handler for starting repair record edit"""
-    repair_id = int(callback.data.split("_")[2])
+    # Формат строки: edit_repair_ID
+    callback_parts = callback.data.split("_")
+    repair_id = int(callback_parts[-1])  # Берем последний элемент как ID
     
     # Get repair record
     conn = sqlite3.connect('vehicles.db')
@@ -1873,7 +1880,9 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
     """Handler for confirming repair record deletion"""
     try:
         # Получаем ID записи ремонта из callback data
-        repair_id = int(callback.data.split("_")[2])
+        # Формат строки: delete_repair_ID
+        callback_parts = callback.data.split("_")
+        repair_id = int(callback_parts[-1])  # Берем последний элемент как ID
         logging.info(f"Запрос на удаление записи ремонта с ID={repair_id}")
         
         # Получаем данные о записи ремонта
