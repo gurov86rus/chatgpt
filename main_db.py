@@ -870,6 +870,7 @@ async def repair_delete_execute(callback_query: types.CallbackQuery):
 
         # Получаем vehicle_id перед удалением
         conn = db.get_connection()
+        conn.row_factory = sqlite3.Row  # Важная строка!
         cursor = conn.cursor()
         cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
         result = cursor.fetchone()
@@ -879,7 +880,7 @@ async def repair_delete_execute(callback_query: types.CallbackQuery):
             await callback_query.answer("⚠️ Запись уже удалена", show_alert=True)
             return
 
-        vehicle_id = result["vehicle_id"]
+        vehicle_id = result["vehicle_id"]  # Теперь result точно словарь
 
         # Вызов функции удаления из db_operations
         success = db.delete_repair(repair_id)

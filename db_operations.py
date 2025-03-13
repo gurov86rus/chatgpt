@@ -507,12 +507,14 @@ def delete_repair(repair_id: int) -> bool:
     """
     logging.info(f"Вызов функции delete_repair с repair_id={repair_id}")
     try:
+        # Проверяем существование записи перед удалением
         conn = get_connection()
+        conn.row_factory = sqlite3.Row  # Устанавливаем row_factory для получения словаря
         cursor = conn.cursor()
         
         # Get vehicle_id before deletion for reference
         logging.info(f"Проверка существования записи с ID={repair_id}")
-        cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
+        cursor.execute("SELECT * FROM repairs WHERE id = ?", (repair_id,))
         result = cursor.fetchone()
         
         if not result:
@@ -520,9 +522,15 @@ def delete_repair(repair_id: int) -> bool:
             conn.close()
             return False
         
-        logging.info(f"Найдена запись ремонта с vehicle_id={result[0]}")
-            
-        # Delete the repair record
+        vehicle_id = result["vehicle_id"]
+        logging.info(f"Найдена запись ремонта с vehicle_id={vehicle_id} для ID={repair_id}")
+        
+        # Закрываем соединение и открываем новое для удаления
+        conn.close()
+        
+        # Удаляем запись
+        conn = get_connection()
+        cursor = conn.cursor()
         logging.info(f"Удаление записи ремонта с ID={repair_id}")
         cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
         
