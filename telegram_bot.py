@@ -1903,10 +1903,10 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
             repair_mileage=record['mileage']
         )
         
-        # Create confirmation keyboard
+        # Create confirmation keyboard с правильным callback_data
         keyboard = [
             [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"confirm_delete_repair_{repair_id}")],
-            [InlineKeyboardButton(text="❌ Отмена", callback_data=f"repair_{repair_id}")]
+            [InlineKeyboardButton(text="❌ Отмена", callback_data=f"manage_repairs_{record['vehicle_id']}")]
         ]
         
         await callback.message.edit_text(
@@ -1935,20 +1935,30 @@ async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext
         repair_id = int(parts[3])
         logging.info(f"Выполнение удаления записи ремонта с ID={repair_id}")
         
-        # Получаем ID транспортного средства
-        conn = sqlite3.connect('vehicles.db')
-        cursor = conn.cursor()
-        cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
-        result = cursor.fetchone()
-        
-        if not result:
-            await callback.answer("⚠️ Запись уже удалена", show_alert=True)
-            conn.close()
-            return
+        # Сначала проверяем, есть ли данные в состоянии
+        state_data = await state.get_data()
+        if 'repair_vehicle_id' in state_data:
+            vehicle_id = state_data['repair_vehicle_id']
+            logging.info(f"Получен vehicle_id={vehicle_id} из состояния")
+        else:
+            # Если нет, получаем из базы данных
+            conn = sqlite3.connect('vehicles.db')
+            cursor = conn.cursor()
+            cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
+            result = cursor.fetchone()
             
-        vehicle_id = result[0]
+            if not result:
+                await callback.answer("⚠️ Запись уже удалена", show_alert=True)
+                conn.close()
+                return
+                
+            vehicle_id = result[0]
+            conn.close()
+            logging.info(f"Получен vehicle_id={vehicle_id} из базы данных")
         
         # Удаляем запись
+        conn = sqlite3.connect('vehicles.db')
+        cursor = conn.cursor()
         cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
         conn.commit()
         conn.close()
@@ -1963,12 +1973,20 @@ async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext
         logging.info(f"Запись ремонта с ID={repair_id} для ТС ID={vehicle_id} успешно удалена")
     except Exception as e:
         logging.error(f"Ошибка при удалении записи ремонта: {e}")
-        await callback.message.edit_text(
-            "⚠️ Произошла ошибка при удалении записи.",
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
-            ])
-        )
+        import traceback
+        logging.error(traceback.format_exc())
+        
+        try:
+            # Попытка вернуться к списку автомобилей без использования user_id
+            await callback.message.edit_text(
+                "⚠️ Произошла ошибка при удалении записи.",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
+                ])
+            )
+        except Exception:
+            # Если и это не сработало, просто отвечаем на callback
+            await callback.answer("⚠️ Произошла ошибка при удалении записи", show_alert=True)
     
     await callback.answer()
     await state.clear()
