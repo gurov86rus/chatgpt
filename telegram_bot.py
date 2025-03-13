@@ -12,7 +12,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.exceptions import TelegramAPIError
 from config import TOKEN
 from db_init import init_database
-from db_operations import register_user, get_all_users, get_user_stats, is_user_admin, set_admin_status
+from db_operations import register_user, get_all_users, get_user_stats, is_user_admin, set_admin_status, delete_repair
 import utils
 from utils import days_until, format_days_remaining, get_to_interval_based_on_mileage, edit_fuel_info
 
@@ -1946,9 +1946,16 @@ async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext
             
         vehicle_id = result[0]
         
-        # Удаляем запись
-        cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
-        conn.commit()
+        # Закрываем соединение перед вызовом функции delete_repair
+        conn.close()
+        conn = None
+        
+        # Удаляем запись с использованием функции delete_repair
+        success = delete_repair(repair_id)
+        
+        if not success:
+            await callback.answer("⚠️ Произошла ошибка при удалении записи о ремонте", show_alert=True)
+            return
         
         # Обновляем сообщение
         await callback.message.edit_text(
