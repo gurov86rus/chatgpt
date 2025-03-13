@@ -475,6 +475,25 @@ def register_user(user_id: int, username: str, full_name: str, is_admin: bool = 
         return False
 
 def get_all_users() -> List[Dict]:
+    """
+    Get all registered users
+    
+    Returns:
+        List of dictionaries with user data
+    """
+    try:
+        conn = get_connection()
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT * FROM users ORDER BY first_seen DESC")
+        users = [dict(row) for row in cursor.fetchall()]
+        
+        conn.close()
+        return users
+    except Exception as e:
+        logging.error(f"Error retrieving users: {e}")
+        return []
 
 def delete_repair(repair_id: int) -> bool:
     """
@@ -507,13 +526,6 @@ def delete_repair(repair_id: int) -> bool:
     except Exception as e:
         logging.error(f"Error deleting repair {repair_id}: {e}")
         return False
-
-    """
-    Get all registered users
-    
-    Returns:
-        List of dictionaries with user data
-    """
     try:
         conn = get_connection()
         conn.row_factory = sqlite3.Row
