@@ -526,19 +526,6 @@ def delete_repair(repair_id: int) -> bool:
     except Exception as e:
         logging.error(f"Error deleting repair {repair_id}: {e}")
         return False
-    try:
-        conn = get_connection()
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        cursor.execute("SELECT * FROM users ORDER BY first_seen DESC")
-        users = [dict(row) for row in cursor.fetchall()]
-        
-        conn.close()
-        return users
-    except Exception as e:
-        logging.error(f"Error retrieving users: {e}")
-        return []
 
 def set_admin_status(user_id: int, is_admin: bool) -> bool:
     """
