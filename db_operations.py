@@ -505,33 +505,42 @@ def delete_repair(repair_id: int) -> bool:
     Returns:
         bool: True if deleted successfully, False otherwise
     """
-    logging.debug(f"Вызов функции delete_repair с repair_id={repair_id}")
+    logging.info(f"Вызов функции delete_repair с repair_id={repair_id}")
     try:
         conn = get_connection()
         cursor = conn.cursor()
         
         # Get vehicle_id before deletion for reference
-        logging.debug(f"Выполняем SELECT vehicle_id FROM repairs WHERE id = {repair_id}")
+        logging.info(f"Проверка существования записи с ID={repair_id}")
         cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
         result = cursor.fetchone()
         
         if not result:
-            logging.error(f"Repair with ID {repair_id} not found")
+            logging.error(f"Запись ремонта с ID={repair_id} не найдена")
             conn.close()
             return False
         
-        logging.debug(f"Найдена запись ремонта с vehicle_id={result[0]}")
+        logging.info(f"Найдена запись ремонта с vehicle_id={result[0]}")
             
         # Delete the repair record
-        logging.debug(f"Выполняем DELETE FROM repairs WHERE id = {repair_id}")
+        logging.info(f"Удаление записи ремонта с ID={repair_id}")
         cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
+        
+        # Check if the record was actually deleted
+        rows_affected = cursor.rowcount
         conn.commit()
-        logging.info(f"Успешно удалена запись о ремонте с ID={repair_id}")
-        conn.close()
-        return True
+        
+        if rows_affected > 0:
+            logging.info(f"Успешно удалена запись о ремонте с ID={repair_id}")
+            conn.close()
+            return True
+        else:
+            logging.error(f"Не удалось удалить запись о ремонте с ID={repair_id}, не найдено строк для удаления")
+            conn.close()
+            return False
     except Exception as e:
-        logging.error(f"Error deleting repair {repair_id}: {e}")
-        logging.error(f"Трассировка стека: ", exc_info=True)
+        logging.error(f"Ошибка при удалении ремонта {repair_id}: {e}")
+        logging.exception("Полная информация об ошибке:")
         return False
 
 def set_admin_status(user_id: int, is_admin: bool) -> bool:
