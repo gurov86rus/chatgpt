@@ -1895,13 +1895,19 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
             await callback.answer("⚠️ Запись не найдена")
             return
         
-        # Save repair_id and vehicle_id to state с четкими названиями
+        vehicle_id = record['vehicle_id']
+        logging.info(f"Получен vehicle_id={vehicle_id} для удаляемой записи ремонта ID={repair_id}")
+        
+        # Save repair_id and vehicle_id to state с четкими названиями и дополнительным логированием
         await state.update_data(
             repair_delete_id=repair_id,
-            repair_vehicle_id=record['vehicle_id'],
+            repair_vehicle_id=vehicle_id,
             repair_date=record['date'],
             repair_mileage=record['mileage']
         )
+        
+        # Для диагностики выведем в лог актуальное состояние после обновления
+        logging.info(f"Обновлено состояние для удаления: {await state.get_data()}")
         
         # Create confirmation keyboard с правильным callback_data
         keyboard = [
@@ -1937,28 +1943,30 @@ async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext
         
         # Сначала проверяем, есть ли данные в состоянии
         state_data = await state.get_data()
+        vehicle_id = None
+        
         if 'repair_vehicle_id' in state_data:
             vehicle_id = state_data['repair_vehicle_id']
             logging.info(f"Получен vehicle_id={vehicle_id} из состояния")
-        else:
-            # Если нет, получаем из базы данных
-            conn = sqlite3.connect('vehicles.db')
-            cursor = conn.cursor()
-            cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
-            result = cursor.fetchone()
-            
-            if not result:
-                await callback.answer("⚠️ Запись уже удалена", show_alert=True)
-                conn.close()
-                return
-                
-            vehicle_id = result[0]
-            conn.close()
-            logging.info(f"Получен vehicle_id={vehicle_id} из базы данных")
         
-        # Удаляем запись
+        # Перед удалением всегда проверяем в базе
         conn = sqlite3.connect('vehicles.db')
         cursor = conn.cursor()
+        cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
+        result = cursor.fetchone()
+        
+        if not result:
+            await callback.answer("⚠️ Запись уже удалена", show_alert=True)
+            conn.close()
+            return
+        
+        # Если данные в состоянии отсутствуют или не совпадают, используем данные из базы
+        db_vehicle_id = result[0]
+        if vehicle_id is None or vehicle_id != db_vehicle_id:
+            vehicle_id = db_vehicle_id
+            logging.info(f"Обновлен vehicle_id={vehicle_id} из базы данных")
+        
+        # Удаляем запись
         cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
         conn.commit()
         conn.close()
