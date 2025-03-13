@@ -1901,25 +1901,13 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
             await callback.answer("⚠️ Запись о ремонте не найдена", show_alert=True)
             return
         
-        # Сохраняем важные данные в состоянии
+        # Получаем ID транспортного средства
         vehicle_id = record['vehicle_id']
         logging.info(f"Найден vehicle_id={vehicle_id} для ремонта ID={repair_id}")
         
-        # Сохраняем все необходимые данные в состоянии с четкими именами
-        await state.update_data({
-            'delete_repair_id': repair_id,
-            'delete_vehicle_id': vehicle_id,  # Важно сохранить vehicle_id с уникальным именем
-            'delete_repair_date': record['date'],
-            'delete_repair_mileage': record['mileage']
-        })
-        
-        # Для диагностики логируем состояние
-        state_data = await state.get_data()
-        logging.info(f"Состояние перед удалением ремонта: {state_data}")
-        
         # Создаем клавиатуру с подтверждением
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"confirm_repair_deletion_{repair_id}_{vehicle_id}")],
+            [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"confirm_repair_deletion_{repair_id}")],
             [InlineKeyboardButton(text="❌ Отмена", callback_data=f"manage_repairs_{vehicle_id}")]
         ])
         
@@ -1936,6 +1924,7 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
         
     except Exception as e:
         logging.error(f"Ошибка при подготовке удаления записи ремонта: {e}")
+        import traceback
         logging.error(f"Трассировка: {traceback.format_exc()}")
         await callback.answer("⚠️ Произошла ошибка при подготовке удаления", show_alert=True)
 
@@ -1944,79 +1933,56 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
 async def delete_repair_execute(callback: types.CallbackQuery, state: FSMContext):
     """Handler for executing repair record deletion"""
     try:
-        # Извлекаем данные из callback
+        logging.info(f"Выполнение удаления записи ремонта, данные callback: {callback.data}")
+        
+        # Получаем ID ремонта из callback_data. Формат: confirm_repair_deletion_ID_VEHICLE_ID
         parts = callback.data.split("_")
         if len(parts) < 4:
             await callback.answer("⚠️ Неверный формат данных для подтверждения", show_alert=True)
             return
-            
+        
+        # Извлекаем ID ремонта из callback data
         repair_id = int(parts[3])
-        vehicle_id = int(parts[4]) if len(parts) >= 5 else None
         
-        logging.info(f"Выполнение удаления записи ремонта с ID={repair_id}, данные из callback: vehicle_id={vehicle_id}")
-        
-        # Получаем данные из состояния для дополнительной проверки
-        state_data = await state.get_data()
-        logging.info(f"Данные состояния при удалении: {state_data}")
-        
-        # Стараемся получить vehicle_id из разных источников, по приоритету
-        if not vehicle_id and 'delete_vehicle_id' in state_data:
-            vehicle_id = state_data['delete_vehicle_id']
-            logging.info(f"Использован vehicle_id={vehicle_id} из состояния с ключом delete_vehicle_id")
-        elif not vehicle_id and 'delete_repair_vehicle_id' in state_data:
-            vehicle_id = state_data['delete_repair_vehicle_id']
-            logging.info(f"Использован vehicle_id={vehicle_id} из состояния с ключом delete_repair_vehicle_id")
-        
-        # Финальная проверка в базе данных
+        # Получаем ID транспортного средства из базы данных
         conn = sqlite3.connect('vehicles.db')
         cursor = conn.cursor()
         
-        # Проверяем существование записи
+        # Проверяем существование записи и получаем vehicle_id
         cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
         result = cursor.fetchone()
         
         if not result:
-            await callback.answer("⚠️ Запись о ремонте уже удалена или не существует", show_alert=True)
+            logging.warning(f"Запись о ремонте с ID={repair_id} не найдена в базе")
+            await callback.answer("⚠️ Запись о ремонте не найдена или уже удалена", show_alert=True)
             conn.close()
             return
         
-        # Если vehicle_id всё ещё не определен или отличается от значения в базе, используем значение из базы
-        if not vehicle_id or (result[0] != vehicle_id):
-            vehicle_id = result[0]
-            logging.info(f"Обновлен vehicle_id={vehicle_id} из базы данных")
+        # Получаем ID транспортного средства
+        vehicle_id = result[0]
+        logging.info(f"Найден vehicle_id={vehicle_id} для ремонта ID={repair_id}")
         
         # Удаляем запись
         cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
-        deleted_count = cursor.rowcount
         conn.commit()
         conn.close()
         
-        logging.info(f"Удалено записей: {deleted_count}")
+        # Отправляем сообщение об успешном удалении
+        await callback.message.edit_text(
+            "✅ Запись о ремонте успешно удалена!",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="🔧 К списку ремонтов", callback_data=f"manage_repairs_{vehicle_id}")],
+                [InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
+            ])
+        )
+        logging.info(f"Запись ремонта с ID={repair_id} для ТС ID={vehicle_id} успешно удалена")
         
-        if deleted_count > 0:
-            # Успешное удаление
-            await callback.message.edit_text(
-                "✅ Запись о ремонте успешно удалена!",
-                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(text="🔧 К списку ремонтов", callback_data=f"manage_repairs_{vehicle_id}")],
-                    [InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
-                ])
-            )
-            logging.info(f"Запись ремонта с ID={repair_id} для ТС ID={vehicle_id} успешно удалена")
-        else:
-            # Запись не была удалена по какой-то причине
-            await callback.message.edit_text(
-                "⚠️ Запись не была удалена. Возможно, она была удалена ранее.",
-                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton(text="🔧 К списку ремонтов", callback_data=f"manage_repairs_{vehicle_id}")],
-                    [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
-                ])
-            )
     except Exception as e:
         logging.error(f"Ошибка при удалении записи ремонта: {e}")
+        import traceback
         logging.error(f"Трассировка: {traceback.format_exc()}")
         
-        # Безопасное возвращение к предыдущему экрану
+        # В случае ошибки предоставляем кнопку для возврата
         await callback.message.edit_text(
             "⚠️ Произошла ошибка при удалении записи о ремонте.",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
