@@ -737,13 +737,95 @@ async def refueling_mileage_entered(message: types.Message, state: FSMContext):
 async def delete_repair_confirm(callback_query: types.CallbackQuery):
     """Handler for confirming repair record deletion"""
     repair_id = int(callback_query.data.split("_")[2])
+    logging.debug(f"Запрос на подтверждение удаления ремонта с ID={repair_id}")
     
     try:
         conn = get_connection()
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
+        # Получение информации о ремонте перед удалением
         cursor.execute("""
+        SELECT r.*, v.model, v.reg_number 
+        FROM repairs r
+        JOIN vehicles v ON r.vehicle_id = v.id
+        WHERE r.id = ?
+        """, (repair_id,))
+        
+        record = cursor.fetchone()
+        conn.close()
+        
+        if not record:
+            await callback_query.answer("⚠️ Запись о ремонте не найдена", show_alert=True)
+            return
+        
+        vehicle_id = record["vehicle_id"]
+        date = record["date"]
+        cost = record.get("cost", 0)
+        
+        # Создаем клавиатуру для подтверждения
+        keyboard = [
+            [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"repair_delete_confirm_{repair_id}")],
+            [InlineKeyboardButton(text="❌ Отмена", callback_data=f"manage_repairs_{vehicle_id}")]
+        ]
+        
+        await callback_query.message.edit_text(
+            f"⚠️ **Подтверждение удаления**\n\n"
+            f"Вы действительно хотите удалить запись о ремонте от {date}?\n\n"
+            f"Это действие нельзя отменить.",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard),
+            parse_mode="Markdown"
+        )
+        await callback_query.answer()
+        
+    except Exception as e:
+        logging.error(f"Ошибка при подготовке удаления записи о ремонте: {e}")
+        await callback_query.answer("⚠️ Произошла ошибка", show_alert=True)
+
+@dp.callback_query(lambda c: c.data.startswith("repair_delete_confirm_"))
+async def repair_delete_execute(callback_query: types.CallbackQuery):
+    """Handler for executing repair record deletion"""
+    try:
+        repair_id = int(callback_query.data.split("_")[3])
+        logging.debug(f"Выполнение удаления ремонта с ID={repair_id}")
+        
+        # Получаем vehicle_id перед удалением
+        conn = get_connection()
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
+        result = cursor.fetchone()
+        conn.close()
+        
+        if not result:
+            await callback_query.answer("⚠️ Запись уже удалена", show_alert=True)
+            return
+            
+        vehicle_id = result["vehicle_id"]
+        
+        # Вызов функции удаления из db_operations
+        from db_operations import delete_repair
+        success = delete_repair(repair_id)
+        
+        if success:
+            await callback_query.message.edit_text(
+                "✅ Запись о ремонте успешно удалена!",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="📋 К списку ремонтов", callback_data=f"manage_repairs_{vehicle_id}")],
+                    [InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
+                ])
+            )
+            logging.info(f"Запись о ремонте с ID={repair_id} для ТС ID={vehicle_id} успешно удалена")
+        else:
+            await callback_query.message.edit_text(
+                "⚠️ Не удалось удалить запись о ремонте.",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text="🔙 Назад", callback_data=f"manage_repairs_{vehicle_id}")]
+                ])
+            )
+    except Exception as e:
+        logging.error(f"Ошибка при удалении записи о ремонте: {e}", exc_info=True)
+        await callback_query.answer("⚠️ Произошла ошибка при удалении", show_alert=True)sor.execute("""
         SELECT r.*, v.model, v.reg_number 
         FROM repairs r
         JOIN vehicles v ON r.vehicle_id = v.id

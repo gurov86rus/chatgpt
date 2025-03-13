@@ -505,11 +505,13 @@ def delete_repair(repair_id: int) -> bool:
     Returns:
         bool: True if deleted successfully, False otherwise
     """
+    logging.debug(f"Вызов функции delete_repair с repair_id={repair_id}")
     try:
         conn = get_connection()
         cursor = conn.cursor()
         
         # Get vehicle_id before deletion for reference
+        logging.debug(f"Выполняем SELECT vehicle_id FROM repairs WHERE id = {repair_id}")
         cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
         result = cursor.fetchone()
         
@@ -517,14 +519,19 @@ def delete_repair(repair_id: int) -> bool:
             logging.error(f"Repair with ID {repair_id} not found")
             conn.close()
             return False
+        
+        logging.debug(f"Найдена запись ремонта с vehicle_id={result[0]}")
             
         # Delete the repair record
+        logging.debug(f"Выполняем DELETE FROM repairs WHERE id = {repair_id}")
         cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
         conn.commit()
+        logging.info(f"Успешно удалена запись о ремонте с ID={repair_id}")
         conn.close()
         return True
     except Exception as e:
         logging.error(f"Error deleting repair {repair_id}: {e}")
+        logging.error(f"Трассировка стека: ", exc_info=True)
         return False
 
 def set_admin_status(user_id: int, is_admin: bool) -> bool:
