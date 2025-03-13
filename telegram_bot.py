@@ -1932,7 +1932,9 @@ async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext
             return
         
         # Получаем ID записи ремонта из callback data
-        repair_id = int(callback.data.split("_")[3])
+        # Формат строки: repair_delete_confirm_ID
+        callback_parts = callback.data.split("_")
+        repair_id = int(callback_parts[-1])  # Берем последний элемент как ID
         logging.info(f"Выполнение удаления записи ремонта с ID={repair_id}")
         
         # Получаем ID транспортного средства
@@ -1973,7 +1975,9 @@ async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext
             # Попытка получить ID автомобиля в случае ошибки
             if conn:
                 cursor = conn.cursor()
-                cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (int(callback.data.split("_")[3]),))
+                callback_parts = callback.data.split("_")
+                repair_id = int(callback_parts[-1])  # Берем последний элемент как ID
+                cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
                 result = cursor.fetchone()
                 if result:
                     vehicle_id = result[0]
