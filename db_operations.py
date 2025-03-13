@@ -475,6 +475,39 @@ def register_user(user_id: int, username: str, full_name: str, is_admin: bool = 
         return False
 
 def get_all_users() -> List[Dict]:
+
+def delete_repair(repair_id: int) -> bool:
+    """
+    Delete a repair record
+    
+    Args:
+        repair_id (int): The repair record ID
+        
+    Returns:
+        bool: True if deleted successfully, False otherwise
+    """
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        # Get vehicle_id before deletion for reference
+        cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
+        result = cursor.fetchone()
+        
+        if not result:
+            logging.error(f"Repair with ID {repair_id} not found")
+            conn.close()
+            return False
+            
+        # Delete the repair record
+        cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        logging.error(f"Error deleting repair {repair_id}: {e}")
+        return False
+
     """
     Get all registered users
     
