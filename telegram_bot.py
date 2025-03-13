@@ -1914,14 +1914,28 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
 @admin_required
 async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext):
     """Handler for executing repair record deletion"""
+    user_id = callback.from_user.id
+    
+    # Проверяем наличие пользователя в базе данных
+    conn = None
     try:
+        conn = sqlite3.connect('vehicles.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM users WHERE id = ?", (user_id,))
+        user_exists = cursor.fetchone()
+        
+        if not user_exists:
+            logging.warning(f"Пользователь с ID {user_id} не найден в базе данных при попытке удалить ремонт")
+            await callback.answer("⚠️ Ошибка: Пользователь с ID {} не найден. Попросите его выполнить команду /start или /myid.".format(user_id), show_alert=True)
+            if conn:
+                conn.close()
+            return
+        
         # Получаем ID записи ремонта из callback data
         repair_id = int(callback.data.split("_")[3])
         logging.info(f"Выполнение удаления записи ремонта с ID={repair_id}")
         
         # Получаем ID транспортного средства
-        conn = sqlite3.connect('vehicles.db')
-        cursor = conn.cursor()
         cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
         result = cursor.fetchone()
         
@@ -1935,8 +1949,8 @@ async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext
         # Удаляем запись
         cursor.execute("DELETE FROM repairs WHERE id = ?", (repair_id,))
         conn.commit()
-        conn.close()
         
+        # Обновляем сообщение
         await callback.message.edit_text(
             "✅ Запись о ремонте успешно удалена!",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -1947,15 +1961,38 @@ async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext
         logging.info(f"Запись ремонта с ID={repair_id} для ТС ID={vehicle_id} успешно удалена")
     except Exception as e:
         logging.error(f"Ошибка при удалении записи ремонта: {e}")
+        vehicle_id = 0
+        try:
+            # Попытка получить ID автомобиля в случае ошибки
+            if conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (int(callback.data.split("_")[3]),))
+                result = cursor.fetchone()
+                if result:
+                    vehicle_id = result[0]
+        except:
+            pass
+        
+        # Формируем кнопки для возврата
+        back_buttons = []
+        if vehicle_id > 0:
+            back_buttons.append([InlineKeyboardButton(text="🔧 К списку ремонтов", callback_data=f"manage_repairs_{vehicle_id}")])
+            back_buttons.append([InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{vehicle_id}")])
+        else:
+            back_buttons.append([InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")])
+        
         await callback.message.edit_text(
-            "⚠️ Произошла ошибка при удалении записи.",
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
-            ])
+            f"⚠️ Произошла ошибка при удалении записи: {str(e)}",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=back_buttons)
         )
-    
-    await callback.answer()
-    await state.clear()
+    finally:
+        # Закрываем соединение с БД
+        if conn:
+            conn.close()
+        
+        # Очищаем состояние и отвечаем на callback
+        await state.clear()
+        await callback.answer()
 
 # Fuel information handling
 @dp.callback_query(lambda c: c.data.startswith("edit_fuel_"))
