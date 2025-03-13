@@ -38,7 +38,7 @@ def is_admin(user_id):
     # Первоначальная проверка по статичному списку админов для доступа до инициализации базы
     if user_id in ADMIN_IDS:
         return True
-    
+
     # Проверка через базу данных для динамического управления админами
     return is_user_admin(user_id)
 
@@ -46,11 +46,11 @@ def is_admin(user_id):
 def admin_required(func):
     """Decorator to restrict function to admins only"""
     import inspect
-    
+
     # Получаем информацию о параметрах оригинальной функции
     sig = inspect.signature(func)
     param_names = list(sig.parameters.keys())
-    
+
     async def wrapper(event, *args, **kwargs):
         # Проверка прав администратора
         user_id = event.from_user.id
@@ -61,28 +61,28 @@ def admin_required(func):
             elif isinstance(event, types.Message):
                 await event.answer("⚠️ У вас нет прав администратора для выполнения этой операции")
                 return
-        
+
         # Оставляем только те аргументы, которые функция может принять
         # Первый параметр всегда event, его оставляем
         filtered_kwargs = {}
         for key, value in kwargs.items():
             if key in param_names:
                 filtered_kwargs[key] = value
-        
+
         # Вызываем функцию только с теми аргументами, которые она принимает
         return await func(event, *args, **filtered_kwargs)
-    
+
     return wrapper
 
 # Initialize bot and dispatcher with enhanced error handling
 try:
     # Импортируем DefaultBotProperties для новой версии aiogram 3.7.0+
     from aiogram.client.default import DefaultBotProperties
-    
+
     # Проверка токена перед инициализацией
     if not TOKEN:
         raise ValueError("TELEGRAM_BOT_TOKEN не найден или пустой. Проверьте настройки окружения.")
-    
+
     # Вывод информации о токене для диагностики (без самого токена)
     token_parts = TOKEN.split(':')
     if len(token_parts) >= 2:
@@ -91,16 +91,16 @@ try:
         logging.info(f"Используется токен бота с ID: {bot_id}, длина токена: {token_length} символов")
     else:
         logging.warning("Формат токена выглядит некорректным, должен быть вида '123456789:ABC...XYZ'")
-    
+
     # Create Bot instance with updated initialization for aiogram 3.7.0+
     bot = Bot(
-        token=TOKEN, 
+        token=TOKEN,
         default=DefaultBotProperties(parse_mode="Markdown")
     )
-    
+
     # Проверка соединения с API Telegram
     logging.info("Проверка соединения с API Telegram...")
-    
+
     # Initialize storage and dispatcher
     storage = MemoryStorage()
     dp = Dispatcher(storage=storage)
@@ -125,7 +125,7 @@ class RepairState(StatesGroup):
 
 class MileageUpdateState(StatesGroup):
     mileage = State()
-    
+
 class EditState(StatesGroup):
     field = State()
     value = State()
@@ -135,16 +135,16 @@ class MaintenanceEditState(StatesGroup):
     date = State()
     mileage = State()
     works = State()
-    
+
 class MaintenanceDeleteState(StatesGroup):
     maintenance_id = State()
-    
+
 class FuelInfoState(StatesGroup):
     vehicle_id = State()
     fuel_type = State()
     fuel_tank_capacity = State()
     avg_fuel_consumption = State()
-    
+
 class AdminManageState(StatesGroup):
     user_id = State()
     action = State() # "add" или "remove"
@@ -163,26 +163,26 @@ def get_vehicle_buttons():
     for vehicle in vehicles:
         keyboard.append([
             InlineKeyboardButton(
-                text=f"🚛 {vehicle['model']} ({vehicle['reg_number']})", 
+                text=f"🚛 {vehicle['model']} ({vehicle['reg_number']})",
                 callback_data=f"vehicle_{vehicle['id']}"
             )
         ])
-    
+
     # Добавляем кнопку для перехода на веб-интерфейс
     web_url = "https://d933dc0e-c8d9-4501-bbd7-4bdac973738c-00-33heojbox43gm.picard.replit.dev"
     keyboard.append([
         InlineKeyboardButton(
-            text="🌐 Открыть веб-интерфейс", 
+            text="🌐 Открыть веб-интерфейс",
             url=web_url
         )
     ])
-    
+
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 def get_vehicle_card(vehicle_id, user_id=None):
     """
     Generate detailed vehicle information card with all available data
-    
+
     Args:
         vehicle_id (int): Vehicle ID
         user_id (int, optional): User ID, to check admin rights
@@ -190,42 +190,42 @@ def get_vehicle_card(vehicle_id, user_id=None):
     conn = sqlite3.connect('vehicles.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    
+
     # Get vehicle data with all fields from enhanced schema
     cursor.execute("""
         SELECT * FROM vehicles WHERE id = ?
     """, (vehicle_id,))
     vehicle = cursor.fetchone()
-    
+
     if not vehicle:
         conn.close()
         return "Автомобиль не найден", None
-    
+
     # Get maintenance history
     cursor.execute("""
-        SELECT date, mileage, works FROM maintenance 
-        WHERE vehicle_id = ? 
+        SELECT date, mileage, works FROM maintenance
+        WHERE vehicle_id = ?
         ORDER BY date DESC, mileage DESC
     """, (vehicle_id,))
     to_history = cursor.fetchall()
-    
+
     # Get repair history
     cursor.execute("""
-        SELECT date, mileage, description, cost FROM repairs 
-        WHERE vehicle_id = ? 
+        SELECT date, mileage, description, cost FROM repairs
+        WHERE vehicle_id = ?
         ORDER BY date DESC, mileage DESC
     """, (vehicle_id,))
     repairs = cursor.fetchall()
-    
+
     # Get last maintenance record for interval calculation
     cursor.execute("""
-        SELECT mileage FROM maintenance 
-        WHERE vehicle_id = ? 
+        SELECT mileage FROM maintenance
+        WHERE vehicle_id = ?
         ORDER BY date DESC, mileage DESC LIMIT 1
     """, (vehicle_id,))
     last_to_record = cursor.fetchone()
     last_to_mileage = last_to_record['mileage'] if last_to_record else None
-    
+
     # Generate vehicle card with enhanced information
     card = (
         f"🚛 **{vehicle['model']} ({vehicle['reg_number']})**\n\n"
@@ -235,17 +235,17 @@ def get_vehicle_card(vehicle_id, user_id=None):
         f"🏷 **Квалификация:** `{vehicle['qualification'] or '-'}`\n"
         f"🔢 **Пробег:** `{vehicle['mileage'] or 0} км`\n"
         f"🛠 **Тахограф:** {'✅ Требуется' if vehicle['tachograph_required'] else '❌ Не требуется'}\n\n"
-        
+
         f"📝 **Документы и сроки:**\n"
     )
-    
+
     # Add document expiration with days remaining
     osago_days = days_until(vehicle['osago_valid'])
     tech_days = days_until(vehicle['tech_inspection_valid'])
-    
+
     card += f"📅 **ОСАГО до:** `{vehicle['osago_valid'] or '-'}` {format_days_remaining(osago_days)}\n"
     card += f"🔧 **Техосмотр до:** `{vehicle['tech_inspection_valid'] or '-'}` {format_days_remaining(tech_days)}\n"
-    
+
     # Add SKZI information if tachograph is required
     if vehicle['tachograph_required']:
         skzi_days = days_until(vehicle['skzi_valid_date'])
@@ -253,28 +253,28 @@ def get_vehicle_card(vehicle_id, user_id=None):
             f"🔐 **СКЗИ установлен:** `{vehicle['skzi_install_date'] or '-'}`\n"
             f"🔐 **СКЗИ действует до:** `{vehicle['skzi_valid_date'] or '-'}` {format_days_remaining(skzi_days)}\n"
         )
-    
+
     # Add maintenance information with TO interval calculation
     if last_to_mileage:
         # Calculate next TO based on 10,000 km interval
         remaining_km, next_to_mileage = get_to_interval_based_on_mileage(last_to_mileage, vehicle['mileage'])
-        
+
         card += f"\n🔧 **Обслуживание:**\n"
-        
+
         if vehicle['last_to_date']:
             card += f"📆 **Последнее ТО:** `{vehicle['last_to_date']}` при пробеге `{last_to_mileage} км`\n"
-        
+
         # Display next TO based on mileage
         card += f"🔄 **Следующее ТО при:** `{next_to_mileage} км`\n"
         card += f"🔄 **Осталось до ТО:** `{remaining_km} км`\n"
-        
+
         if remaining_km <= 0:
             card += "⚠️ **ВНИМАНИЕ! Необходимо пройти ТО!**\n"
         elif remaining_km <= 500:
             card += "⚠️ **ВНИМАНИЕ! ТО требуется в ближайшее время!**\n"
         elif remaining_km <= 1000:
             card += "⚠️ **Приближается плановое ТО!**\n"
-    
+
     # Add fuel information if available
     if vehicle['fuel_type'] or vehicle['fuel_tank_capacity'] or vehicle['avg_fuel_consumption']:
         card += f"\n⛽ **Информация о топливе:**\n"
@@ -284,11 +284,11 @@ def get_vehicle_card(vehicle_id, user_id=None):
             card += f"🛢 **Объем бака:** `{vehicle['fuel_tank_capacity']} л`\n"
         if vehicle['avg_fuel_consumption']:
             card += f"🛢 **Средний расход:** `{vehicle['avg_fuel_consumption']} л/100км`\n"
-    
+
     # Add notes if available
     if vehicle['notes']:
         card += f"\n📝 **Примечания:** {vehicle['notes']}\n"
-    
+
     # Add maintenance history
     card += f"\n📜 **История ТО:**\n"
     if to_history:
@@ -296,7 +296,7 @@ def get_vehicle_card(vehicle_id, user_id=None):
             card += f"📅 `{record['date']}` – `{record['mileage']} км` – {record['works']}\n"
     else:
         card += "🔹 Нет данных о техническом обслуживании\n"
-    
+
     # Add repair history
     card += f"\n🛠 **Внеплановые ремонты:**\n"
     if repairs:
@@ -305,13 +305,13 @@ def get_vehicle_card(vehicle_id, user_id=None):
             card += f"🔧 `{record['date']}` – `{record['mileage']} км` – {record['description']}{cost_text}\n"
     else:
         card += "🔹 Нет данных о ремонтах\n"
-    
+
     # Create action keyboard based on user's admin status
     keyboard_buttons = []
-    
+
     # Check if user is admin
     is_user_admin = is_admin(user_id) if user_id is not None else False
-    
+
     # For regular users, only show back button
     if not is_user_admin:
         keyboard_buttons = [
@@ -330,9 +330,9 @@ def get_vehicle_card(vehicle_id, user_id=None):
             [InlineKeyboardButton(text="📊 Сгенерировать отчет", callback_data="generate_report")],
             [InlineKeyboardButton(text="⬅ Назад к списку", callback_data="back")]
         ]
-    
+
     keyboard = InlineKeyboardMarkup(inline_keyboard=keyboard_buttons)
-    
+
     conn.close()
     return card, keyboard
 
@@ -343,16 +343,16 @@ async def start_command(message: types.Message):
     try:
         user_id = message.from_user.id
         user_name = message.from_user.full_name
-        
+
         logging.info(f"Пользователь {user_id} ({user_name}) запустил команду /start")
-        
+
         # Регистрируем пользователя в системе
         try:
             register_user(user_id, message.from_user.username or "", user_name)
             logging.info(f"Пользователь {user_id} зарегистрирован/обновлен в системе")
         except Exception as e:
             logging.error(f"Ошибка при регистрации пользователя {user_id}: {e}")
-        
+
         # Show user ID
         user_id_info = f"🆔 Ваш Telegram ID: {user_id}"
         is_user_admin = False
@@ -365,7 +365,7 @@ async def start_command(message: types.Message):
         except Exception as e:
             logging.error(f"Ошибка при проверке статуса администратора для {user_id}: {e}")
             user_id_info += " (статус не определен)"
-        
+
         # Отправляем информацию без кнопки веб-интерфейса
         welcome_message = (
             f"👋 *Добро пожаловать в Систему Управления Автопарком!*\n\n"
@@ -385,10 +385,10 @@ async def start_command(message: types.Message):
             f"/help - Подробная справка по использованию\n"
             f"/myid - Просмотр вашего Telegram ID"
         )
-        
+
         await message.answer(welcome_message, parse_mode="Markdown")
         logging.info("Отправлено приветственное сообщение")
-        
+
         # Получаем список автомобилей
         try:
             # Отправляем список автомобилей
@@ -422,7 +422,7 @@ async def help_command(message: types.Message):
     """Handler for /help command"""
     # Получаем правильную ссылку на веб-интерфейс
     web_url = "https://d933dc0e-c8d9-4501-bbd7-4bdac973738c-00-33heojbox43gm.picard.replit.dev"
-    
+
     # Базовая справка
     help_text = (
         "ℹ️ **Справка по использованию бота:**\n\n"
@@ -431,7 +431,7 @@ async def help_command(message: types.Message):
         "/help - Показать эту справку\n"
         "/myid - Показать ваш Telegram ID\n"
     )
-    
+
     # Дополнительные команды для администраторов
     if is_admin(message.from_user.id):
         help_text += (
@@ -439,7 +439,7 @@ async def help_command(message: types.Message):
             "/users - Просмотр списка пользователей\n"
             "/admin - Управление статусом администратора\n"
         )
-    
+
     # Общая справка
     help_text += (
         "\n⚙️ **Работа с автомобилем:**\n"
@@ -457,7 +457,7 @@ async def help_command(message: types.Message):
         "🌐 **Веб-интерфейс:**\n"
         "Для расширенного просмотра и анализа данных используйте веб-интерфейс системы"
     )
-    
+
     # Отправляем справку без кнопки веб-интерфейса
     await message.answer(help_text, parse_mode="Markdown")
 
@@ -466,10 +466,10 @@ async def show_my_id(message: types.Message):
     """Handler to show user's Telegram ID"""
     user_id = message.from_user.id
     user_name = message.from_user.full_name
-    
+
     # Регистрируем пользователя при запросе ID
     register_user(user_id, message.from_user.username or "", user_name)
-    
+
     # Проверяем статус администратора и выводим информацию
     admin_status = is_admin(user_id)
     help_text = ""
@@ -478,7 +478,7 @@ async def show_my_id(message: types.Message):
         set_admin_status(user_id, True)
         admin_status = True
         help_text = "✅ Ваш статус администратора восстановлен в базе данных!"
-    
+
     await message.answer(
         f"👤 **Информация о пользователе**\n\n"
         f"🆔 Ваш Telegram ID: `{user_id}`\n"
@@ -499,7 +499,7 @@ async def admin_command(message: types.Message, state: FSMContext):
         [InlineKeyboardButton(text="🔄 Удалить администратора", callback_data="admin_remove")],
         [InlineKeyboardButton(text="❌ Отмена", callback_data="admin_cancel")]
     ])
-    
+
     await message.answer(
         "👑 **Управление администраторами**\n\n"
         "Выберите действие:",
@@ -516,7 +516,7 @@ async def admin_add(callback: types.CallbackQuery, state: FSMContext):
     # Затем устанавливаем новое значение
     await state.update_data(action="add")
     logging.info(f"Начало процесса добавления администратора. Состояние: {await state.get_data()}")
-    
+
     await callback.message.edit_text(
         "👑 **Добавление администратора**\n\n"
         "Введите Telegram ID пользователя, которого нужно сделать администратором:\n"
@@ -535,7 +535,7 @@ async def admin_remove(callback: types.CallbackQuery, state: FSMContext):
     # Затем устанавливаем новое значение
     await state.update_data(action="remove")
     logging.info(f"Начало процесса удаления администратора. Состояние: {await state.get_data()}")
-    
+
     await callback.message.edit_text(
         "🔄 **Удаление администратора**\n\n"
         "Введите Telegram ID пользователя, которого нужно лишить прав администратора:",
@@ -562,7 +562,7 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
         user_id = int(message.text)
         data = await state.get_data()
         logging.info(f"Обработка ID пользователя: {user_id}, текущее состояние: {data}")
-        
+
         action = data.get("action")
         if not action:
             logging.error(f"Ошибка: отсутствует действие в состоянии. Текущие данные: {data}")
@@ -571,14 +571,14 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
             )
             await state.clear()
             return
-        
+
         # Проверяем, существует ли пользователь
         conn = sqlite3.connect('vehicles.db')
         cursor = conn.cursor()
         cursor.execute("SELECT id, full_name, is_admin FROM users WHERE id = ?", (user_id,))
         user = cursor.fetchone()
         conn.close()
-        
+
         if not user:
             logging.warning(f"Пользователь с ID {user_id} не найден в базе данных")
             await message.answer(
@@ -587,12 +587,12 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
             )
             await state.clear()
             return
-        
+
         # Извлекаем данные о пользователе
         user_name = user[1]
         is_admin = bool(user[2])
         logging.info(f"Найден пользователь: {user_name}, админ: {is_admin}")
-        
+
         # Проверяем, что действие имеет смысл
         if action == "add" and is_admin:
             logging.info(f"Попытка добавить существующего администратора {user_name} (ID: {user_id})")
@@ -601,7 +601,7 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
             )
             await state.clear()
             return
-        
+
         if action == "remove" and not is_admin:
             logging.info(f"Попытка удалить пользователя {user_name} (ID: {user_id}), который не является администратором")
             await message.answer(
@@ -609,19 +609,19 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
             )
             await state.clear()
             return
-        
+
         # Запрашиваем подтверждение
         await state.update_data(target_user_id=user_id, target_user_name=user_name)
         updated_data = await state.get_data()
         logging.info(f"Обновленное состояние перед подтверждением: {updated_data}")
-        
+
         confirm_keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="✅ Подтвердить", callback_data=f"confirm_{action}")],
             [InlineKeyboardButton(text="❌ Отмена", callback_data="admin_cancel")]
         ])
-        
+
         action_text = "добавить как администратора" if action == "add" else "удалить из администраторов"
-        
+
         await message.answer(
             f"⚠️ **Подтвердите действие**\n\n"
             f"Вы собираетесь {action_text} пользователя:\n"
@@ -631,11 +631,11 @@ async def process_admin_user_id(message: types.Message, state: FSMContext):
             reply_markup=confirm_keyboard,
             parse_mode="Markdown"
         )
-        
+
         # Устанавливаем новое состояние и проверяем его
         await state.set_state(AdminManageState.action)
         logging.info(f"Установлено состояние AdminManageState.action")
-        
+
     except ValueError:
         await message.answer(
             "⚠️ Ошибка: ID пользователя должен быть числом.\n\n"
@@ -648,7 +648,7 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
     """Confirm admin status change"""
     # Добавляем подробное логирование
     logging.info(f"Получен callback: {callback.data}")
-    
+
     # Получаем действие из callback data
     callback_parts = callback.data.split("_")
     if len(callback_parts) > 1:
@@ -657,21 +657,21 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
     else:
         logging.error(f"Неверный формат callback data: {callback.data}")
         callback_action = "unknown"
-    
+
     # Выводим текущее состояние для диагностики
     data = await state.get_data()
     logging.info(f"Текущее состояние: {data}")
-    
+
     # Извлекаем имя и ID пользователя из callback, если они отсутствуют в состоянии
     if "target_user_id" not in data or "target_user_name" not in data or "action" not in data:
         logging.info(f"Данных в состоянии нет, пытаемся извлечь из callback: {callback.data}")
-        
+
         try:
             # Восстанавливаем данные из callback, если возможно
             if len(callback_parts) > 3 and callback_parts[0] == "confirm":
                 user_id_str = callback_parts[3]
                 user_id = int(user_id_str)
-                
+
                 # Получаем имя пользователя из базы данных
                 conn = sqlite3.connect('vehicles.db')
                 conn.row_factory = sqlite3.Row
@@ -680,7 +680,7 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
                 cursor.execute("SELECT username, full_name FROM users WHERE id = ?", (user_id,))
                 user_data = cursor.fetchone()
                 conn.close()
-                
+
                 if user_data:
                     # Восстанавливаем данные в состоянии
                     action = "add" if "add" in callback.data else "remove"
@@ -697,7 +697,7 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
                     cursor = conn.cursor()
                     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
                     table_exists = cursor.fetchone()
-                    
+
                     if not table_exists:
                         logging.error("Таблица users не существует в базе данных")
                         message_text = "⚠️ Ошибка: Таблица пользователей не найдена. Необходимо инициализировать базу данных."
@@ -711,9 +711,9 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
                         else:
                             logging.error(f"Пользователь {user_id} не найден в базе данных")
                             message_text = f"⚠️ Ошибка: Пользователь с ID {user_id} не найден. Попросите его выполнить команду /start или /myid."
-                    
+
                     conn.close()
-                    
+
                     await callback.message.edit_text(
                         message_text,
                         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -745,26 +745,26 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
             await callback.answer()
             await state.clear()
             return
-    
+
     user_id = data["target_user_id"]
     user_name = data["target_user_name"]
     action = data["action"]  # Используем сохраненное действие вместо извлеченного из callback
-    
+
     logging.info(f"Обрабатываем изменение статуса администратора для пользователя {user_name} (ID: {user_id}), действие: {action}")
-    
+
     # Проверяем соответствие действий
     if action != callback_action and callback_action != "unknown":
         logging.warning(f"Несоответствие действий: state={action}, callback={callback_action}")
-    
+
     # Изменяем статус администратора
     new_status = (action == "add")
     logging.info(f"Устанавливаем статус администратора: {new_status}")
     result = set_admin_status(user_id, new_status)
     logging.info(f"Результат установки статуса: {result}")
-    
+
     # Очищаем состояние до вывода сообщения
     await state.clear()
-    
+
     if result:
         action_text = "добавлен в" if new_status else "удален из"
         await callback.message.edit_text(
@@ -782,7 +782,7 @@ async def confirm_admin_action(callback: types.CallbackQuery, state: FSMContext)
                 [InlineKeyboardButton(text="⬅️ Вернуться к управлению", callback_data="admin")]
             ])
         )
-    
+
     await callback.answer()
 
 @dp.message(Command("users"))
@@ -791,11 +791,11 @@ async def show_users(message: types.Message):
     """Handler for showing registered users (admin only)"""
     users = get_all_users()
     stats = get_user_stats()
-    
+
     if not users:
         await message.answer("⚠️ Список пользователей пуст.")
         return
-    
+
     # Статистика пользователей
     stats_text = (
         f"📊 **Статистика пользователей:**\n"
@@ -804,14 +804,14 @@ async def show_users(message: types.Message):
         f"🆕 Новых за 30 дней: {stats['new_users']}\n"
         f"🔑 Администраторов: {stats['admin_count']}\n\n"
     )
-    
+
     # Список пользователей
     users_text = "👥 **Список пользователей:**\n\n"
-    
+
     for user in users:
         admin_status = "👑 Администратор" if user.get('is_admin') else "👤 Пользователь"
         username = f"@{user.get('username')}" if user.get('username') else "нет"
-        
+
         users_text += (
             f"🆔 `{user.get('id')}`\n"
             f"👤 Имя: {user.get('full_name')}\n"
@@ -821,15 +821,15 @@ async def show_users(message: types.Message):
             f"🕒 Последняя активность: {user.get('last_activity')}\n"
             f"🔄 Действий: {user.get('interaction_count', 0)}\n\n"
         )
-    
+
     # Отправляем несколько сообщений, если список слишком длинный
     max_message_length = 4000
-    
+
     if len(stats_text + users_text) <= max_message_length:
         await message.answer(stats_text + users_text, parse_mode="Markdown")
     else:
         await message.answer(stats_text, parse_mode="Markdown")
-        
+
         # Разделяем список пользователей на части
         remaining_text = users_text
         while remaining_text:
@@ -839,10 +839,10 @@ async def show_users(message: types.Message):
                 split_point = remaining_text[:max_message_length].rfind("\n")
             if split_point == -1:  # Если и это не помогло, просто отрезаем максимальную длину
                 split_point = max_message_length - 1
-            
+
             # Отправляем часть текста
             await message.answer(remaining_text[:split_point+1], parse_mode="Markdown")
-            
+
             # Обновляем оставшийся текст
             remaining_text = remaining_text[split_point+1:]
 
@@ -853,7 +853,7 @@ async def show_vehicle(callback: types.CallbackQuery):
     vehicle_id = int(callback.data.split("_")[1])
     user_id = callback.from_user.id
     card, keyboard = get_vehicle_card(vehicle_id, user_id)
-    
+
     await callback.message.edit_text(
         card,
         reply_markup=keyboard,
@@ -877,14 +877,14 @@ async def update_mileage_start(callback: types.CallbackQuery, state: FSMContext)
     """Start mileage update process"""
     vehicle_id = int(callback.data.split("_")[2])
     await state.update_data(vehicle_id=vehicle_id)
-    
+
     # Get current mileage
     conn = sqlite3.connect('vehicles.db')
     cursor = conn.cursor()
     cursor.execute("SELECT mileage FROM vehicles WHERE id = ?", (vehicle_id,))
     current_mileage = cursor.fetchone()[0]
     conn.close()
-    
+
     await callback.message.edit_text(
         f"📊 **Обновление пробега**\n\n"
         f"Текущий пробег: `{current_mileage} км`\n\n"
@@ -901,13 +901,13 @@ async def process_mileage_update(message: types.Message, state: FSMContext):
         new_mileage = int(message.text)
         data = await state.get_data()
         vehicle_id = data["vehicle_id"]
-        
+
         # Get current mileage
         conn = sqlite3.connect('vehicles.db')
         cursor = conn.cursor()
         cursor.execute("SELECT mileage FROM vehicles WHERE id = ?", (vehicle_id,))
         current_mileage = cursor.fetchone()[0]
-        
+
         # Validate new mileage
         if new_mileage <= current_mileage:
             await message.answer(
@@ -918,22 +918,22 @@ async def process_mileage_update(message: types.Message, state: FSMContext):
                 ])
             )
             return
-        
+
         # Update mileage
         cursor.execute("UPDATE vehicles SET mileage = ? WHERE id = ?", (new_mileage, vehicle_id))
         conn.commit()
         conn.close()
-        
+
         await state.clear()
         card, keyboard = get_vehicle_card(vehicle_id)
-        
+
         await message.answer(
-            f"✅ Пробег успешно обновлен: {new_mileage} км", 
+            f"✅ Пробег успешно обновлен: {new_mileage} км",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text="🔙 Вернуться к карточке ТС", callback_data=f"vehicle_{vehicle_id}")]
             ])
         )
-        
+
     except ValueError:
         await message.answer(
             "⚠️ Ошибка: Введите число без дополнительных символов.\n\n"
@@ -947,7 +947,7 @@ async def add_to_start(callback: types.CallbackQuery, state: FSMContext):
     """Start maintenance record addition"""
     vehicle_id = int(callback.data.split("_")[2])
     await state.update_data(vehicle_id=vehicle_id)
-    
+
     await callback.message.edit_text(
         "📅 **Добавление записи о техническом обслуживании**\n\n"
         "Введите дату ТО в формате ДД.ММ.ГГГГ (например, 15.03.2025):",
@@ -986,26 +986,26 @@ async def process_to_works(message: types.Message, state: FSMContext):
     """Process maintenance works description and save record"""
     data = await state.get_data()
     vehicle_id = data["vehicle_id"]
-    
+
     # Also update vehicle's last_to_date
     conn = sqlite3.connect('vehicles.db')
     cursor = conn.cursor()
-    
+
     # Add maintenance record
     cursor.execute(
         "INSERT INTO maintenance (vehicle_id, date, mileage, works) VALUES (?, ?, ?, ?)",
         (vehicle_id, data["date"], data["mileage"], message.text)
     )
-    
+
     # Update vehicle's last_to_date
     cursor.execute(
         "UPDATE vehicles SET last_to_date = ? WHERE id = ?",
         (data["date"], vehicle_id)
     )
-    
+
     conn.commit()
     conn.close()
-    
+
     await state.clear()
     await message.answer(
         "✅ Запись о техническом обслуживании успешно добавлена!",
@@ -1021,7 +1021,7 @@ async def add_repair_start(callback: types.CallbackQuery, state: FSMContext):
     """Start repair record addition"""
     vehicle_id = int(callback.data.split("_")[2])
     await state.update_data(vehicle_id=vehicle_id)
-    
+
     await callback.message.edit_text(
         "🛠 **Добавление записи о ремонте**\n\n"
         "Введите дату ремонта в формате ДД.ММ.ГГГГ (например, 15.03.2025):",
@@ -1034,7 +1034,7 @@ async def add_repair_start(callback: types.CallbackQuery, state: FSMContext):
 async def process_repair_date(message: types.Message, state: FSMContext):
     """Process repair date input for adding new repair"""
     data = await state.get_data()
-    
+
     # Check if we're editing an existing repair
     if 'repair_id' in data:
         # Handle edit mode
@@ -1042,7 +1042,7 @@ async def process_repair_date(message: types.Message, state: FSMContext):
             await state.update_data(new_date=data['current_date'])
         else:
             await state.update_data(new_date=message.text)
-        
+
         await message.answer(
             f"🔢 **Текущий пробег:** {data['current_mileage']} км\n\n"
             f"Введите новое значение пробега в км (или оставьте текущее):",
@@ -1054,14 +1054,14 @@ async def process_repair_date(message: types.Message, state: FSMContext):
         await message.answer(
             "🔢 Введите текущий пробег на момент ремонта (в км):"
         )
-    
+
     await state.set_state(RepairState.mileage)
 
 @dp.message(RepairState.mileage)
 async def process_repair_mileage(message: types.Message, state: FSMContext):
     """Process repair mileage input"""
     data = await state.get_data()
-    
+
     try:
         # Check if we're editing an existing repair
         if 'repair_id' in data:
@@ -1071,7 +1071,7 @@ async def process_repair_mileage(message: types.Message, state: FSMContext):
             else:
                 new_mileage = int(message.text)
                 await state.update_data(new_mileage=new_mileage)
-            
+
             await message.answer(
                 f"📝 **Текущее описание ремонта:**\n{data['current_description']}\n\n"
                 f"Введите новое описание выполненных работ (или оставьте текущее):",
@@ -1084,7 +1084,7 @@ async def process_repair_mileage(message: types.Message, state: FSMContext):
             await message.answer(
                 "📝 Опишите выполненные ремонтные работы:"
             )
-        
+
         await state.set_state(RepairState.description)
     except ValueError:
         await message.answer(
@@ -1096,7 +1096,7 @@ async def process_repair_mileage(message: types.Message, state: FSMContext):
 async def process_repair_description(message: types.Message, state: FSMContext):
     """Process repair description input"""
     data = await state.get_data()
-    
+
     # Check if we're editing an existing repair
     if 'repair_id' in data:
         # Handle edit mode - use current description if input is empty
@@ -1104,7 +1104,7 @@ async def process_repair_description(message: types.Message, state: FSMContext):
             await state.update_data(new_description=data['current_description'])
         else:
             await state.update_data(new_description=message.text)
-        
+
         await message.answer(
             f"💰 **Текущая стоимость:** {data['current_cost']} ₽\n\n"
             f"Введите новую стоимость ремонта в рублях (или оставьте текущую, или введите 0):",
@@ -1116,7 +1116,7 @@ async def process_repair_description(message: types.Message, state: FSMContext):
         await message.answer(
             "💰 Укажите стоимость ремонта в рублях (или введите 0, если неизвестно):"
         )
-    
+
     await state.set_state(RepairState.cost)
 
 @dp.message(RepairState.cost)
@@ -1124,7 +1124,7 @@ async def process_repair_cost(message: types.Message, state: FSMContext):
     """Process repair cost input and save record"""
     try:
         data = await state.get_data()
-        
+
         # Check if we're editing an existing repair
         if 'repair_id' in data:
             # Handle edit mode
@@ -1132,23 +1132,23 @@ async def process_repair_cost(message: types.Message, state: FSMContext):
                 new_cost = data['current_cost']
             else:
                 new_cost = int(message.text)
-            
+
             # Update repair record
             conn = sqlite3.connect('vehicles.db')
             cursor = conn.cursor()
             cursor.execute(
                 "UPDATE repairs SET date = ?, mileage = ?, description = ?, cost = ? WHERE id = ?",
                 (
-                    data['new_date'], 
-                    data['new_mileage'], 
-                    data['new_description'], 
+                    data['new_date'],
+                    data['new_mileage'],
+                    data['new_description'],
                     new_cost if new_cost > 0 else None,
                     data['repair_id']
                 )
             )
             conn.commit()
             conn.close()
-            
+
             await state.clear()
             await message.answer(
                 "✅ Запись о ремонте успешно обновлена!",
@@ -1161,7 +1161,7 @@ async def process_repair_cost(message: types.Message, state: FSMContext):
             # Handle add mode
             cost = int(message.text)
             vehicle_id = data["vehicle_id"]
-            
+
             conn = sqlite3.connect('vehicles.db')
             cursor = conn.cursor()
             cursor.execute(
@@ -1170,7 +1170,7 @@ async def process_repair_cost(message: types.Message, state: FSMContext):
             )
             conn.commit()
             conn.close()
-            
+
             await state.clear()
             await message.answer(
                 "✅ Запись о ремонте успешно добавлена!",
@@ -1191,14 +1191,14 @@ async def edit_vehicle_start(callback: types.CallbackQuery, state: FSMContext):
     """Start vehicle editing process"""
     vehicle_id = int(callback.data.split("_")[1])
     await state.update_data(vehicle_id=vehicle_id)
-    
+
     # List of editable fields
     fields = [
         "model", "vin", "category", "reg_number", "qualification", "tachograph_required",
         "osago_valid", "tech_inspection_date", "tech_inspection_valid", "skzi_install_date",
         "skzi_valid_date", "notes", "mileage"
     ]
-    
+
     # Create keyboard with field buttons and user-friendly names
     keyboard = []
     field_names = {
@@ -1216,23 +1216,23 @@ async def edit_vehicle_start(callback: types.CallbackQuery, state: FSMContext):
         "notes": "📝 Примечания",
         "mileage": "🔄 Пробег"
     }
-    
+
     for i, field in enumerate(fields):
         keyboard.append([
             InlineKeyboardButton(
-                text=field_names.get(field, field), 
+                text=field_names.get(field, field),
                 callback_data=f"edit_field_{vehicle_id}_{i}"
             )
         ])
-    
+
     # Add back button
     keyboard.append([
         InlineKeyboardButton(
-            text="⬅ Отмена", 
+            text="⬅ Отмена",
             callback_data=f"vehicle_{vehicle_id}"
         )
     ])
-    
+
     await callback.message.edit_text(
         "✏️ **Редактирование данных ТС**\n\n"
         "Выберите поле для редактирования:",
@@ -1247,20 +1247,20 @@ async def select_edit_field(callback: types.CallbackQuery, state: FSMContext):
     parts = callback.data.split("_")
     vehicle_id = int(parts[2])
     field_index = int(parts[3])
-    
+
     # Store field index in state
     await state.update_data(field_index=field_index)
-    
+
     # List of editable fields
     fields = [
         "model", "vin", "category", "reg_number", "qualification", "tachograph_required",
         "osago_valid", "tech_inspection_date", "tech_inspection_valid", "skzi_install_date",
         "skzi_valid_date", "notes", "mileage"
     ]
-    
+
     selected_field = fields[field_index]
     field_format = ""
-    
+
     # User-friendly field names
     field_names = {
         "model": "Модель ТС",
@@ -1277,7 +1277,7 @@ async def select_edit_field(callback: types.CallbackQuery, state: FSMContext):
         "notes": "Примечания",
         "mileage": "Пробег"
     }
-    
+
     # Add format hints for specific fields
     if selected_field == "tachograph_required":
         field_format = " (введите 0 или 1)"
@@ -1285,15 +1285,15 @@ async def select_edit_field(callback: types.CallbackQuery, state: FSMContext):
         field_format = " (формат: ДД.ММ.ГГГГ)"
     elif selected_field == "mileage":
         field_format = " (введите число в километрах)"
-    
+
     field_display_name = field_names.get(selected_field, selected_field)
-    
+
     await callback.message.edit_text(
         f"✏️ **Редактирование поля '{field_display_name}'**\n\n"
         f"Введите новое значение{field_format}:",
         parse_mode="Markdown"
     )
-    
+
     await state.set_state(EditState.value)
     await callback.answer()
 
@@ -1305,16 +1305,16 @@ async def process_edit_value(message: types.Message, state: FSMContext):
         vehicle_id = data["vehicle_id"]
         field_index = data["field_index"]
         value = message.text
-        
+
         # List of editable fields
         fields = [
             "model", "vin", "category", "reg_number", "qualification", "tachograph_required",
             "osago_valid", "tech_inspection_date", "tech_inspection_valid", "skzi_install_date",
             "skzi_valid_date", "notes", "mileage"
         ]
-        
+
         selected_field = fields[field_index]
-        
+
         # User-friendly field names
         field_names = {
             "model": "Модель ТС",
@@ -1331,25 +1331,25 @@ async def process_edit_value(message: types.Message, state: FSMContext):
             "notes": "Примечания",
             "mileage": "Пробег"
         }
-        
+
         field_display_name = field_names.get(selected_field, selected_field)
-        
+
         # Convert specific fields to proper types
         if selected_field in ["tachograph_required", "mileage"]:
             value = int(value)
-        
+
         # Update database
         conn = sqlite3.connect('vehicles.db')
         cursor = conn.cursor()
         cursor.execute(
-            f"UPDATE vehicles SET {selected_field} = ? WHERE id = ?", 
+            f"UPDATE vehicles SET {selected_field} = ? WHERE id = ?",
             (value, vehicle_id)
         )
         conn.commit()
         conn.close()
-        
+
         await state.clear()
-        
+
         await message.answer(
             f"✅ Поле '{field_display_name}' успешно обновлено!",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -1368,19 +1368,19 @@ async def process_edit_value(message: types.Message, state: FSMContext):
 async def manage_maintenance(callback: types.CallbackQuery):
     """Handler for managing maintenance records"""
     vehicle_id = int(callback.data.split("_")[2])
-    
+
     # Get maintenance records
     conn = sqlite3.connect('vehicles.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT id, date, mileage, works FROM maintenance 
-        WHERE vehicle_id = ? 
+        SELECT id, date, mileage, works FROM maintenance
+        WHERE vehicle_id = ?
         ORDER BY date DESC, mileage DESC
     """, (vehicle_id,))
     maintenance_records = cursor.fetchall()
     conn.close()
-    
+
     # Create keyboard with maintenance records
     keyboard = []
     if maintenance_records:
@@ -1389,26 +1389,26 @@ async def manage_maintenance(callback: types.CallbackQuery):
             works_short = record['works'][:30] + ('...' if len(record['works']) > 30 else '')
             keyboard.append([
                 InlineKeyboardButton(
-                    text=f"📅 {record['date']} | {record['mileage']} км | {works_short}", 
+                    text=f"📅 {record['date']} | {record['mileage']} км | {works_short}",
                     callback_data=f"maintenance_{record['id']}"
                 )
             ])
     else:
         keyboard.append([
             InlineKeyboardButton(
-                text="🔹 Нет записей о ТО", 
+                text="🔹 Нет записей о ТО",
                 callback_data=f"no_action"
             )
         ])
-    
+
     # Add back button
     keyboard.append([
         InlineKeyboardButton(
-            text="⬅ Назад к ТС", 
+            text="⬅ Назад к ТС",
             callback_data=f"vehicle_{vehicle_id}"
         )
     ])
-    
+
     await callback.message.edit_text(
         "📋 **Управление записями о ТО**\n\n"
         "Выберите запись для просмотра:",
@@ -1425,13 +1425,13 @@ async def show_maintenance_record(callback: types.CallbackQuery):
     if len(callback_parts) < 2 or callback_parts[0] != "maintenance":
         await callback.answer("⚠️ Неверный формат данных", show_alert=True)
         return
-        
+
     try:
         maintenance_id = int(callback_parts[1])
     except ValueError:
         await callback.answer("⚠️ Неверный формат ID записи", show_alert=True)
         return
-    
+
     # Get maintenance record
     conn = sqlite3.connect('vehicles.db')
     conn.row_factory = sqlite3.Row
@@ -1444,15 +1444,15 @@ async def show_maintenance_record(callback: types.CallbackQuery):
     """, (maintenance_id,))
     record = cursor.fetchone()
     conn.close()
-    
+
     if not record:
         await callback.answer("⚠️ Запись не найдена")
         return
-    
+
     # Check if user is admin
     user_id = callback.from_user.id
     admin = is_admin(user_id)
-    
+
     # Create keyboard with actions based on user role
     if admin:
         keyboard = [
@@ -1464,7 +1464,7 @@ async def show_maintenance_record(callback: types.CallbackQuery):
         keyboard = [
             [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_to_{record['vehicle_id']}")]
         ]
-    
+
     await callback.message.edit_text(
         f"📋 **Запись о ТО #{maintenance_id}**\n\n"
         f"🚗 **ТС:** {record['model']} ({record['reg_number']})\n"
@@ -1481,7 +1481,7 @@ async def show_maintenance_record(callback: types.CallbackQuery):
 async def edit_maintenance_start(callback: types.CallbackQuery, state: FSMContext):
     """Handler for starting maintenance record edit"""
     maintenance_id = int(callback.data.split("_")[2])
-    
+
     # Get maintenance record
     conn = sqlite3.connect('vehicles.db')
     conn.row_factory = sqlite3.Row
@@ -1489,11 +1489,11 @@ async def edit_maintenance_start(callback: types.CallbackQuery, state: FSMContex
     cursor.execute("SELECT id, date, mileage, works, vehicle_id FROM maintenance WHERE id = ?", (maintenance_id,))
     record = cursor.fetchone()
     conn.close()
-    
+
     if not record:
         await callback.answer("⚠️ Запись не найдена")
         return
-    
+
     # Save record data to state
     await state.update_data(
         maintenance_id=maintenance_id,
@@ -1502,14 +1502,14 @@ async def edit_maintenance_start(callback: types.CallbackQuery, state: FSMContex
         current_mileage=record['mileage'],
         current_works=record['works']
     )
-    
+
     await callback.message.edit_text(
         f"✏️ **Редактирование записи о ТО #{maintenance_id}**\n\n"
         f"Текущая дата: {record['date']}\n\n"
         f"Введите новую дату в формате ДД.ММ.ГГГГ (или оставьте текущую):",
         parse_mode="Markdown"
     )
-    
+
     await state.set_state(MaintenanceEditState.date)
     await callback.answer()
 
@@ -1517,13 +1517,13 @@ async def edit_maintenance_start(callback: types.CallbackQuery, state: FSMContex
 async def process_maintenance_edit_date(message: types.Message, state: FSMContext):
     """Process maintenance edit date input"""
     data = await state.get_data()
-    
+
     # Use current date if input is empty
     if message.text.strip() == "":
         await state.update_data(new_date=data['current_date'])
     else:
         await state.update_data(new_date=message.text)
-    
+
     await message.answer(
         f"🔢 **Текущий пробег:** {data['current_mileage']} км\n\n"
         f"Введите новое значение пробега в км (или оставьте текущее):",
@@ -1535,7 +1535,7 @@ async def process_maintenance_edit_date(message: types.Message, state: FSMContex
 async def process_maintenance_edit_mileage(message: types.Message, state: FSMContext):
     """Process maintenance edit mileage input"""
     data = await state.get_data()
-    
+
     try:
         # Use current mileage if input is empty
         if message.text.strip() == "":
@@ -1543,7 +1543,7 @@ async def process_maintenance_edit_mileage(message: types.Message, state: FSMCon
         else:
             new_mileage = int(message.text)
             await state.update_data(new_mileage=new_mileage)
-        
+
         await message.answer(
             f"📝 **Текущее описание работ:**\n{data['current_works']}\n\n"
             f"Введите новое описание выполненных работ (или оставьте текущее):",
@@ -1560,13 +1560,13 @@ async def process_maintenance_edit_mileage(message: types.Message, state: FSMCon
 async def process_maintenance_edit_works(message: types.Message, state: FSMContext):
     """Process maintenance edit works input and save changes"""
     data = await state.get_data()
-    
+
     # Use current works if input is empty
     if message.text.strip() == "":
         new_works = data['current_works']
     else:
         new_works = message.text
-    
+
     # Update maintenance record
     conn = sqlite3.connect('vehicles.db')
     cursor = conn.cursor()
@@ -1574,27 +1574,27 @@ async def process_maintenance_edit_works(message: types.Message, state: FSMConte
         "UPDATE maintenance SET date = ?, mileage = ?, works = ? WHERE id = ?",
         (data['new_date'], data['new_mileage'], new_works, data['maintenance_id'])
     )
-    
+
     # If this is the most recent maintenance, update vehicle's last_to_date
     cursor.execute("""
-        SELECT id FROM maintenance 
-        WHERE vehicle_id = ? 
-        ORDER BY date DESC, mileage DESC 
+        SELECT id FROM maintenance
+        WHERE vehicle_id = ?
+        ORDER BY date DESC, mileage DESC
         LIMIT 1
     """, (data['vehicle_id'],))
     latest_maintenance = cursor.fetchone()
-    
+
     if latest_maintenance and latest_maintenance[0] == data['maintenance_id']:
         cursor.execute(
             "UPDATE vehicles SET last_to_date = ? WHERE id = ?",
             (data['new_date'], data['vehicle_id'])
         )
-    
+
     conn.commit()
     conn.close()
-    
+
     await state.clear()
-    
+
     await message.answer(
         "✅ Запись о техническом обслуживании успешно обновлена!",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -1616,12 +1616,12 @@ async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMCo
         else:
             await callback.answer("⚠️ Ошибка в формате данных", show_alert=True)
             return
-        
+
         logging.info(f"Запрос на удаление записи ТО с ID={maintenance_id}")
-        
+
         # Очищаем предыдущее состояние
         await state.clear()
-        
+
         # Получаем данные о записи ТО
         conn = sqlite3.connect('vehicles.db')
         conn.row_factory = sqlite3.Row
@@ -1629,21 +1629,21 @@ async def delete_maintenance_confirm(callback: types.CallbackQuery, state: FSMCo
         cursor.execute("SELECT date, mileage, vehicle_id FROM maintenance WHERE id = ?", (maintenance_id,))
         record = cursor.fetchone()
         conn.close()
-        
+
         if not record:
             await callback.answer("⚠️ Запись о ТО не найдена", show_alert=True)
             return
-        
+
         vehicle_id = record['vehicle_id']
         date = record['date']
         mileage = record['mileage']
-        
+
         # Создаем клавиатуру для подтверждения удаления
         keyboard = [
             [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"maintenance_delete_confirm_{maintenance_id}")],
             [InlineKeyboardButton(text="❌ Отмена", callback_data=f"manage_to_{vehicle_id}")]
         ]
-        
+
         await callback.message.edit_text(
             f"⚠️ **Подтверждение удаления**\n\n"
             f"Вы действительно хотите удалить запись о ТО от {date} (пробег: {mileage} км)?\n\n"
@@ -1664,25 +1664,25 @@ async def maintenance_delete_execute(callback: types.CallbackQuery, state: FSMCo
         # Получаем ID записи ТО из callback data
         maintenance_id = int(callback.data.split("_")[3])
         logging.info(f"Выполнение удаления записи ТО с ID={maintenance_id}")
-        
+
         # Получаем ID транспортного средства
         conn = sqlite3.connect('vehicles.db')
         cursor = conn.cursor()
         cursor.execute("SELECT vehicle_id FROM maintenance WHERE id = ?", (maintenance_id,))
         result = cursor.fetchone()
-        
+
         if not result:
             await callback.answer("⚠️ Запись уже удалена", show_alert=True)
             conn.close()
             return
-            
+
         vehicle_id = result[0]
-        
+
         # Удаляем запись
         cursor.execute("DELETE FROM maintenance WHERE id = ?", (maintenance_id,))
         conn.commit()
         conn.close()
-        
+
         await callback.message.edit_text(
             "✅ Запись о техническом обслуживании успешно удалена!",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -1699,10 +1699,10 @@ async def maintenance_delete_execute(callback: types.CallbackQuery, state: FSMCo
                 [InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")]
             ])
         )
-    
+
     await callback.answer()
     await state.clear()
-    
+
 
 
 # Repair Management Handlers
@@ -1711,19 +1711,19 @@ async def maintenance_delete_execute(callback: types.CallbackQuery, state: FSMCo
 async def manage_repairs(callback: types.CallbackQuery):
     """Handler for managing repair records"""
     vehicle_id = int(callback.data.split("_")[2])
-    
+
     # Get repair records
     conn = sqlite3.connect('vehicles.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT id, date, mileage, description, cost FROM repairs 
-        WHERE vehicle_id = ? 
+        SELECT id, date, mileage, description, cost FROM repairs
+        WHERE vehicle_id = ?
         ORDER BY date DESC, mileage DESC
     """, (vehicle_id,))
     repair_records = cursor.fetchall()
     conn.close()
-    
+
     # Create keyboard with repair records
     keyboard = []
     if repair_records:
@@ -1733,26 +1733,26 @@ async def manage_repairs(callback: types.CallbackQuery):
             cost_text = f" | {record['cost']} ₽" if record['cost'] else ""
             keyboard.append([
                 InlineKeyboardButton(
-                    text=f"🛠 {record['date']} | {record['mileage']} км{cost_text}", 
+                    text=f"🛠 {record['date']} | {record['mileage']} км{cost_text}",
                     callback_data=f"repair_{record['id']}"
                 )
             ])
     else:
         keyboard.append([
             InlineKeyboardButton(
-                text="🔹 Нет записей о ремонтах", 
+                text="🔹 Нет записей о ремонтах",
                 callback_data=f"no_action"
             )
         ])
-    
+
     # Add back button
     keyboard.append([
         InlineKeyboardButton(
-            text="⬅ Назад к ТС", 
+            text="⬅ Назад к ТС",
             callback_data=f"vehicle_{vehicle_id}"
         )
     ])
-    
+
     await callback.message.edit_text(
         "🔧 **Управление записями о ремонтах**\n\n"
         "Выберите запись для просмотра:",
@@ -1766,23 +1766,17 @@ async def no_action(callback: types.CallbackQuery):
     """Handler for empty action"""
     await callback.answer("Нет доступных записей")
 
-@dp.callback_query(lambda c: c.data.startswith("repair_"))
+@dp.callback_query(lambda c: c.data.startswith("repair_") and not c.data.startswith("repair_delete"))
 async def show_repair_record(callback: types.CallbackQuery):
-    """Handler for showing repair record details"""
     try:
-        # Формат строки: show_repair_ID или repair_ID
+        # Формат строки: repair_ID
         parts = callback.data.split("_")
-        if callback.data.startswith("show_repair_"):
-            # Формат: show_repair_ID
-            repair_id = int(parts[-1])  # Последний элемент - ID ремонта
-        elif len(parts) >= 2:
-            # Формат: repair_ID
-            repair_id = int(parts[1])
-        else:
+        if len(parts) != 2:  # Ожидаем только repair_ID
             await callback.answer("⚠️ Неверный формат данных")
             return
+        repair_id = int(parts[1])
         logging.info(f"Запрос на просмотр записи ремонта с ID={repair_id}")
-        
+
         # Get repair record
         conn = sqlite3.connect('vehicles.db')
         conn.row_factory = sqlite3.Row
@@ -1795,18 +1789,18 @@ async def show_repair_record(callback: types.CallbackQuery):
         """, (repair_id,))
         record = cursor.fetchone()
         conn.close()
-        
+
         if not record:
             await callback.answer("⚠️ Запись не найдена")
             return
-        
+
         # Format cost display
         cost_display = f"{record['cost']} ₽" if record['cost'] else "Не указана"
-        
+
         # Check if user is admin
         user_id = callback.from_user.id
         admin = is_admin(user_id)
-        
+
         # Create keyboard with actions based on user role
         if admin:
             keyboard = [
@@ -1818,7 +1812,7 @@ async def show_repair_record(callback: types.CallbackQuery):
             keyboard = [
                 [InlineKeyboardButton(text="⬅ Назад к списку", callback_data=f"manage_repairs_{record['vehicle_id']}")]
             ]
-        
+
         await callback.message.edit_text(
             f"🛠 **Запись о ремонте #{repair_id}**\n\n"
             f"🚗 **ТС:** {record['model']} ({record['reg_number']})\n"
@@ -1841,7 +1835,7 @@ async def edit_repair_start(callback: types.CallbackQuery, state: FSMContext):
     # Формат строки: edit_repair_ID
     callback_parts = callback.data.split("_")
     repair_id = int(callback_parts[-1])  # Берем последний элемент как ID
-    
+
     # Get repair record
     conn = sqlite3.connect('vehicles.db')
     conn.row_factory = sqlite3.Row
@@ -1849,11 +1843,11 @@ async def edit_repair_start(callback: types.CallbackQuery, state: FSMContext):
     cursor.execute("SELECT id, date, mileage, description, cost, vehicle_id FROM repairs WHERE id = ?", (repair_id,))
     record = cursor.fetchone()
     conn.close()
-    
+
     if not record:
         await callback.answer("⚠️ Запись не найдена")
         return
-    
+
     # Save record data to state
     await state.update_data(
         repair_id=repair_id,
@@ -1863,14 +1857,14 @@ async def edit_repair_start(callback: types.CallbackQuery, state: FSMContext):
         current_description=record['description'],
         current_cost=record['cost'] or 0
     )
-    
+
     await callback.message.edit_text(
         f"✏️ **Редактирование записи о ремонте #{repair_id}**\n\n"
         f"Текущая дата: {record['date']}\n\n"
         f"Введите новую дату в формате ДД.ММ.ГГГГ (или оставьте текущую):",
         parse_mode="Markdown"
     )
-    
+
     await state.set_state(RepairState.date)
     await callback.answer()
 
@@ -1884,7 +1878,7 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
         callback_parts = callback.data.split("_")
         repair_id = int(callback_parts[-1])  # Берем последний элемент как ID
         logging.info(f"Запрос на удаление записи ремонта с ID={repair_id}")
-        
+
         # Получаем данные о записи ремонта
         conn = sqlite3.connect('vehicles.db')
         conn.row_factory = sqlite3.Row
@@ -1892,21 +1886,21 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
         cursor.execute("SELECT date, mileage, vehicle_id FROM repairs WHERE id = ?", (repair_id,))
         record = cursor.fetchone()
         conn.close()
-        
+
         if not record:
             await callback.answer("⚠️ Запись о ремонте не найдена", show_alert=True)
             return
-        
+
         vehicle_id = record['vehicle_id']
         date = record['date']
         mileage = record['mileage']
-        
+
         # Создаем клавиатуру для подтверждения удаления
         keyboard = [
             [InlineKeyboardButton(text="✅ Да, удалить", callback_data=f"repair_delete_confirm_{repair_id}")],
             [InlineKeyboardButton(text="❌ Отмена", callback_data=f"manage_repairs_{vehicle_id}")]
         ]
-        
+
         await callback.message.edit_text(
             f"⚠️ **Подтверждение удаления**\n\n"
             f"Вы действительно хотите удалить запись о ремонте от {date} (пробег: {mileage} км)?\n\n"
@@ -1924,7 +1918,7 @@ async def delete_repair_confirm(callback: types.CallbackQuery, state: FSMContext
 async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext):
     """Handler for executing repair record deletion"""
     user_id = callback.from_user.id
-    
+
     # Проверяем наличие пользователя в базе данных
     conn = None
     try:
@@ -1932,42 +1926,42 @@ async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM users WHERE id = ?", (user_id,))
         user_exists = cursor.fetchone()
-        
+
         if not user_exists:
             logging.warning(f"Пользователь с ID {user_id} не найден в базе данных при попытке удалить ремонт")
             await callback.answer("⚠️ Ошибка: Пользователь с ID {} не найден. Попросите его выполнить команду /start или /myid.".format(user_id), show_alert=True)
             if conn:
                 conn.close()
             return
-        
+
         # Получаем ID записи ремонта из callback data
         # Формат строки: repair_delete_confirm_ID
         callback_parts = callback.data.split("_")
         repair_id = int(callback_parts[-1])  # Берем последний элемент как ID
         logging.info(f"Выполнение удаления записи ремонта с ID={repair_id}")
-        
+
         # Получаем ID транспортного средства
         cursor.execute("SELECT vehicle_id FROM repairs WHERE id = ?", (repair_id,))
         result = cursor.fetchone()
-        
+
         if not result:
             await callback.answer("⚠️ Запись уже удалена", show_alert=True)
             conn.close()
             return
-            
+
         vehicle_id = result[0]
-        
+
         # Закрываем соединение перед вызовом функции delete_repair
         conn.close()
         conn = None
-        
+
         # Удаляем запись с использованием функции delete_repair
         success = delete_repair(repair_id)
-        
+
         if not success:
             await callback.answer("⚠️ Произошла ошибка при удалении записи о ремонте", show_alert=True)
             return
-        
+
         # Обновляем сообщение
         await callback.message.edit_text(
             "✅ Запись о ремонте успешно удалена!",
@@ -1992,7 +1986,7 @@ async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext
                     vehicle_id = result[0]
         except:
             pass
-        
+
         # Формируем кнопки для возврата
         back_buttons = []
         if vehicle_id > 0:
@@ -2000,7 +1994,7 @@ async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext
             back_buttons.append([InlineKeyboardButton(text="🔙 К карточке ТС", callback_data=f"vehicle_{vehicle_id}")])
         else:
             back_buttons.append([InlineKeyboardButton(text="🔙 К списку автомобилей", callback_data="back")])
-        
+
         await callback.message.edit_text(
             f"⚠️ Произошла ошибка при удалении записи: {str(e)}",
             reply_markup=InlineKeyboardMarkup(inline_keyboard=back_buttons)
@@ -2009,7 +2003,7 @@ async def repair_delete_execute(callback: types.CallbackQuery, state: FSMContext
         # Закрываем соединение с БД
         if conn:
             conn.close()
-        
+
         # Очищаем состояние и отвечаем на callback
         await state.clear()
         await callback.answer()
@@ -2022,19 +2016,19 @@ async def edit_fuel_start(callback: types.CallbackQuery, state: FSMContext):
     # Correctly parse id from edit_fuel_{id} pattern
     vehicle_id = int(callback.data.split("_")[2])
     await state.update_data(vehicle_id=vehicle_id)
-    
+
     # Get current fuel information
     conn = sqlite3.connect('vehicles.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT fuel_type, fuel_tank_capacity, avg_fuel_consumption 
-        FROM vehicles 
+        SELECT fuel_type, fuel_tank_capacity, avg_fuel_consumption
+        FROM vehicles
         WHERE id = ?
     """, (vehicle_id,))
     fuel_data = cursor.fetchone()
     conn.close()
-    
+
     # Create a message with the current values
     message_text = (
         f"⛽ **Редактирование информации о топливе**\n\n"
@@ -2044,7 +2038,7 @@ async def edit_fuel_start(callback: types.CallbackQuery, state: FSMContext):
         f"🛢 **Средний расход:** `{fuel_data['avg_fuel_consumption'] or '-'} л/100км`\n\n"
         f"Введите тип топлива (например, 'Дизель', 'АИ-95' и т.д.):"
     )
-    
+
     await callback.message.edit_text(
         message_text,
         parse_mode="Markdown"
@@ -2070,7 +2064,7 @@ async def process_fuel_tank_capacity(message: types.Message, state: FSMContext):
             await state.update_data(fuel_tank_capacity=capacity)
         else:
             await state.update_data(fuel_tank_capacity=None)
-            
+
         await message.answer(
             "🛢 Введите средний расход топлива в л/100км (например, 8.5):"
         )
@@ -2086,7 +2080,7 @@ async def process_fuel_consumption(message: types.Message, state: FSMContext):
     """Process fuel consumption input and save all fuel data"""
     data = await state.get_data()
     vehicle_id = data["vehicle_id"]
-    
+
     # Prepare fuel consumption value
     avg_fuel_consumption = None
     if message.text.strip():
@@ -2098,7 +2092,7 @@ async def process_fuel_consumption(message: types.Message, state: FSMContext):
                 "Попробуйте снова или оставьте поле пустым:"
             )
             return
-    
+
     # Update fuel information in the database
     success = edit_fuel_info(
         vehicle_id=vehicle_id,
@@ -2106,7 +2100,7 @@ async def process_fuel_consumption(message: types.Message, state: FSMContext):
         fuel_tank_capacity=data.get("fuel_tank_capacity"),
         avg_fuel_consumption=avg_fuel_consumption
     )
-    
+
     if success:
         await state.clear()
         await message.answer(
@@ -2131,7 +2125,7 @@ async def generate_pdf_report(callback: types.CallbackQuery):
     try:
         # Generate the report
         report_path = utils.generate_expiration_report()
-        
+
         # Send the report
         with open(report_path, 'rb') as pdf:
             await callback.message.answer_document(
@@ -2141,10 +2135,10 @@ async def generate_pdf_report(callback: types.CallbackQuery):
                 ),
                 caption="📊 Отчет о сроках действия документов для всех транспортных средств"
             )
-        
+
         # Cleanup the file
         os.remove(report_path)
-        
+
         await callback.answer("✅ Отчет успешно сгенерирован!")
     except Exception as e:
         logging.error(f"Error generating report: {e}")
@@ -2157,13 +2151,13 @@ async def generate_pdf_report(callback: types.CallbackQuery):
 async def backup_command(message: types.Message):
     """Handler for backup command - creates backup and sends to admin"""
     await message.answer("🔄 Создание резервной копии базы данных...")
-    
+
     # Импортируем функцию резервного копирования
     from backup import manual_backup
-    
+
     # Создаем резервную копию
     success = await manual_backup(message.from_user.id)
-    
+
     if success:
         await message.answer("✅ Резервная копия создана и отправлена!")
     else:
@@ -2173,7 +2167,7 @@ async def backup_command(message: types.Message):
 async def main():
     # Initialize database
     init_database()
-    
+
     # Запуск планировщика резервного копирования в отдельной задаче
     try:
         from backup import scheduled_backup
@@ -2181,10 +2175,10 @@ async def main():
         logging.info("Планировщик резервного копирования запущен")
     except Exception as e:
         logging.error(f"Ошибка при запуске планировщика резервного копирования: {e}")
-    
+
     # Reset webhook before starting polling to avoid conflicts
     await bot.delete_webhook(drop_pending_updates=True)
-    
+
     # Start polling with aggressive settings to prevent conflicts
     logging.info("Starting vehicle maintenance bot...")
     await dp.start_polling(

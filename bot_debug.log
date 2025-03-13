@@ -505,3 +505,198 @@
 2025-03-12 11:35:46,042 - config - INFO - Файл .env обработан
 2025-03-12 11:35:46,042 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, HISTCONTROL, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, HISTSIZE, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, GIT_CONFIG_GLOBAL, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, HISTFILE, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPLIT_USER_RUN, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_RUN_PATH, REPLIT_PID2, REPLIT_ENVIRONMENT, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, HISTFILESIZE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
 2025-03-12 11:35:46,043 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-13 17:06:33,792 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-13 17:06:33,793 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-13 17:06:33,793 - config - INFO - Файл .env обработан
+2025-03-13 17:06:33,793 - config - INFO - Доступные переменные окружения: SHELL, SESSION_MANAGER, COLORTERM, HISTCONTROL, no_proxy, XDG_MENU_PREFIX, HISTSIZE, HOSTNAME, SSH_AUTH_SOCK, MEMORY_PRESSURE_WRITE, XMODIFIERS, DESKTOP_SESSION, SSH_AGENT_PID, GPG_TTY, EDITOR, PWD, LOGNAME, XDG_SESSION_DESKTOP, XDG_SESSION_TYPE, SYSTEMD_EXEC_PID, XAUTHORITY, SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS, ftp_proxy, GDM_LANG, HOME, USERNAME, LANG, LS_COLORS, XDG_CURRENT_DESKTOP, VIRTUAL_ENV, MEMORY_PRESSURE_WATCH, VTE_VERSION, WAYLAND_DISPLAY, GNOME_TERMINAL_SCREEN, https_proxy, STEAM_FRAME_FORCE_CLOSE, MOZ_GMP_PATH, GNOME_SETUP_DISPLAY, XDG_SESSION_CLASS, TERM, LESSOPEN, USER, NO_PROXY, FTP_PROXY, GNOME_TERMINAL_SERVICE, DISPLAY, SHLVL, HTTPS_PROXY, HTTP_PROXY, QT_IM_MODULE, VIRTUAL_ENV_PROMPT, http_proxy, XDG_RUNTIME_DIR, PS1, ALL_PROXY, DEBUGINFOD_URLS, DEBUGINFOD_IMA_CERT_PATH, XDG_DATA_DIRS, all_proxy, PATH, GDMSESSION, DBUS_SESSION_BUS_ADDRESS, MAIL, SYSTEMD_SLEEP_FREEZE_USER_SESSIONS, TELEGRAM_BOT_TOKEN
+2025-03-13 17:06:33,793 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-13 17:08:13,610 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-13 17:08:13,610 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-13 17:08:13,610 - config - INFO - Файл .env обработан
+2025-03-13 17:08:13,610 - config - INFO - Доступные переменные окружения: SHELL, SESSION_MANAGER, COLORTERM, HISTCONTROL, no_proxy, XDG_MENU_PREFIX, HISTSIZE, HOSTNAME, SSH_AUTH_SOCK, MEMORY_PRESSURE_WRITE, XMODIFIERS, DESKTOP_SESSION, SSH_AGENT_PID, GPG_TTY, EDITOR, PWD, LOGNAME, XDG_SESSION_DESKTOP, XDG_SESSION_TYPE, SYSTEMD_EXEC_PID, XAUTHORITY, SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS, ftp_proxy, GDM_LANG, HOME, USERNAME, LANG, LS_COLORS, XDG_CURRENT_DESKTOP, VIRTUAL_ENV, MEMORY_PRESSURE_WATCH, VTE_VERSION, WAYLAND_DISPLAY, GNOME_TERMINAL_SCREEN, https_proxy, STEAM_FRAME_FORCE_CLOSE, MOZ_GMP_PATH, GNOME_SETUP_DISPLAY, XDG_SESSION_CLASS, TERM, LESSOPEN, USER, NO_PROXY, FTP_PROXY, GNOME_TERMINAL_SERVICE, DISPLAY, SHLVL, HTTPS_PROXY, HTTP_PROXY, QT_IM_MODULE, VIRTUAL_ENV_PROMPT, http_proxy, XDG_RUNTIME_DIR, PS1, ALL_PROXY, DEBUGINFOD_URLS, DEBUGINFOD_IMA_CERT_PATH, XDG_DATA_DIRS, all_proxy, PATH, GDMSESSION, DBUS_SESSION_BUS_ADDRESS, MAIL, SYSTEMD_SLEEP_FREEZE_USER_SESSIONS, TELEGRAM_BOT_TOKEN
+2025-03-13 17:08:13,610 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-13 17:08:13,671 - root - INFO - Database initialized successfully
+2025-03-13 17:08:13,671 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-13 17:08:13,678 - root - INFO - Проверка соединения с API Telegram...
+2025-03-13 17:08:13,679 - root - INFO - Dispatcher successfully initialized
+2025-03-13 17:08:13,681 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-13 17:08:13,682 - root - INFO - Database initialized successfully
+2025-03-13 17:08:13,688 - root - INFO - Планировщик резервного копирования запущен
+2025-03-13 17:08:13,690 - root - INFO - Следующее автоматическое резервное копирование запланировано через 9.0 часов
+2025-03-13 17:08:15,125 - root - INFO - Starting vehicle maintenance bot...
+2025-03-13 17:08:15,125 - aiogram.dispatcher - INFO - Start polling
+2025-03-13 17:08:15,346 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 17:08:26,043 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 17:08:26,051 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 17:08:27,197 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 17:08:27,501 - root - INFO - Отправлен список автомобилей
+2025-03-13 17:08:27,501 - aiogram.event - INFO - Update id=330718121 is handled. Duration 1458 ms by bot id=1023647955
+2025-03-13 17:08:31,607 - aiogram.event - INFO - Update id=330718122 is handled. Duration 633 ms by bot id=1023647955
+2025-03-13 17:08:34,199 - aiogram.event - INFO - Update id=330718123 is handled. Duration 482 ms by bot id=1023647955
+2025-03-13 17:08:35,367 - root - INFO - Запрос на просмотр записи ремонта с ID=16
+2025-03-13 17:08:35,860 - aiogram.event - INFO - Update id=330718124 is handled. Duration 494 ms by bot id=1023647955
+2025-03-13 17:08:37,071 - root - INFO - Запрос на удаление записи ремонта с ID=16
+2025-03-13 17:08:37,570 - aiogram.event - INFO - Update id=330718125 is handled. Duration 499 ms by bot id=1023647955
+2025-03-13 17:08:38,449 - root - ERROR - Ошибка при отображении записи ремонта: invalid literal for int() with base 10: 'delete'
+2025-03-13 17:08:38,707 - aiogram.event - INFO - Update id=330718126 is handled. Duration 259 ms by bot id=1023647955
+2025-03-13 17:09:44,729 - aiogram.dispatcher - WARNING - Received SIGINT signal
+2025-03-13 17:09:44,731 - aiogram.dispatcher - INFO - Polling stopped for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 17:09:44,731 - aiogram.dispatcher - INFO - Polling stopped
+2025-03-13 17:30:01,763 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-13 17:30:01,763 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-13 17:30:01,763 - config - INFO - Файл .env обработан
+2025-03-13 17:30:01,763 - config - INFO - Доступные переменные окружения: SHELL, SESSION_MANAGER, COLORTERM, HISTCONTROL, no_proxy, XDG_MENU_PREFIX, HISTSIZE, HOSTNAME, SSH_AUTH_SOCK, MEMORY_PRESSURE_WRITE, XMODIFIERS, DESKTOP_SESSION, SSH_AGENT_PID, GPG_TTY, EDITOR, PWD, LOGNAME, XDG_SESSION_DESKTOP, XDG_SESSION_TYPE, SYSTEMD_EXEC_PID, XAUTHORITY, SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS, ftp_proxy, GDM_LANG, HOME, USERNAME, LANG, LS_COLORS, XDG_CURRENT_DESKTOP, VIRTUAL_ENV, MEMORY_PRESSURE_WATCH, VTE_VERSION, WAYLAND_DISPLAY, GNOME_TERMINAL_SCREEN, https_proxy, STEAM_FRAME_FORCE_CLOSE, MOZ_GMP_PATH, GNOME_SETUP_DISPLAY, XDG_SESSION_CLASS, TERM, LESSOPEN, USER, NO_PROXY, FTP_PROXY, GNOME_TERMINAL_SERVICE, DISPLAY, SHLVL, HTTPS_PROXY, HTTP_PROXY, QT_IM_MODULE, VIRTUAL_ENV_PROMPT, http_proxy, XDG_RUNTIME_DIR, PS1, ALL_PROXY, DEBUGINFOD_URLS, DEBUGINFOD_IMA_CERT_PATH, XDG_DATA_DIRS, all_proxy, PATH, GDMSESSION, DBUS_SESSION_BUS_ADDRESS, MAIL, SYSTEMD_SLEEP_FREEZE_USER_SESSIONS, TELEGRAM_BOT_TOKEN
+2025-03-13 17:30:01,763 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-13 17:30:01,826 - root - INFO - Database initialized successfully
+2025-03-13 17:30:01,826 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-13 17:30:01,832 - root - INFO - Проверка соединения с API Telegram...
+2025-03-13 17:30:01,833 - root - INFO - Dispatcher successfully initialized
+2025-03-13 17:30:01,835 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-13 17:30:01,836 - root - INFO - Database initialized successfully
+2025-03-13 17:30:01,841 - root - INFO - Планировщик резервного копирования запущен
+2025-03-13 17:30:01,843 - root - INFO - Следующее автоматическое резервное копирование запланировано через 9.0 часов
+2025-03-13 17:30:02,853 - root - INFO - Starting vehicle maintenance bot...
+2025-03-13 17:30:02,856 - aiogram.dispatcher - INFO - Start polling
+2025-03-13 17:30:03,091 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 17:30:15,801 - aiogram.event - INFO - Update id=330718128 is handled. Duration 1242 ms by bot id=1023647955
+2025-03-13 17:30:17,585 - root - ERROR - Ошибка при отображении записи ремонта: invalid literal for int() with base 10: 'delete'
+2025-03-13 17:30:17,857 - aiogram.event - INFO - Update id=330718129 is handled. Duration 273 ms by bot id=1023647955
+2025-03-13 18:03:36,499 - root - ERROR - Ошибка при отображении записи ремонта: invalid literal for int() with base 10: 'delete'
+2025-03-13 18:03:37,552 - aiogram.event - INFO - Update id=330718130 is handled. Duration 1053 ms by bot id=1023647955
+2025-03-13 18:06:19,059 - aiogram.event - INFO - Update id=330718131 is handled. Duration 1396 ms by bot id=1023647955
+2025-03-13 18:06:20,530 - root - INFO - Запрос на просмотр записи ремонта с ID=16
+2025-03-13 18:06:21,209 - aiogram.event - INFO - Update id=330718132 is handled. Duration 679 ms by bot id=1023647955
+2025-03-13 18:06:23,132 - root - INFO - Запрос на удаление записи ремонта с ID=16
+2025-03-13 18:06:23,667 - aiogram.event - INFO - Update id=330718133 is handled. Duration 536 ms by bot id=1023647955
+2025-03-13 18:06:24,918 - root - ERROR - Ошибка при отображении записи ремонта: invalid literal for int() with base 10: 'delete'
+2025-03-13 18:06:25,156 - aiogram.event - INFO - Update id=330718134 is handled. Duration 240 ms by bot id=1023647955
+2025-03-13 18:11:09,683 - aiogram.dispatcher - WARNING - Received SIGINT signal
+2025-03-13 18:11:09,684 - aiogram.dispatcher - INFO - Polling stopped for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 18:11:09,684 - aiogram.dispatcher - INFO - Polling stopped
+2025-03-13 18:11:13,056 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-13 18:11:13,056 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-13 18:11:13,056 - config - INFO - Файл .env обработан
+2025-03-13 18:11:13,056 - config - INFO - Доступные переменные окружения: SHELL, SESSION_MANAGER, COLORTERM, HISTCONTROL, no_proxy, XDG_MENU_PREFIX, HISTSIZE, HOSTNAME, SSH_AUTH_SOCK, MEMORY_PRESSURE_WRITE, XMODIFIERS, DESKTOP_SESSION, SSH_AGENT_PID, GPG_TTY, EDITOR, PWD, LOGNAME, XDG_SESSION_DESKTOP, XDG_SESSION_TYPE, SYSTEMD_EXEC_PID, XAUTHORITY, SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS, ftp_proxy, GDM_LANG, HOME, USERNAME, LANG, LS_COLORS, XDG_CURRENT_DESKTOP, VIRTUAL_ENV, MEMORY_PRESSURE_WATCH, VTE_VERSION, WAYLAND_DISPLAY, GNOME_TERMINAL_SCREEN, https_proxy, STEAM_FRAME_FORCE_CLOSE, MOZ_GMP_PATH, GNOME_SETUP_DISPLAY, XDG_SESSION_CLASS, TERM, LESSOPEN, USER, NO_PROXY, FTP_PROXY, GNOME_TERMINAL_SERVICE, DISPLAY, SHLVL, HTTPS_PROXY, HTTP_PROXY, QT_IM_MODULE, VIRTUAL_ENV_PROMPT, http_proxy, XDG_RUNTIME_DIR, PS1, ALL_PROXY, DEBUGINFOD_URLS, DEBUGINFOD_IMA_CERT_PATH, XDG_DATA_DIRS, all_proxy, PATH, GDMSESSION, DBUS_SESSION_BUS_ADDRESS, MAIL, SYSTEMD_SLEEP_FREEZE_USER_SESSIONS, TELEGRAM_BOT_TOKEN
+2025-03-13 18:11:13,056 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-13 18:11:13,133 - root - INFO - Database initialized successfully
+2025-03-13 18:11:13,133 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-13 18:11:13,141 - root - INFO - Проверка соединения с API Telegram...
+2025-03-13 18:11:13,142 - root - INFO - Dispatcher successfully initialized
+2025-03-13 18:11:13,145 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-13 18:11:13,146 - root - INFO - Database initialized successfully
+2025-03-13 18:11:13,153 - root - INFO - Планировщик резервного копирования запущен
+2025-03-13 18:11:13,156 - root - INFO - Следующее автоматическое резервное копирование запланировано через 8.0 часов
+2025-03-13 18:11:14,100 - root - INFO - Starting vehicle maintenance bot...
+2025-03-13 18:11:14,101 - aiogram.dispatcher - INFO - Start polling
+2025-03-13 18:11:14,330 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 18:11:17,490 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 18:11:17,503 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 18:11:18,641 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 18:11:18,974 - root - INFO - Отправлен список автомобилей
+2025-03-13 18:11:18,974 - aiogram.event - INFO - Update id=330718135 is handled. Duration 1484 ms by bot id=1023647955
+2025-03-13 18:11:21,963 - aiogram.event - INFO - Update id=330718136 is handled. Duration 754 ms by bot id=1023647955
+2025-03-13 18:11:23,744 - aiogram.event - INFO - Update id=330718137 is handled. Duration 614 ms by bot id=1023647955
+2025-03-13 18:11:25,011 - root - INFO - Запрос на просмотр записи ремонта с ID=16
+2025-03-13 18:11:25,504 - aiogram.event - INFO - Update id=330718138 is handled. Duration 493 ms by bot id=1023647955
+2025-03-13 18:11:26,238 - root - INFO - Запрос на удаление записи ремонта с ID=16
+2025-03-13 18:11:26,773 - aiogram.event - INFO - Update id=330718139 is handled. Duration 536 ms by bot id=1023647955
+2025-03-13 18:11:27,518 - root - ERROR - Ошибка при отображении записи ремонта: invalid literal for int() with base 10: 'delete'
+2025-03-13 18:11:27,789 - aiogram.event - INFO - Update id=330718140 is handled. Duration 274 ms by bot id=1023647955
+2025-03-13 18:12:06,135 - aiogram.dispatcher - WARNING - Received SIGINT signal
+2025-03-13 18:12:06,136 - aiogram.dispatcher - INFO - Polling stopped for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 18:12:06,136 - aiogram.dispatcher - INFO - Polling stopped
+2025-03-13 18:12:09,032 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-13 18:12:09,032 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-13 18:12:09,032 - config - INFO - Файл .env обработан
+2025-03-13 18:12:09,032 - config - INFO - Доступные переменные окружения: SHELL, SESSION_MANAGER, COLORTERM, HISTCONTROL, no_proxy, XDG_MENU_PREFIX, HISTSIZE, HOSTNAME, SSH_AUTH_SOCK, MEMORY_PRESSURE_WRITE, XMODIFIERS, DESKTOP_SESSION, SSH_AGENT_PID, GPG_TTY, EDITOR, PWD, LOGNAME, XDG_SESSION_DESKTOP, XDG_SESSION_TYPE, SYSTEMD_EXEC_PID, XAUTHORITY, SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS, ftp_proxy, GDM_LANG, HOME, USERNAME, LANG, LS_COLORS, XDG_CURRENT_DESKTOP, VIRTUAL_ENV, MEMORY_PRESSURE_WATCH, VTE_VERSION, WAYLAND_DISPLAY, GNOME_TERMINAL_SCREEN, https_proxy, STEAM_FRAME_FORCE_CLOSE, MOZ_GMP_PATH, GNOME_SETUP_DISPLAY, XDG_SESSION_CLASS, TERM, LESSOPEN, USER, NO_PROXY, FTP_PROXY, GNOME_TERMINAL_SERVICE, DISPLAY, SHLVL, HTTPS_PROXY, HTTP_PROXY, QT_IM_MODULE, VIRTUAL_ENV_PROMPT, http_proxy, XDG_RUNTIME_DIR, PS1, ALL_PROXY, DEBUGINFOD_URLS, DEBUGINFOD_IMA_CERT_PATH, XDG_DATA_DIRS, all_proxy, PATH, GDMSESSION, DBUS_SESSION_BUS_ADDRESS, MAIL, SYSTEMD_SLEEP_FREEZE_USER_SESSIONS, TELEGRAM_BOT_TOKEN
+2025-03-13 18:12:09,032 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-13 18:12:09,091 - root - INFO - Database initialized successfully
+2025-03-13 18:12:09,091 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-13 18:12:09,096 - root - INFO - Проверка соединения с API Telegram...
+2025-03-13 18:12:09,097 - root - INFO - Dispatcher successfully initialized
+2025-03-13 18:12:09,099 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-13 18:12:09,100 - root - INFO - Database initialized successfully
+2025-03-13 18:12:09,105 - root - INFO - Планировщик резервного копирования запущен
+2025-03-13 18:12:09,107 - root - INFO - Следующее автоматическое резервное копирование запланировано через 8.0 часов
+2025-03-13 18:12:10,221 - root - INFO - Starting vehicle maintenance bot...
+2025-03-13 18:12:10,221 - aiogram.dispatcher - INFO - Start polling
+2025-03-13 18:12:10,445 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 18:12:12,758 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 18:12:12,766 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 18:12:14,000 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 18:12:14,460 - root - INFO - Отправлен список автомобилей
+2025-03-13 18:12:14,461 - aiogram.event - INFO - Update id=330718141 is handled. Duration 1702 ms by bot id=1023647955
+2025-03-13 18:12:17,562 - aiogram.event - INFO - Update id=330718142 is handled. Duration 502 ms by bot id=1023647955
+2025-03-13 18:12:19,315 - aiogram.event - INFO - Update id=330718143 is handled. Duration 497 ms by bot id=1023647955
+2025-03-13 18:12:20,434 - root - INFO - Запрос на просмотр записи ремонта с ID=16
+2025-03-13 18:12:20,908 - aiogram.event - INFO - Update id=330718144 is handled. Duration 475 ms by bot id=1023647955
+2025-03-13 18:12:21,748 - root - INFO - Запрос на удаление записи ремонта с ID=16
+2025-03-13 18:12:22,228 - aiogram.event - INFO - Update id=330718145 is handled. Duration 482 ms by bot id=1023647955
+2025-03-13 18:12:23,737 - root - INFO - Выполнение удаления записи ремонта с ID=16
+2025-03-13 18:12:23,737 - root - INFO - Вызов функции delete_repair с repair_id=16
+2025-03-13 18:12:23,737 - root - INFO - Проверка существования записи с ID=16
+2025-03-13 18:12:23,737 - root - INFO - Найдена запись ремонта с vehicle_id=14 для ID=16
+2025-03-13 18:12:23,737 - root - INFO - Удаление записи ремонта с ID=16
+2025-03-13 18:12:23,744 - root - INFO - Успешно удалена запись о ремонте с ID=16
+2025-03-13 18:12:24,126 - root - INFO - Запись ремонта с ID=16 для ТС ID=14 успешно удалена
+2025-03-13 18:12:24,536 - aiogram.event - INFO - Update id=330718146 is handled. Duration 800 ms by bot id=1023647955
+2025-03-13 18:14:44,316 - aiogram.event - INFO - Update id=330718147 is handled. Duration 1357 ms by bot id=1023647955
+2025-03-13 18:14:46,764 - aiogram.event - INFO - Update id=330718148 is handled. Duration 681 ms by bot id=1023647955
+2025-03-13 18:15:02,005 - aiogram.event - INFO - Update id=330718149 is handled. Duration 506 ms by bot id=1023647955
+2025-03-13 18:15:16,370 - aiogram.event - INFO - Update id=330718150 is handled. Duration 672 ms by bot id=1023647955
+2025-03-13 18:15:20,387 - aiogram.event - INFO - Update id=330718151 is handled. Duration 485 ms by bot id=1023647955
+2025-03-13 18:15:22,206 - aiogram.event - INFO - Update id=330718152 is handled. Duration 733 ms by bot id=1023647955
+2025-03-13 18:15:26,014 - aiogram.event - INFO - Update id=330718153 is handled. Duration 607 ms by bot id=1023647955
+2025-03-13 18:15:27,889 - aiogram.event - INFO - Update id=330718154 is handled. Duration 518 ms by bot id=1023647955
+2025-03-13 18:15:28,843 - root - INFO - Запрос на удаление записи ТО с ID=19
+2025-03-13 18:15:29,350 - aiogram.event - INFO - Update id=330718155 is handled. Duration 508 ms by bot id=1023647955
+2025-03-13 18:15:30,297 - root - INFO - Выполнение удаления записи ТО с ID=19
+2025-03-13 18:15:30,556 - root - INFO - Запись ТО с ID=19 для ТС ID=6 успешно удалена
+2025-03-13 18:15:30,808 - aiogram.event - INFO - Update id=330718156 is handled. Duration 511 ms by bot id=1023647955
+2025-03-13 18:15:33,368 - aiogram.event - INFO - Update id=330718157 is handled. Duration 819 ms by bot id=1023647955
+2025-03-13 18:15:35,568 - aiogram.event - INFO - Update id=330718158 is handled. Duration 490 ms by bot id=1023647955
+2025-03-13 18:15:40,023 - aiogram.event - INFO - Update id=330718159 is handled. Duration 484 ms by bot id=1023647955
+2025-03-13 18:15:42,164 - aiogram.event - INFO - Update id=330718160 is handled. Duration 705 ms by bot id=1023647955
+2025-03-13 18:15:49,390 - aiogram.event - INFO - Update id=330718161 is handled. Duration 501 ms by bot id=1023647955
+2025-03-13 18:15:51,800 - aiogram.event - INFO - Update id=330718162 is handled. Duration 815 ms by bot id=1023647955
+2025-03-13 18:15:52,314 - root - INFO - Запрос на удаление записи ТО с ID=39
+2025-03-13 18:15:52,988 - aiogram.event - INFO - Update id=330718163 is handled. Duration 674 ms by bot id=1023647955
+2025-03-13 18:15:53,649 - root - INFO - Выполнение удаления записи ТО с ID=39
+2025-03-13 18:15:53,901 - root - INFO - Запись ТО с ID=39 для ТС ID=7 успешно удалена
+2025-03-13 18:15:54,156 - aiogram.event - INFO - Update id=330718164 is handled. Duration 508 ms by bot id=1023647955
+2025-03-13 18:15:56,634 - aiogram.event - INFO - Update id=330718165 is handled. Duration 474 ms by bot id=1023647955
+2025-03-13 18:15:59,336 - aiogram.event - INFO - Update id=330718166 is handled. Duration 548 ms by bot id=1023647955
+2025-03-13 18:16:01,397 - root - ERROR - Error generating report: 
+paragraph text '<para>\u041e\u0442\u0447\u0435\u0442 \u043e\u0431 \u0438\u0441\u0442\u0435\u0447\u0435\u043d\u0438\u0438 \u0441\u0440\u043e\u043a\u043e\u0432 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u043e\u0432</para>' caused exception error with style name=CyrillicTitle Can't map determine family/bold/italic for customfontbold
+2025-03-13 18:16:02,093 - aiogram.event - INFO - Update id=330718167 is handled. Duration 708 ms by bot id=1023647955
+2025-03-13 18:17:36,513 - aiogram.dispatcher - WARNING - Received SIGINT signal
+2025-03-13 18:17:36,514 - aiogram.dispatcher - INFO - Polling stopped for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 18:17:36,514 - aiogram.dispatcher - INFO - Polling stopped
+2025-03-13 18:35:14,137 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-13 18:35:14,138 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-13 18:35:14,138 - config - INFO - Файл .env обработан
+2025-03-13 18:35:14,138 - config - INFO - Доступные переменные окружения: SHELL, SESSION_MANAGER, COLORTERM, HISTCONTROL, no_proxy, XDG_MENU_PREFIX, HISTSIZE, HOSTNAME, SSH_AUTH_SOCK, MEMORY_PRESSURE_WRITE, XMODIFIERS, DESKTOP_SESSION, SSH_AGENT_PID, GPG_TTY, EDITOR, PWD, LOGNAME, XDG_SESSION_DESKTOP, XDG_SESSION_TYPE, SYSTEMD_EXEC_PID, XAUTHORITY, SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS, ftp_proxy, GDM_LANG, HOME, USERNAME, LANG, LS_COLORS, XDG_CURRENT_DESKTOP, VIRTUAL_ENV, MEMORY_PRESSURE_WATCH, VTE_VERSION, WAYLAND_DISPLAY, GNOME_TERMINAL_SCREEN, https_proxy, STEAM_FRAME_FORCE_CLOSE, MOZ_GMP_PATH, GNOME_SETUP_DISPLAY, XDG_SESSION_CLASS, TERM, LESSOPEN, USER, NO_PROXY, FTP_PROXY, GNOME_TERMINAL_SERVICE, DISPLAY, SHLVL, HTTPS_PROXY, HTTP_PROXY, QT_IM_MODULE, VIRTUAL_ENV_PROMPT, http_proxy, XDG_RUNTIME_DIR, PS1, ALL_PROXY, DEBUGINFOD_URLS, DEBUGINFOD_IMA_CERT_PATH, XDG_DATA_DIRS, all_proxy, PATH, GDMSESSION, DBUS_SESSION_BUS_ADDRESS, MAIL, SYSTEMD_SLEEP_FREEZE_USER_SESSIONS, TELEGRAM_BOT_TOKEN
+2025-03-13 18:35:14,138 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-13 18:35:14,222 - root - INFO - Database initialized successfully
+2025-03-13 18:35:14,222 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-13 18:35:14,232 - root - INFO - Проверка соединения с API Telegram...
+2025-03-13 18:35:14,233 - root - INFO - Dispatcher successfully initialized
+2025-03-13 18:35:14,236 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-13 18:35:14,236 - root - INFO - Database initialized successfully
+2025-03-13 18:35:14,244 - root - INFO - Планировщик резервного копирования запущен
+2025-03-13 18:35:14,247 - root - INFO - Следующее автоматическое резервное копирование запланировано через 8.0 часов
+2025-03-13 18:35:15,312 - root - INFO - Starting vehicle maintenance bot...
+2025-03-13 18:35:15,313 - aiogram.dispatcher - INFO - Start polling
+2025-03-13 18:35:15,539 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 18:35:21,480 - root - INFO - Пользователь 936544929 (Дмитрий) запустил команду /start
+2025-03-13 18:35:21,512 - root - INFO - Пользователь 936544929 зарегистрирован/обновлен в системе
+2025-03-13 18:35:22,565 - root - INFO - Отправлено приветственное сообщение
+2025-03-13 18:35:22,846 - root - INFO - Отправлен список автомобилей
+2025-03-13 18:35:22,846 - aiogram.event - INFO - Update id=330718168 is handled. Duration 1366 ms by bot id=1023647955
+2025-03-13 18:35:28,091 - aiogram.event - INFO - Update id=330718169 is handled. Duration 687 ms by bot id=1023647955
+2025-03-13 18:35:29,726 - root - INFO - Используются локальные шрифты DejaVuSans
+2025-03-13 18:35:29,736 - root - INFO - PDF отчет успешно создан: report_20250313.pdf
+2025-03-13 18:35:31,199 - aiogram.event - INFO - Update id=330718170 is handled. Duration 1500 ms by bot id=1023647955
+2025-03-13 18:37:00,160 - aiogram.dispatcher - WARNING - Received SIGINT signal
+2025-03-13 18:37:00,162 - aiogram.dispatcher - INFO - Polling stopped for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-13 18:37:00,162 - aiogram.dispatcher - INFO - Polling stopped
