@@ -1,0 +1,507 @@
+2025-03-12 09:35:42,511 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:35:42,512 - config - INFO - Файл .env обработан
+2025-03-12 09:35:42,512 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, LS_COLORS, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_PID2, REPLIT_ENVIRONMENT, PS1, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:35:42,512 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:35:42,639 - root - INFO - Database initialized successfully
+2025-03-12 09:35:42,639 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:35:42,656 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:35:42,657 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:35:42,830 - root - INFO - Database initialized successfully
+2025-03-12 09:35:42,842 - root - INFO - Database initialized successfully
+2025-03-12 09:35:42,844 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:35:42,849 - __main__ - INFO - Starting Telegram bot
+2025-03-12 09:35:42,850 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:35:42,850 - __main__ - INFO - Starting web server on port 5000
+2025-03-12 09:35:42,855 - root - INFO - Database initialized successfully
+2025-03-12 09:35:42,885 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.128:5000
+2025-03-12 09:35:42,885 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 09:35:42,898 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:35:42,900 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:35:43,282 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:35:44,819 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:35:44] "GET / HTTP/1.1" 200 -
+2025-03-12 09:35:45,083 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:35:45] "GET / HTTP/1.1" 200 -
+2025-03-12 09:35:45,617 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:35:45] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:35:45,997 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:35:45] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:35:46,072 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:35:46] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:35:46,504 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:35:46] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:35:46,813 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:35:46] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:35:47,312 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:35:47] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:35:47,577 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:35:47] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:35:47,886 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:35:47] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:38:03,885 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:38:03,886 - config - INFO - Файл .env обработан
+2025-03-12 09:38:03,886 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, LS_COLORS, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_PID2, REPLIT_ENVIRONMENT, PS1, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:38:03,886 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:38:04,010 - root - INFO - Database initialized successfully
+2025-03-12 09:38:04,010 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:38:04,027 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:38:04,029 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:38:04,121 - root - INFO - Database initialized successfully
+2025-03-12 09:38:04,125 - root - INFO - Database initialized successfully
+2025-03-12 09:38:04,126 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:38:04,126 - __main__ - INFO - Starting Telegram bot
+2025-03-12 09:38:04,128 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:38:04,128 - __main__ - INFO - Starting web server on port 5000
+2025-03-12 09:38:04,131 - root - INFO - Database initialized successfully
+2025-03-12 09:38:04,138 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.128:5000
+2025-03-12 09:38:04,139 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 09:38:04,151 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:38:04,152 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:38:04,526 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:38:05,484 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:38:05] "GET / HTTP/1.1" 200 -
+2025-03-12 09:38:05,838 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:38:05] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:38:06,111 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:38:06] "GET / HTTP/1.1" 200 -
+2025-03-12 09:38:07,019 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:38:07] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:38:07,256 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:38:07] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:38:08,273 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:38:08] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:38:08,540 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:38:08] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:39:27,146 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:39:27,146 - config - INFO - Файл .env обработан
+2025-03-12 09:39:27,147 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, LS_COLORS, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_PID2, REPLIT_ENVIRONMENT, PS1, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:39:27,147 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:39:27,268 - root - INFO - Database initialized successfully
+2025-03-12 09:39:27,268 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:39:27,283 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:39:27,284 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:39:27,373 - root - INFO - Database initialized successfully
+2025-03-12 09:39:27,380 - root - INFO - Database initialized successfully
+2025-03-12 09:39:27,381 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:39:27,381 - __main__ - INFO - Starting Telegram bot in separate process
+2025-03-12 09:39:27,394 - __main__ - INFO - Starting web server on port 5000
+2025-03-12 09:39:27,397 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:39:27,400 - root - INFO - Database initialized successfully
+2025-03-12 09:39:27,410 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.128:5000
+2025-03-12 09:39:27,413 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 09:39:27,418 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:39:27,420 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:39:27,815 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:39:27,816 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:39:27,946 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 09:39:28,588 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:39:28] "GET / HTTP/1.1" 200 -
+2025-03-12 09:39:28,591 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:39:28] "GET / HTTP/1.1" 200 -
+2025-03-12 09:39:29,158 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:39:29] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:39:29,831 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:39:29] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:39:30,079 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:39:30] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:39:30,097 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:39:30] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:39:30,345 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:39:30] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:39:31,140 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:39:31] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:39:31,547 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:39:31] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:39:32,083 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:39:32] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:40:12,329 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:40:12,329 - config - INFO - Файл .env обработан
+2025-03-12 09:40:12,330 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, LS_COLORS, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_PID2, REPLIT_ENVIRONMENT, PS1, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:40:12,330 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:40:12,489 - root - INFO - Database initialized successfully
+2025-03-12 09:40:12,499 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:40:12,521 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:40:12,525 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:40:12,661 - root - INFO - Database initialized successfully
+2025-03-12 09:40:12,666 - root - INFO - Database initialized successfully
+2025-03-12 09:40:12,667 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:40:12,667 - __main__ - INFO - Starting Telegram bot in separate process
+2025-03-12 09:40:12,677 - __main__ - INFO - Starting web server on port 5000
+2025-03-12 09:40:12,690 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:40:12,697 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.128:5000
+2025-03-12 09:40:12,702 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 09:40:12,702 - root - INFO - Database initialized successfully
+2025-03-12 09:40:12,725 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:40:12,730 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:40:13,120 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:40:13,127 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:40:13,254 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 09:40:13,971 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:13] "GET / HTTP/1.1" 200 -
+2025-03-12 09:40:14,362 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:14] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:40:14,530 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:14] "GET / HTTP/1.1" 200 -
+2025-03-12 09:40:15,337 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:15] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:40:15,338 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:15] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:40:16,243 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:16] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:40:16,512 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:16] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:40:17,268 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:17] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:40:17,540 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:17] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:40:17,799 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:17] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:40:44,802 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:40:44,803 - config - INFO - Файл .env обработан
+2025-03-12 09:40:44,804 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, LS_COLORS, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_PID2, REPLIT_ENVIRONMENT, PS1, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:40:44,804 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:40:44,932 - root - INFO - Database initialized successfully
+2025-03-12 09:40:44,932 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:40:44,950 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:40:44,952 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:40:45,039 - root - INFO - Database initialized successfully
+2025-03-12 09:40:45,043 - root - INFO - Database initialized successfully
+2025-03-12 09:40:45,043 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:40:45,043 - __main__ - INFO - Starting Telegram bot in separate process
+2025-03-12 09:40:45,050 - __main__ - INFO - Starting web server on port 5000
+2025-03-12 09:40:45,064 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.128:5000
+2025-03-12 09:40:45,065 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 09:40:45,076 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:40:45,081 - root - INFO - Database initialized successfully
+2025-03-12 09:40:45,094 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:40:45,099 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:40:45,484 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:40:45,487 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:40:45,614 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 09:40:46,761 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:46] "GET / HTTP/1.1" 200 -
+2025-03-12 09:40:46,769 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:46] "GET / HTTP/1.1" 200 -
+2025-03-12 09:40:47,076 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:47] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:40:48,039 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:48] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:40:48,095 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:48] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:40:48,774 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:48] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:40:49,447 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:49] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:40:49,742 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:49] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:40:49,753 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:49] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:40:50,351 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:50] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:40:50,602 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:50] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:40:50,867 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:40:50] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:41:38,349 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:41:38,349 - config - INFO - Файл .env обработан
+2025-03-12 09:41:38,350 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, LS_COLORS, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_PID2, REPLIT_ENVIRONMENT, PS1, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:41:38,350 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:41:38,477 - root - INFO - Database initialized successfully
+2025-03-12 09:41:38,477 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:41:38,491 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:41:38,493 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:41:38,581 - root - INFO - Database initialized successfully
+2025-03-12 09:41:38,585 - root - INFO - Database initialized successfully
+2025-03-12 09:41:38,585 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:41:38,586 - __main__ - INFO - Starting Telegram bot in separate process
+2025-03-12 09:41:38,593 - __main__ - INFO - Starting web server on port 5000
+2025-03-12 09:41:38,594 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:41:38,597 - root - INFO - Database initialized successfully
+2025-03-12 09:41:38,609 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:41:38,615 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:41:38,615 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.128:5000
+2025-03-12 09:41:38,615 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 09:41:38,996 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:41:38,997 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:41:39,123 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 09:41:40,901 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:40] "GET / HTTP/1.1" 200 -
+2025-03-12 09:41:41,218 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:41] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:41:41,555 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:41] "GET / HTTP/1.1" 200 -
+2025-03-12 09:41:41,995 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:41] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:41:42,260 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:42] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:41:42,608 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:42] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:41:42,655 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:42] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:41:42,685 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:42] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:41:42,869 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:42] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:41:43,114 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:43] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:41:47,674 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:41:47,675 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 1023647955)
+2025-03-12 09:41:47,849 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:47] "GET / HTTP/1.1" 200 -
+2025-03-12 09:41:47,866 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:47] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-03-12 09:41:47,882 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:47] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2025-03-12 09:41:48,023 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:48] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:41:48,050 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:48] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:41:48,069 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:48] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:41:48,093 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:48] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:41:49,496 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:49] "GET / HTTP/1.1" 200 -
+2025-03-12 09:41:49,784 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:49] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:41:50,399 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:50] "GET / HTTP/1.1" 200 -
+2025-03-12 09:41:50,453 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:50] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:41:50,724 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:50] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:41:51,029 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:51] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:41:51,291 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:51] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:41:51,540 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:51] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:41:52,294 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:52] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:41:52,944 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:52] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:41:52,961 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:41:52,961 - aiogram.dispatcher - WARNING - Sleep for 1.268433 seconds and try again... (tryings = 1, bot id = 1023647955)
+2025-03-12 09:41:53,307 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:53] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:41:53,680 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:53] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:41:54,001 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:54] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:41:54,291 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:41:54] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:42:01,904 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:42:01,905 - config - INFO - Файл .env обработан
+2025-03-12 09:42:01,905 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, LS_COLORS, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_PID2, REPLIT_ENVIRONMENT, PS1, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:42:01,905 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:42:02,022 - root - INFO - Database initialized successfully
+2025-03-12 09:42:02,022 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:42:02,039 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:42:02,042 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:42:02,155 - root - INFO - Database initialized successfully
+2025-03-12 09:42:02,164 - root - INFO - Database initialized successfully
+2025-03-12 09:42:02,164 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:42:02,165 - __main__ - INFO - Starting Telegram bot in separate process
+2025-03-12 09:42:02,176 - __main__ - INFO - Starting web server on port 5000
+2025-03-12 09:42:02,177 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:42:02,180 - root - INFO - Database initialized successfully
+2025-03-12 09:42:02,187 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.128:5000
+2025-03-12 09:42:02,187 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 09:42:02,196 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:42:02,201 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:42:02,594 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:42:02,605 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:42:02,733 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 09:42:03,598 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:42:03] "GET / HTTP/1.1" 200 -
+2025-03-12 09:42:03,852 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:42:03] "GET / HTTP/1.1" 200 -
+2025-03-12 09:42:04,166 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:42:04] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:42:05,161 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:42:05] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:42:05,164 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:42:05] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:42:05,261 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:42:05] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:42:05,401 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:42:05] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:42:06,397 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:42:06] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:42:06,689 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:42:06] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:42:06,982 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:42:06] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:42:26,440 - aiogram.event - INFO - Update id=330717661 is handled. Duration 1205 ms by bot id=1023647955
+2025-03-12 09:42:32,262 - aiogram.event - INFO - Update id=330717662 is handled. Duration 306 ms by bot id=1023647955
+2025-03-12 09:44:51,286 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:44:51,288 - config - INFO - Файл .env обработан
+2025-03-12 09:44:51,288 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, LS_COLORS, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_PID2, REPLIT_ENVIRONMENT, PS1, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:44:51,289 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:44:51,493 - root - INFO - Database initialized successfully
+2025-03-12 09:44:51,494 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:44:51,510 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:44:51,512 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:44:51,696 - root - INFO - Database initialized successfully
+2025-03-12 09:44:51,705 - root - INFO - Database initialized successfully
+2025-03-12 09:44:51,705 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:44:51,705 - __main__ - INFO - Starting Telegram bot in separate process
+2025-03-12 09:44:51,714 - __main__ - INFO - Starting web server on port 5000
+2025-03-12 09:44:51,720 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:44:51,723 - root - INFO - Database initialized successfully
+2025-03-12 09:44:51,724 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.128:5000
+2025-03-12 09:44:51,725 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 09:44:51,744 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:44:51,750 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:44:52,163 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:44:52,169 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:44:52,238 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:52] "GET / HTTP/1.1" 200 -
+2025-03-12 09:44:52,300 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:52] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-03-12 09:44:52,336 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 09:44:52,358 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:52] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2025-03-12 09:44:52,408 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:52] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:44:52,442 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:52] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:44:52,487 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:52] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:44:52,512 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:52] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:44:53,600 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:53] "GET / HTTP/1.1" 200 -
+2025-03-12 09:44:53,917 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:53] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:44:54,726 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:54] "GET / HTTP/1.1" 200 -
+2025-03-12 09:44:54,936 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:54] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:44:55,197 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:55] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:44:55,519 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:55] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:44:55,789 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:55] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:44:56,763 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:44:56] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:44:57,600 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:44:57,600 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 1023647955)
+2025-03-12 09:45:02,878 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:45:02,878 - aiogram.dispatcher - WARNING - Sleep for 1.226896 seconds and try again... (tryings = 1, bot id = 1023647955)
+2025-03-12 09:45:08,619 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:45:08,619 - aiogram.dispatcher - WARNING - Sleep for 1.484413 seconds and try again... (tryings = 2, bot id = 1023647955)
+2025-03-12 09:45:15,018 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:45:15,018 - aiogram.dispatcher - WARNING - Sleep for 1.818154 seconds and try again... (tryings = 3, bot id = 1023647955)
+2025-03-12 09:45:22,378 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:45:22,381 - aiogram.dispatcher - WARNING - Sleep for 2.441150 seconds and try again... (tryings = 4, bot id = 1023647955)
+2025-03-12 09:45:31,101 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:45:31,101 - aiogram.dispatcher - WARNING - Sleep for 3.159352 seconds and try again... (tryings = 5, bot id = 1023647955)
+2025-03-12 09:45:38,462 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:45:38,463 - aiogram.dispatcher - WARNING - Sleep for 4.195709 seconds and try again... (tryings = 6, bot id = 1023647955)
+2025-03-12 09:45:47,915 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:45:47,915 - aiogram.dispatcher - WARNING - Sleep for 5.087926 seconds and try again... (tryings = 7, bot id = 1023647955)
+2025-03-12 09:45:58,315 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:45:58,316 - aiogram.dispatcher - WARNING - Sleep for 5.147166 seconds and try again... (tryings = 8, bot id = 1023647955)
+2025-03-12 09:46:08,860 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:46:08,860 - aiogram.dispatcher - WARNING - Sleep for 4.798010 seconds and try again... (tryings = 9, bot id = 1023647955)
+2025-03-12 09:46:18,994 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:46:18,994 - aiogram.dispatcher - WARNING - Sleep for 4.979302 seconds and try again... (tryings = 10, bot id = 1023647955)
+2025-03-12 09:46:29,111 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:46:29,111 - aiogram.dispatcher - WARNING - Sleep for 4.910719 seconds and try again... (tryings = 11, bot id = 1023647955)
+2025-03-12 09:46:39,327 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:46:39,327 - aiogram.dispatcher - WARNING - Sleep for 5.062352 seconds and try again... (tryings = 12, bot id = 1023647955)
+2025-03-12 09:46:49,750 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:46:49,750 - aiogram.dispatcher - WARNING - Sleep for 5.005435 seconds and try again... (tryings = 13, bot id = 1023647955)
+2025-03-12 09:46:59,966 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:46:59,966 - aiogram.dispatcher - WARNING - Sleep for 5.033492 seconds and try again... (tryings = 14, bot id = 1023647955)
+2025-03-12 09:47:10,259 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:47:10,260 - aiogram.dispatcher - WARNING - Sleep for 4.906635 seconds and try again... (tryings = 15, bot id = 1023647955)
+2025-03-12 09:47:20,568 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:47:20,568 - aiogram.dispatcher - WARNING - Sleep for 4.990478 seconds and try again... (tryings = 16, bot id = 1023647955)
+2025-03-12 09:47:30,726 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:47:30,727 - aiogram.dispatcher - WARNING - Sleep for 4.902238 seconds and try again... (tryings = 17, bot id = 1023647955)
+2025-03-12 09:47:40,716 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:47:40,716 - aiogram.dispatcher - WARNING - Sleep for 5.125513 seconds and try again... (tryings = 18, bot id = 1023647955)
+2025-03-12 09:47:51,041 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:47:51,042 - aiogram.dispatcher - WARNING - Sleep for 4.869180 seconds and try again... (tryings = 19, bot id = 1023647955)
+2025-03-12 09:48:01,285 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:48:01,286 - aiogram.dispatcher - WARNING - Sleep for 4.965149 seconds and try again... (tryings = 20, bot id = 1023647955)
+2025-03-12 09:48:11,509 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:48:11,509 - aiogram.dispatcher - WARNING - Sleep for 5.025425 seconds and try again... (tryings = 21, bot id = 1023647955)
+2025-03-12 09:48:21,804 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:48:21,804 - aiogram.dispatcher - WARNING - Sleep for 5.097514 seconds and try again... (tryings = 22, bot id = 1023647955)
+2025-03-12 09:48:32,121 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:48:32,121 - aiogram.dispatcher - WARNING - Sleep for 5.175990 seconds and try again... (tryings = 23, bot id = 1023647955)
+2025-03-12 09:48:42,460 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:48:42,461 - aiogram.dispatcher - WARNING - Sleep for 5.023994 seconds and try again... (tryings = 24, bot id = 1023647955)
+2025-03-12 09:48:52,829 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:48:52,829 - aiogram.dispatcher - WARNING - Sleep for 5.034759 seconds and try again... (tryings = 25, bot id = 1023647955)
+2025-03-12 09:49:03,290 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:49:03,290 - aiogram.dispatcher - WARNING - Sleep for 4.856607 seconds and try again... (tryings = 26, bot id = 1023647955)
+2025-03-12 09:49:13,313 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:49:13,313 - aiogram.dispatcher - WARNING - Sleep for 5.138277 seconds and try again... (tryings = 27, bot id = 1023647955)
+2025-03-12 09:49:23,819 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:49:23,819 - aiogram.dispatcher - WARNING - Sleep for 4.951794 seconds and try again... (tryings = 28, bot id = 1023647955)
+2025-03-12 09:49:34,121 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:49:34,122 - aiogram.dispatcher - WARNING - Sleep for 5.079429 seconds and try again... (tryings = 29, bot id = 1023647955)
+2025-03-12 09:49:44,508 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:49:44,508 - aiogram.dispatcher - WARNING - Sleep for 5.115701 seconds and try again... (tryings = 30, bot id = 1023647955)
+2025-03-12 09:49:53,877 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:49:53,877 - aiogram.dispatcher - WARNING - Sleep for 4.973978 seconds and try again... (tryings = 31, bot id = 1023647955)
+2025-03-12 09:50:03,107 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:50:03,107 - aiogram.dispatcher - WARNING - Sleep for 4.928225 seconds and try again... (tryings = 32, bot id = 1023647955)
+2025-03-12 09:50:12,287 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:50:12,287 - aiogram.dispatcher - WARNING - Sleep for 4.828816 seconds and try again... (tryings = 33, bot id = 1023647955)
+2025-03-12 09:50:21,784 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:50:21,784 - aiogram.dispatcher - WARNING - Sleep for 5.041373 seconds and try again... (tryings = 34, bot id = 1023647955)
+2025-03-12 09:50:31,080 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:50:31,080 - aiogram.dispatcher - WARNING - Sleep for 5.045110 seconds and try again... (tryings = 35, bot id = 1023647955)
+2025-03-12 09:50:40,714 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:50:40,714 - aiogram.dispatcher - WARNING - Sleep for 4.860106 seconds and try again... (tryings = 36, bot id = 1023647955)
+2025-03-12 09:50:50,387 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:50:50,387 - aiogram.dispatcher - WARNING - Sleep for 4.986324 seconds and try again... (tryings = 37, bot id = 1023647955)
+2025-03-12 09:51:46,628 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:51:46,629 - config - INFO - Файл .env обработан
+2025-03-12 09:51:46,629 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, LS_COLORS, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_PID2, REPLIT_ENVIRONMENT, PS1, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:51:46,630 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:51:46,731 - root - INFO - Database initialized successfully
+2025-03-12 09:51:46,732 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:51:46,750 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:51:46,751 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:51:46,847 - root - INFO - Database initialized successfully
+2025-03-12 09:51:46,854 - root - INFO - Database initialized successfully
+2025-03-12 09:51:46,854 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:51:46,854 - __main__ - INFO - Starting Telegram bot in separate process
+2025-03-12 09:51:46,864 - __main__ - INFO - Starting web server on port 5000
+2025-03-12 09:51:46,868 - __main__ - INFO - Starting Telegram bot process
+2025-03-12 09:51:46,869 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:51:46,872 - root - INFO - Database initialized successfully
+2025-03-12 09:51:46,891 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.128:5000
+2025-03-12 09:51:46,892 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 09:51:46,893 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:51:46,897 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:51:47,285 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:51:47,287 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:51:47,412 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 09:51:49,811 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:49] "GET / HTTP/1.1" 200 -
+2025-03-12 09:51:50,032 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:50] "GET / HTTP/1.1" 200 -
+2025-03-12 09:51:50,116 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:50] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:51:50,951 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:50] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:51:51,190 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:51] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:51:51,290 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:51] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:51:51,587 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:51] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:51:51,845 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:51] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:51:52,080 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:52] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:51:52,091 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:52] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:51:52,486 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:51:52] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:51:55,731 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:51:55,732 - config - INFO - Файл .env обработан
+2025-03-12 09:51:55,732 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, HISTCONTROL, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, HISTSIZE, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, GIT_CONFIG_GLOBAL, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, HISTFILE, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPLIT_USER_RUN, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_RUN_PATH, REPLIT_PID2, REPLIT_ENVIRONMENT, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, HISTFILESIZE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:51:55,732 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:51:55,874 - root - INFO - Database initialized successfully
+2025-03-12 09:51:55,874 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:51:55,895 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:51:55,897 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:51:55,907 - root - INFO - Database initialized successfully
+2025-03-12 09:51:55,907 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:51:56,003 - __main__ - INFO - Trying to delete webhook...
+2025-03-12 09:51:56,005 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2025-03-12 09:51:56,369 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8/deleteWebhook?drop_pending_updates=true HTTP/1.1" 200 68
+2025-03-12 09:51:56,370 - __main__ - INFO - ✅ Webhook successfully deleted
+2025-03-12 09:51:56,370 - __main__ - INFO - Starting Telegram bot process
+2025-03-12 09:51:56,370 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:51:56,371 - root - INFO - Database initialized successfully
+2025-03-12 09:51:56,387 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:51:56,391 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:51:56,762 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:51:56,763 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:51:56,888 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 09:51:57,036 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:51:57,037 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 1023647955)
+2025-03-12 09:52:01,185 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:52:01,187 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 1023647955)
+2025-03-12 09:52:18,690 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 09:52:18,691 - config - INFO - Файл .env обработан
+2025-03-12 09:52:18,691 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, LS_COLORS, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_PID2, REPLIT_ENVIRONMENT, PS1, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 09:52:18,691 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 09:52:18,833 - root - INFO - Database initialized successfully
+2025-03-12 09:52:18,834 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 09:52:18,853 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 09:52:18,855 - root - INFO - Dispatcher successfully initialized
+2025-03-12 09:52:18,935 - root - INFO - Database initialized successfully
+2025-03-12 09:52:18,940 - root - INFO - Database initialized successfully
+2025-03-12 09:52:18,940 - __main__ - INFO - Database initialized successfully
+2025-03-12 09:52:18,940 - __main__ - INFO - Starting Telegram bot in separate process
+2025-03-12 09:52:18,957 - __main__ - INFO - Starting Telegram bot process
+2025-03-12 09:52:18,958 - __main__ - INFO - Starting web server on port 5000
+2025-03-12 09:52:18,958 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:52:18,962 - root - INFO - Database initialized successfully
+2025-03-12 09:52:18,975 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 09:52:18,978 - root - INFO - Следующее автоматическое резервное копирование запланировано через 17.0 часов
+2025-03-12 09:52:18,978 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.128.128:5000
+2025-03-12 09:52:18,983 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-12 09:52:19,399 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 09:52:19,401 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:52:19,527 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 09:52:20,195 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:20] "GET / HTTP/1.1" 200 -
+2025-03-12 09:52:20,236 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:20] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-03-12 09:52:20,239 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:20] "GET /static/js/scripts.js HTTP/1.1" 200 -
+2025-03-12 09:52:20,246 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:20] "GET / HTTP/1.1" 200 -
+2025-03-12 09:52:20,345 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:20] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:52:20,356 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:20] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:52:20,367 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:20] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:52:20,387 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:20] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:52:20,546 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:20] "[36mGET /static/js/scripts.js HTTP/1.1[0m" 304 -
+2025-03-12 09:52:21,434 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:21] "GET / HTTP/1.1" 200 -
+2025-03-12 09:52:21,783 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:21] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-03-12 09:52:22,059 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:22] "GET /api/vehicles HTTP/1.1" 200 -
+2025-03-12 09:52:22,330 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:22] "GET /api/vehicle/8 HTTP/1.1" 200 -
+2025-03-12 09:52:22,594 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:22] "GET /api/maintenance/8 HTTP/1.1" 200 -
+2025-03-12 09:52:22,835 - werkzeug - INFO - 172.31.128.128 - - [12/Mar/2025 09:52:22] "GET /api/fuel/8 HTTP/1.1" 200 -
+2025-03-12 09:52:24,947 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:52:24,947 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 1023647955)
+2025-03-12 09:52:30,227 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:52:30,227 - aiogram.dispatcher - WARNING - Sleep for 1.221481 seconds and try again... (tryings = 1, bot id = 1023647955)
+2025-03-12 09:52:35,973 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:52:35,973 - aiogram.dispatcher - WARNING - Sleep for 1.728235 seconds and try again... (tryings = 2, bot id = 1023647955)
+2025-03-12 09:52:39,028 - aiogram.dispatcher - INFO - Connection established (tryings = 3, bot id = 1023647955)
+2025-03-12 09:52:39,437 - aiogram.event - INFO - Update id=330717668 is handled. Duration 407 ms by bot id=1023647955
+2025-03-12 09:52:42,560 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:52:42,560 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 1023647955)
+2025-03-12 09:52:48,859 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:52:48,859 - aiogram.dispatcher - WARNING - Sleep for 1.352816 seconds and try again... (tryings = 1, bot id = 1023647955)
+2025-03-12 09:52:56,060 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:52:56,060 - aiogram.dispatcher - WARNING - Sleep for 1.781922 seconds and try again... (tryings = 2, bot id = 1023647955)
+2025-03-12 09:53:04,499 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:53:04,499 - aiogram.dispatcher - WARNING - Sleep for 2.224721 seconds and try again... (tryings = 3, bot id = 1023647955)
+2025-03-12 11:35:46,039 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 11:35:46,042 - config - INFO - Файл .env обработан
+2025-03-12 11:35:46,042 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, HISTCONTROL, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, HISTSIZE, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, GIT_CONFIG_GLOBAL, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, HISTFILE, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPLIT_USER_RUN, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_RUN_PATH, REPLIT_PID2, REPLIT_ENVIRONMENT, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, HISTFILESIZE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 11:35:46,043 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)

@@ -1,0 +1,29 @@
+2025-03-12 09:57:20,183 - __main__ - INFO - Запуск программы
+2025-03-12 09:57:20,184 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:57:20,185 - __main__ - INFO - Запуск минимального тестового бота...
+2025-03-12 09:57:20,186 - __main__ - INFO - Сброс вебхука...
+2025-03-12 09:57:20,581 - __main__ - INFO - Вебхук успешно сброшен
+2025-03-12 09:57:20,581 - __main__ - INFO - Бот готов к работе
+2025-03-12 09:57:20,581 - __main__ - INFO - Запуск polling...
+2025-03-12 09:57:20,582 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:57:20,707 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 09:57:24,986 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 09:57:24,986 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 1023647955)
+2025-03-12 09:57:49,947 - __main__ - INFO - Запуск программы
+2025-03-12 09:57:49,947 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:57:49,948 - __main__ - INFO - Запуск минимального тестового бота...
+2025-03-12 09:57:49,948 - __main__ - INFO - Сброс вебхука...
+2025-03-12 09:57:50,329 - __main__ - INFO - Вебхук успешно сброшен
+2025-03-12 09:57:50,330 - __main__ - INFO - Бот готов к работе
+2025-03-12 09:57:50,330 - __main__ - INFO - Запуск polling...
+2025-03-12 09:57:50,330 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:57:50,456 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 10:00:57,496 - __main__ - INFO - Запуск программы
+2025-03-12 10:00:57,501 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 10:00:57,504 - __main__ - INFO - Запуск минимального тестового бота...
+2025-03-12 10:00:57,504 - __main__ - INFO - Сброс вебхука...
+2025-03-12 10:00:57,884 - __main__ - INFO - Вебхук успешно сброшен
+2025-03-12 10:00:57,885 - __main__ - INFO - Бот готов к работе
+2025-03-12 10:00:57,885 - __main__ - INFO - Запуск polling...
+2025-03-12 10:00:57,885 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 10:00:58,012 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'

@@ -1,0 +1,23 @@
+2025-03-12 07:43:31,109 - workflow_bot - INFO - Старт диагностической программы для Telegram бота
+2025-03-12 07:43:31,110 - workflow_bot - INFO - Проверка токена Telegram бота
+2025-03-12 07:43:31,110 - workflow_bot - INFO - Переменные окружения из .env загружены
+2025-03-12 07:43:31,110 - workflow_bot - INFO - Тестирование соединения с API Telegram
+2025-03-12 07:43:31,473 - workflow_bot - INFO - ✅ Соединение с API успешно! Бот @check_vin_avtobot (ID: 1023647955)
+2025-03-12 07:43:31,474 - workflow_bot - INFO - Попытка запуска основного бота
+2025-03-12 07:43:31,474 - workflow_bot - INFO - Запуск основного бота через модуль telegram_bot
+2025-03-12 07:43:33,815 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 07:43:33,815 - config - INFO - Файл .env обработан
+2025-03-12 07:43:33,816 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 07:43:33,892 - root - INFO - Database initialized successfully
+2025-03-12 07:43:33,892 - root - INFO - Используется токен бота с ID: 1023647955, длина токена: 46 символов
+2025-03-12 07:43:33,900 - root - INFO - Проверка соединения с API Telegram...
+2025-03-12 07:43:33,901 - root - INFO - Dispatcher successfully initialized
+2025-03-12 07:43:33,904 - workflow_bot - INFO - Импорт модуля telegram_bot выполнен успешно
+2025-03-12 07:43:33,905 - root - INFO - Database initialized successfully
+2025-03-12 07:43:33,912 - root - INFO - Планировщик резервного копирования запущен
+2025-03-12 07:43:33,913 - root - INFO - Следующее автоматическое резервное копирование запланировано через 19.0 часов
+2025-03-12 07:43:34,283 - root - INFO - Starting vehicle maintenance bot...
+2025-03-12 07:43:34,284 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 07:43:34,406 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 07:43:38,688 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 07:43:38,688 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 1023647955)

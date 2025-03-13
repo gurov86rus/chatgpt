@@ -1,0 +1,9 @@
+2025-03-12 09:55:47,993 - __main__ - INFO - Запуск программы
+2025-03-12 09:55:47,994 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 09:55:47,994 - __main__ - INFO - Запуск тестового бота...
+2025-03-12 09:55:47,994 - __main__ - INFO - Запуск polling...
+2025-03-12 09:55:47,995 - __main__ - INFO - Сброс вебхука...
+2025-03-12 09:55:48,550 - __main__ - INFO - Вебхук сброшен
+2025-03-12 09:55:48,556 - __main__ - INFO - Бот готов к работе
+2025-03-12 09:55:48,558 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 09:55:48,703 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'

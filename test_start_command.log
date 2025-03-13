@@ -1,0 +1,4 @@
+2025-03-12 10:10:52,125 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 10:10:52,126 - __main__ - INFO - Запуск тестового бота для проверки команды /start...
+2025-03-12 10:10:52,528 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 10:10:52,652 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'

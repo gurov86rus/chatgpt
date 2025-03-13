@@ -1,0 +1,18 @@
+2025-03-12 10:14:25,742 - __main__ - INFO - Запуск основного бота...
+2025-03-12 10:14:26,755 - __main__ - INFO - Запуск бота через прямые вызовы API...
+2025-03-12 10:14:26,759 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2025-03-12 10:14:27,120 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8/deleteWebhook HTTP/1.1" 200 68
+2025-03-12 10:14:27,122 - __main__ - INFO - Вебхук успешно удален
+2025-03-12 10:14:27,124 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2025-03-12 10:14:27,488 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8/getMe HTTP/1.1" 200 292
+2025-03-12 10:14:27,489 - __main__ - INFO - Бот запущен: @check_vin_avtobot (ID: 1023647955)
+2025-03-12 10:14:27,490 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2025-03-12 10:14:38,617 - __main__ - INFO - Запуск основного бота...
+2025-03-12 10:14:39,623 - __main__ - INFO - Запуск бота через прямые вызовы API...
+2025-03-12 10:14:39,627 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2025-03-12 10:14:39,989 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "POST /bot1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8/deleteWebhook HTTP/1.1" 200 68
+2025-03-12 10:14:39,992 - __main__ - INFO - Вебхук успешно удален
+2025-03-12 10:14:39,994 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2025-03-12 10:14:40,363 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8/getMe HTTP/1.1" 200 292
+2025-03-12 10:14:40,364 - __main__ - INFO - Бот запущен: @check_vin_avtobot (ID: 1023647955)
+2025-03-12 10:14:40,366 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443

@@ -1,0 +1,18 @@
+2025-03-12 10:00:52,394 - __main__ - INFO - ====================================
+2025-03-12 10:00:52,394 - __main__ - INFO - Запуск процесса управления ботом
+2025-03-12 10:00:52,394 - __main__ - INFO - ====================================
+2025-03-12 10:00:52,394 - __main__ - INFO - Проверка и остановка существующих процессов бота...
+2025-03-12 10:00:52,397 - __main__ - INFO - Существующих процессов бота не найдено
+2025-03-12 10:00:52,397 - __main__ - INFO - Сброс вебхука...
+2025-03-12 10:00:52,405 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2025-03-12 10:00:52,772 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8/deleteWebhook?drop_pending_updates=true HTTP/1.1" 200 68
+2025-03-12 10:00:52,773 - __main__ - INFO - ✅ Вебхук успешно сброшен
+2025-03-12 10:00:52,773 - __main__ - INFO - Проверка соединения с API Telegram...
+2025-03-12 10:00:52,775 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.telegram.org:443
+2025-03-12 10:00:53,143 - urllib3.connectionpool - DEBUG - https://api.telegram.org:443 "GET /bot1023647955:AAGaw1_vRdWNOyfzGwSVrhzH9bWxGejiHm8/getMe HTTP/1.1" 200 292
+2025-03-12 10:00:53,143 - __main__ - INFO - ✅ Соединение с API успешно установлено! Бот @check_vin_avtobot (ID: 1023647955)
+2025-03-12 10:00:53,144 - __main__ - INFO - Запуск минимального тестового бота...
+2025-03-12 10:00:53,145 - __main__ - INFO - Минимальный тестовый бот запущен с PID 3405
+2025-03-12 10:00:53,145 - __main__ - INFO - Ожидаем запуска бота...
+2025-03-12 10:00:58,145 - __main__ - INFO - Бот успешно запущен и работает
+2025-03-12 10:00:58,146 - __main__ - INFO - Для остановки бота используйте Ctrl+C

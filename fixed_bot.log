@@ -1,0 +1,7 @@
+2025-03-12 10:03:37,490 - asyncio - DEBUG - Using selector: EpollSelector
+2025-03-12 10:03:37,490 - __main__ - INFO - Запуск фиксированного бота для тестирования команды /start...
+2025-03-12 10:03:37,868 - __main__ - INFO - Запуск поллинга...
+2025-03-12 10:03:37,872 - aiogram.dispatcher - INFO - Start polling
+2025-03-12 10:03:38,004 - aiogram.dispatcher - INFO - Run polling for bot @check_vin_avtobot id=1023647955 - 'Автобот VIN'
+2025-03-12 10:03:42,272 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: terminated by other getUpdates request; make sure that only one bot instance is running
+2025-03-12 10:03:42,276 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 1023647955)

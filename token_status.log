@@ -1,0 +1,82 @@
+2025-03-12 17:55:36,324 - __main__ - INFO - ============================================================
+2025-03-12 17:55:36,324 - __main__ - INFO - Запуск проверки статуса токена Telegram бота
+2025-03-12 17:55:36,324 - __main__ - INFO - ============================================================
+2025-03-12 17:55:36,324 - __main__ - INFO - Проверка переменной окружения TELEGRAM_BOT_TOKEN...
+2025-03-12 17:55:36,324 - __main__ - INFO - Найден токен с ID: 758794985
+2025-03-12 17:55:36,325 - __main__ - ERROR - ⚠️ Переменная окружения содержит СТАРЫЙ токен
+2025-03-12 17:55:36,325 - __main__ - INFO - Проверка файла .env...
+2025-03-12 17:55:36,326 - __main__ - INFO - Найден токен с ID: 1023647955
+2025-03-12 17:55:36,326 - __main__ - INFO - ✅ Файл .env содержит новый токен
+2025-03-12 17:55:36,326 - __main__ - INFO - Проверка модуля config.py...
+2025-03-12 17:55:36,326 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-12 17:55:36,326 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 17:55:36,327 - config - INFO - Файл .env обработан
+2025-03-12 17:55:36,327 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, HISTCONTROL, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, HISTSIZE, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, GIT_CONFIG_GLOBAL, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, HISTFILE, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPLIT_USER_RUN, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_RUN_PATH, REPLIT_PID2, REPLIT_ENVIRONMENT, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, HISTFILESIZE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 17:55:36,327 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 17:55:36,327 - __main__ - INFO - Найден токен с ID: 1023647955
+2025-03-12 17:55:36,327 - __main__ - INFO - ✅ Модуль config.py содержит новый токен
+2025-03-12 17:55:36,328 - __main__ - INFO - Проверка соединения с API Telegram...
+2025-03-12 17:55:36,695 - __main__ - INFO - ✅ Соединение с API успешно установлено! Бот @check_vin_avtobot (ID: 1023647955)
+2025-03-12 17:55:36,696 - __main__ - INFO - ✅ API возвращает информацию для нового токена
+2025-03-12 17:55:36,696 - __main__ - INFO - Проверка основных файлов на наличие захардкоженных токенов...
+2025-03-12 17:55:36,696 - __main__ - INFO - ✅ В файле deployment_start.py не найден старый токен
+2025-03-12 17:55:36,696 - __main__ - INFO - ✅ В файле main.py не найден старый токен
+2025-03-12 17:55:36,697 - __main__ - INFO - ✅ В файле telegram_bot.py не найден старый токен
+2025-03-12 17:55:36,698 - __main__ - INFO - ✅ В файле main_db.py не найден старый токен
+2025-03-12 17:55:36,698 - __main__ - INFO - ✅ В файле app.py не найден старый токен
+2025-03-12 17:55:36,698 - __main__ - INFO - ✅ В файле diagnose_start_command.py не найден старый токен
+2025-03-12 17:55:36,698 - __main__ - WARNING - ⚠️ В файле fix_bot_token.py найден СТАРЫЙ токен
+2025-03-12 17:55:36,698 - __main__ - INFO - ✅ В файле direct_api_bot.py не найден старый токен
+2025-03-12 17:55:36,698 - __main__ - INFO - 
+============================================================
+2025-03-12 17:55:36,698 - __main__ - INFO - ИТОГОВЫЕ РЕЗУЛЬТАТЫ:
+2025-03-12 17:55:36,698 - __main__ - INFO - Переменная окружения: ❌ ОШИБКА
+2025-03-12 17:55:36,699 - __main__ - INFO - Файл .env: ✅ УСПЕШНО
+2025-03-12 17:55:36,699 - __main__ - INFO - Модуль config.py: ✅ УСПЕШНО
+2025-03-12 17:55:36,699 - __main__ - INFO - Соединение с API: ✅ УСПЕШНО
+2025-03-12 17:55:36,699 - __main__ - INFO - Проверка захардкоженных токенов: ❌ ОШИБКА
+2025-03-12 17:55:36,699 - __main__ - INFO - ============================================================
+2025-03-12 17:55:36,699 - __main__ - INFO - ⚠️ ОБНАРУЖЕНЫ ПРОБЛЕМЫ!
+2025-03-12 17:55:36,699 - __main__ - INFO - Некоторые компоненты системы могут использовать старый токен
+2025-03-12 17:55:36,699 - __main__ - INFO - ============================================================
+2025-03-12 17:55:58,734 - __main__ - INFO - ============================================================
+2025-03-12 17:55:58,734 - __main__ - INFO - Запуск проверки статуса токена Telegram бота
+2025-03-12 17:55:58,734 - __main__ - INFO - ============================================================
+2025-03-12 17:55:58,734 - __main__ - INFO - Проверка переменной окружения TELEGRAM_BOT_TOKEN...
+2025-03-12 17:55:58,734 - __main__ - INFO - Найден токен с ID: 758794985
+2025-03-12 17:55:58,735 - __main__ - ERROR - ⚠️ Переменная окружения содержит СТАРЫЙ токен
+2025-03-12 17:55:58,735 - __main__ - INFO - Проверка файла .env...
+2025-03-12 17:55:58,735 - __main__ - INFO - Найден токен с ID: 1023647955
+2025-03-12 17:55:58,735 - __main__ - INFO - ✅ Файл .env содержит новый токен
+2025-03-12 17:55:58,735 - __main__ - INFO - Проверка модуля config.py...
+2025-03-12 17:55:58,736 - config - INFO - ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ НОВЫЙ ТОКЕН (ID: 1023647955)
+2025-03-12 17:55:58,736 - config - INFO - Попытка загрузки переменных окружения из .env файла
+2025-03-12 17:55:58,736 - config - INFO - Файл .env обработан
+2025-03-12 17:55:58,736 - config - INFO - Доступные переменные окружения: REPLIT_PID1_FLAG_REPLIT_RTLD_LOADER, POETRY_PIP_NO_ISOLATE, COLORTERM, POETRY_PIP_NO_PREFIX, NIX_BUILD_CORES, HISTCONTROL, POETRY_PIP_USE_PIP_CACHE, REPL_OWNER, configureFlags, NIXPKGS_ALLOW_UNFREE, mesonFlags, HOSTNAME, HISTSIZE, shell, POETRY_INSTALLER_MODERN_INSTALLATION, depsHostHost, REPLIT_DOMAINS, XDG_DATA_HOME, REPL_OWNER_ID, STRINGS, XDG_CONFIG_HOME, depsTargetTarget, REPLIT_LD_AUDIT, stdenv, builder, REPLIT_CLI, shellHook, GIT_CONFIG_GLOBAL, phases, REPLIT_USER, REPLIT_SUBCLUSTER, PWD, NIX_PROFILES, SOURCE_DATE_EPOCH, NIX_ENFORCE_NO_NATIVE, REPLIT_DB_URL, REPLIT_SESSION, NIX_PATH, CXX, REPL_ID, system, HOST_PATH, doInstallCheck, REPLIT_PYTHON_LD_LIBRARY_PATH, REPLIT_PYTHONPATH, HOME, NIX_BINTOOLS, LANG, TELEGRAM_BOT_TOKEN, REPL_IDENTITY, HISTFILE, depsTargetTargetPropagated, REPLIT_RIPPKGS_INDICES, cmakeFlags, outputs, NIX_STORE, GIT_ASKPASS, REPLIT_USER_RUN, REPL_IMAGE, LD, POETRY_CACHE_DIR, buildPhase, DIRENV_CONFIG, READELF, REPLIT_PID1_FLAG_NIXMODULES_BEFORE_REPLIT_NIX, XDG_CACHE_HOME, NIX_PS1, doCheck, REPLIT_RTLD_LOADER, depsBuildBuild, POETRY_PIP_FROM_PATH, POETRY_VIRTUALENVS_CREATE, REPLIT_DEV_DOMAIN, PYTHONPATH, TERM, REPLIT_CLUSTER, REPLIT_BASHRC, SIZE, propagatedNativeBuildInputs, REPL_LANGUAGE, strictDeps, USER, SESSION_SECRET, POETRY_CONFIG_DIR, REPL_HOME, REPLIT_PID1_VERSION, AR, AS, NIX_BINTOOLS_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, DISPLAY, SHLVL, NIX_BUILD_TOP, NM, REPLIT_NIX_CHANNEL, GIT_EDITOR, UV_PYTHON_PREFERENCE, NIX_CFLAGS_COMPILE, patches, REPLIT_USERID, PROMPT_DIRTRIM, LIBGL_DRIVERS_PATH, buildInputs, REPLIT_MODE, preferLocalBuild, LOCALE_ARCHIVE, REPLIT_RUN_PATH, REPLIT_PID2, REPLIT_ENVIRONMENT, depsBuildTarget, OBJCOPY, out, REPLIT_LD_LIBRARY_PATH, STRIP, XDG_DATA_DIRS, REPL_IDENTITY_KEY, POETRY_DOWNLOAD_WITH_CURL, OBJDUMP, PATH, propagatedBuildInputs, DOCKER_CONFIG, CC, PYTHONUSERBASE, HISTFILESIZE, NIX_CC, depsBuildTargetPropagated, depsBuildBuildPropagated, NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu, UV_PYTHON_DOWNLOADS, POETRY_USE_USER_SITE, UV_PROJECT_ENVIRONMENT, REPL_PUBKEYS, CONFIG_SHELL, RANLIB, NIX_HARDENING_ENABLE, REPL_SLUG, NIX_LDFLAGS, nativeBuildInputs, depsHostHostPropagated, LD_AUDIT
+2025-03-12 17:55:58,737 - config - INFO - Токен найден в переменных окружения (ID: 1023647955, длина: 46 символов)
+2025-03-12 17:55:58,737 - __main__ - INFO - Найден токен с ID: 1023647955
+2025-03-12 17:55:58,737 - __main__ - INFO - ✅ Модуль config.py содержит новый токен
+2025-03-12 17:55:58,737 - __main__ - INFO - Проверка соединения с API Telegram...
+2025-03-12 17:55:59,103 - __main__ - INFO - ✅ Соединение с API успешно установлено! Бот @check_vin_avtobot (ID: 1023647955)
+2025-03-12 17:55:59,104 - __main__ - INFO - ✅ API возвращает информацию для нового токена
+2025-03-12 17:55:59,104 - __main__ - INFO - Проверка основных файлов на наличие захардкоженных токенов...
+2025-03-12 17:55:59,104 - __main__ - INFO - ✅ В файле deployment_start.py не найден старый токен
+2025-03-12 17:55:59,104 - __main__ - INFO - ✅ В файле main.py не найден старый токен
+2025-03-12 17:55:59,105 - __main__ - INFO - ✅ В файле telegram_bot.py не найден старый токен
+2025-03-12 17:55:59,105 - __main__ - INFO - ✅ В файле main_db.py не найден старый токен
+2025-03-12 17:55:59,105 - __main__ - INFO - ✅ В файле app.py не найден старый токен
+2025-03-12 17:55:59,106 - __main__ - INFO - ✅ В файле diagnose_start_command.py не найден старый токен
+2025-03-12 17:55:59,106 - __main__ - WARNING - ⚠️ В файле fix_bot_token.py найден СТАРЫЙ токен
+2025-03-12 17:55:59,106 - __main__ - INFO - ✅ В файле direct_api_bot.py не найден старый токен
+2025-03-12 17:55:59,106 - __main__ - INFO - 
+============================================================
+2025-03-12 17:55:59,106 - __main__ - INFO - ИТОГОВЫЕ РЕЗУЛЬТАТЫ:
+2025-03-12 17:55:59,106 - __main__ - INFO - Переменная окружения: ❌ ОШИБКА
+2025-03-12 17:55:59,106 - __main__ - INFO - Файл .env: ✅ УСПЕШНО
+2025-03-12 17:55:59,106 - __main__ - INFO - Модуль config.py: ✅ УСПЕШНО
+2025-03-12 17:55:59,106 - __main__ - INFO - Соединение с API: ✅ УСПЕШНО
+2025-03-12 17:55:59,107 - __main__ - INFO - Проверка захардкоженных токенов: ❌ ОШИБКА
+2025-03-12 17:55:59,107 - __main__ - INFO - ============================================================
+2025-03-12 17:55:59,107 - __main__ - INFO - ⚠️ ОБНАРУЖЕНЫ ПРОБЛЕМЫ!
+2025-03-12 17:55:59,107 - __main__ - INFO - Некоторые компоненты системы могут использовать старый токен
+2025-03-12 17:55:59,107 - __main__ - INFO - ============================================================
